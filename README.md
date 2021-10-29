@@ -6,6 +6,6 @@
 
 ### -- Ahmed Elamory
 ### -- Ahmed Belal
-### -- Omar ElSawy
+### -- Omar ElSawi
 ### -- Mohamed Amr
 ### -- Ahmed Tamer
