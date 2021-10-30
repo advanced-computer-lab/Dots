@@ -1,11 +1,16 @@
 // External variables
+
+if (process.env.NODE_ENV !== "production") {
+  require('dotenv').config();
+}
 const express = require("express");
 const mongoose = require('mongoose');
 
+const Flight = require('./models/flights');
 // Pick whether you want local connection or not.
 // This part should be removed later when we start using the same database and only non-local connection should be used
-const Local = true
-const MongoURI =  Local? 'mongodb://127.0.0.1:27017' : process.env.MONGO_URI ;
+
+const MongoURI = process.env.MONGO_URI ;
 
 
 var cors = require('cors')
@@ -22,6 +27,8 @@ mongoose.connect(MongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() =>console.log("MongoDB is now connected") )
 .catch(err => console.log(err));
 app.use(cors({ origin: true, credentials: true }));
+
+Flight.create({ from: "LAX", to: "JFK", flightDate: 2022-1-12, cabin: "Cairo"});
 
 
 // Starting server
