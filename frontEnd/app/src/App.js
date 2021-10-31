@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import SearchModule from './Components/SearchModule';
+import SearchModule from './Components/SearchModule/SearchModule';
 function App() {
   return (
     <div className="App">
