@@ -9,6 +9,7 @@
 .search{
     display: flex;
     flex-direction: column;
+    padding-top: 2rem;
 }
 
 .search1{
@@ -26,4 +27,11 @@
     flex-wrap: wrap;
     align-content: flex-start;
     padding-left: 7.5rem;
+  }
+
+  .search3{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-right: 7.7rem;
   }
