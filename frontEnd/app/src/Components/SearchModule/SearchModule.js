@@ -12,6 +12,13 @@ import Button from '@mui/material/Button'
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
+import FilterAltRoundedIcon from '@mui/icons-material/FilterAltRounded';
+import Stack from '@mui/material/Stack';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 class SearchModule extends Component {
 
@@ -22,10 +29,13 @@ class SearchModule extends Component {
       from: '',
       to: '',
       depDate: new Date(),
-      flights: flightData
+      flights: flightData,
+      filterOpen: false
     }
 
   }
+
+
 
   filterFlight = () => {
     const { flightNum, from, to, depDate } = this.state;
@@ -86,66 +96,117 @@ class SearchModule extends Component {
 
   }
 
+  onFilterShow = () => {
+    this.setState({ filterOpen: true })
+  }
+
+  onFilterClose = () => {
+    this.setState({ filterOpen: false })
+  }
+
   render() {
-    const {depDate} = this.state
+    const { depDate, filterOpen } = this.state
     return <div className="search">
       <div className="search1" >
-        <div>    <TextField id="outlined-basic"
-          label="Search Flight Number"
-          variant="outlined"
-          className="flightNumber"
-          onChange={this.onflightNumChange}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        /></div>
+        <Stack direction="row" spacing={50}>
+          <div>    <TextField id="outlined-basic"
+            label="Search Flight Number"
+            variant="outlined"
+            className="flightNumber"
+            onChange={this.onflightNumChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          /></div>
 
-        <div>  <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={airports}
-          sx={{ width: 400 }}
-          onInputChange={this.onFromChange}
-          renderInput={(params) =>
-            <TextField {...params} label="From" onChange={this.onFromChange} />}
+          <Button variant="outlined"
+            startIcon={<FilterAltRoundedIcon />}
+            onClick={this.onFilterShow}
+          >
+            Filter
+          </Button>
+        </Stack>
 
-        /></div>
 
-        <div>   <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={airports}
-          sx={{ width: 400 }}
-          renderInput={(params) => <TextField {...params} label="To" />}
-          onChange={this.onToChange}
+        <Dialog
+          fullWidth='sm'
+          maxWidth={false}
+          open={filterOpen}
+          onClose={this.onFilterClose}
+        >
+          <DialogTitle>Filter By</DialogTitle>
+          <DialogContent>
+            <Stack
+              spacing={5}
+            >
+              <div>  <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={airports}
+                sx={{ width: 400 }}
+                onInputChange={this.onFromChange}
+                renderInput={(params) =>
+                  <TextField {...params} label="From" onChange={this.onFromChange} />}
 
-        /></div>
+              /></div>
+
+              <div>   <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={airports}
+                sx={{ width: 400 }}
+                renderInput={(params) => <TextField {...params} label="To" />}
+                onChange={this.onToChange}
+
+              /></div>
+
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label="Choose Departure Date"
+                  value={depDate}
+                  onChange={(newValue) => {
+                    this.setState({ depDate: newValue })
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+
+              <Button
+                variant="contained"
+                onClick={this.filterFlight}
+              >Apply Filters</Button>
+
+              <Button
+                variant="outlined"
+                onClick={this.filterFlight}
+              >Clear Filters</Button>
+
+            </Stack>
+
+
+
+          </DialogContent>
+
+
+
+        </Dialog>
+
+
+
 
       </div>
       <div>
         <div className="search2">
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label="Choose Departure Date"
-              value={depDate}
-              onChange={(newValue) => {
-                this.setState({ depDate: newValue })
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
+
         </div>
 
         <div className="search3">
           <div>
-            <Button
-              variant="outlined"
-              onClick={this.filterFlight}
-            >Filter</Button>
+
           </div>
 
         </div>

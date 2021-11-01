@@ -35,3 +35,8 @@
     justify-content: flex-end;
     padding-right: 7.7rem;
   }
+
+  .MuiDialog-paperFullWidth	{
+    width:50rem !important;
+    border-radius: 15px !important;
+  }
