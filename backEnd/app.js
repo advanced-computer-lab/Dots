@@ -12,8 +12,6 @@ const session = require("express-session");
 
 const Flight = require('./models/flights');
 const Admin = require('./models/admins')
-// Pick whether you want local connection or not.
-// This part should be removed later when we start using the same database and only non-local connection should be used
 
 const MongoURI = process.env.MONGO_URI ;
 // const MongoURI = 'mongodb+srv://ACLUsers:GaUD669Bt04ZltRG@cluster0.ofagz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
@@ -24,7 +22,6 @@ var cors = require('cors')
 const app = express();
 const port = process.env.PORT || "8000";
 
-// #Importing the userController
 app.use(express.urlencoded({extended: true}));
 app.use(express.json()) // To parse the incoming requests with JSON payloads// configurations
 // Mongo DB
@@ -36,7 +33,7 @@ app.use(cors({ origin: true, credentials: true }));
 // Flight.create({ from: "LAX", to: "JFK", flightDate: 2022-1-12, cabin: "Cairo"});
 
 
-// -------------------------------- Login Authentication using passport --------------------------------- 
+// -------------------------------- Login Authentication using passport ---------------------------------
 
 
 const sessionConfig = {
@@ -72,8 +69,6 @@ app.post("/login", (req, res, next) => {
     }
   })(req, res, next);
 });
-
-
 
 
 // Starting server
