@@ -19,8 +19,11 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import ClearIcon from '@mui/icons-material/Clear';
+
 
 class SearchModule extends Component {
+
 
   constructor(props) {
     super(props);
@@ -58,7 +61,30 @@ class SearchModule extends Component {
       return filterByFrom.includes(flight)
     })
 
+    let filterByDep = flightData.filter(flight => {
+      if (depDate) {
+        let inDate = new Date(parseInt(flight.flightDate.$date.$numberLong))
+        inDate.setHours(0, 0, 0, 0)
+        depDate.setHours(0, 0, 0, 0)
+        // console.log(   inDate.valueOf() === depDate.valueOf())
+        return inDate.valueOf() === depDate.valueOf()
+      }
+      else return true
+    })
+      console.log(filterByDep)
+
+    aggFilter = aggFilter.filter(flight => {
+      return filterByDep.includes(flight)
+    })
+
     console.log(aggFilter)
+    this.setState({ flights: aggFilter })
+
+  }
+
+  closeFilter = () => {
+    this.setState({ to: '', from: '', depDate: new Date(), filterOpen: false })
+    console.log(this.state.flights)
 
   }
 
@@ -80,7 +106,6 @@ class SearchModule extends Component {
     if (input.length > 4) input = ""
     this.setState({ from: input })
 
-    console.log(input)
   }
 
   onToChange = (event) => {
@@ -92,7 +117,6 @@ class SearchModule extends Component {
   }
   onDepChange = (event) => {
     this.setState({ depDate: event })
-    console.log(event.getDay())
 
   }
 
@@ -133,7 +157,7 @@ class SearchModule extends Component {
 
 
         <Dialog
-          fullWidth='sm'
+          fullWidth={true}
           maxWidth={false}
           open={filterOpen}
           onClose={this.onFilterClose}
@@ -142,6 +166,7 @@ class SearchModule extends Component {
           <DialogContent>
             <Stack
               spacing={5}
+              id="filters"
             >
               <div>  <Autocomplete
                 disablePortal
@@ -169,21 +194,31 @@ class SearchModule extends Component {
                   label="Choose Departure Date"
                   value={depDate}
                   onChange={(newValue) => {
+                    console.log(newValue === null)
                     this.setState({ depDate: newValue })
                   }}
                   renderInput={(params) => <TextField {...params} />}
+                  cancelText='Cancel'
+                  clearable={true}
+                  allowSameDateSelection={true}
                 />
               </LocalizationProvider>
 
-              <Button
-                variant="contained"
-                onClick={this.filterFlight}
-              >Apply Filters</Button>
+              <Stack
+                direction="row"
+                spacing={3}
+              >
 
-              <Button
-                variant="outlined"
-                onClick={this.filterFlight}
-              >Clear Filters</Button>
+                <Button
+                  variant="outlined"
+                  onClick={this.closeFilter}
+                >Close</Button>
+
+                <Button
+                  variant="contained"
+                  onClick={this.filterFlight}
+                >Apply Filters</Button>
+              </Stack>
 
             </Stack>
 
@@ -229,6 +264,7 @@ const flightData = [
   { "_id": { "$oid": "617ee301d20e685a3485cf94" }, "seatsAvailable": { "$numberInt": "22" }, "from": "CAI", "to": "DXB", "flightDate": { "$date": { "$numberLong": "1649541591000" } }, "cabin": "Business", "__v": { "$numberInt": "0" } }
 
 ]
+
 
 
 
