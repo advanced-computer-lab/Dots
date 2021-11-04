@@ -17,7 +17,7 @@ var cors = require('cors')
 
 //App variables
 const app = express();
-const port = process.env.PORT || "8000";
+const port = process.env.PORT || "3000";
 
 // #Importing the userController
 app.use(express.urlencoded({extended: true}));
@@ -28,10 +28,30 @@ mongoose.connect(MongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 .catch(err => console.log(err));
 app.use(cors({ origin: true, credentials: true }));
 
-Flight.create({ from: "LAX", to: "JFK", flightDate: 2022-1-12, cabin: "Cairo"});
 
 
 // Starting server
 app.listen(port, () => {
     console.log(`Listening to requests on http://localhost:${port}`);
   });
+
+  app.get('/', (req, res) => {
+    console.log("hey");
+    
+  });
+app.post('/flights', (req, res) => {
+     
+      console.log(req.body);
+      Flight.create({
+        from : req.body.from, 
+        to: req.body.to, 
+        flightDate: req.body.date,
+        cabin: req.body.cabin,
+        seatsAvailable: req.body.availableseats
+      });
+      res.redirect('http://localhost:3001/flights');
+});
+
+app.get('/flights', (req, res) => {
+
+});

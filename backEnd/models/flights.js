@@ -5,7 +5,7 @@ const flightSchema = new Schema({
 
     from: String,
     to: String,
-    flightDate: Date,
+    flightDate: String,
     cabin: String,
     seatsAvailable: {type: Number,
         default:0}

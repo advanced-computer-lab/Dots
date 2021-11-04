@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "concurrently": "^6.3.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
@@ -22,4 +23,5 @@
     "url": "https://github.com/advanced-computer-lab/Dots/issues"
   },
   "homepage": "https://github.com/advanced-computer-lab/Dots#readme"
+  
 }
