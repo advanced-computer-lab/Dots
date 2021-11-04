@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .App {
   text-align: center;
 }
@@ -52,3 +53,9 @@
 
 #datePicker {
 }
+=======
+.search{
+  display: 'flex';
+  flex-direction: row;
+}
+>>>>>>> 4b219ebfea20c13299f5344638172706d09e1b07

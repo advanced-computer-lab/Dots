@@ -1,25 +1,17 @@
 import logo from './logo.svg';
 import './App.css';
+<<<<<<< HEAD
 import React, {Component} from 'react';
 
 class App extends Component {
   render() {
+=======
+import SearchModule from './Components/SearchModule/SearchModule';
+function App() {
+>>>>>>> 4b219ebfea20c13299f5344638172706d09e1b07
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <SearchModule></SearchModule>
     </div>
   );
   }
