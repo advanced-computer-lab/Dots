@@ -72,10 +72,32 @@ app.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
+
 app.get('/flights',async (req,res)=>{
   const flights = await Flight.find({});
   res.send(flights);
 })
+
+app.post('/flights', (req, res) => {
+     
+  console.log(req.body);
+  Flight.create({
+    from : req.body.from, 
+    to: req.body.to, 
+    flightDate: req.body.flightDate,
+    cabin: req.body.cabin,
+    seatsAvailable: req.body.seatsAvailable
+  });
+  res.send('Flight Created');
+});
+
+app.post('/flight/:flightId/delete', async(req, res) => {
+  var id = mongoose.Types.ObjectId(req.params.flightId);
+  await Flight.findByIdAndDelete(id);
+
+  res.send("Flight Deleted");
+});
+
 
 
 // Starting server
