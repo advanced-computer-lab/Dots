@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const flightSchema = new Schema({
     from: String,
+    flightTerminal: String,
     to: String,
     flightDate: Date,
     cabin: String,
