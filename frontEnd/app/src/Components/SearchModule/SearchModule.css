@@ -5,7 +5,6 @@
 }
 
 .search1{
-<<<<<<< HEAD
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
@@ -48,48 +47,4 @@ width: 53%;
 #filter{
 display: flex;
 justify-content: center;
-=======
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    padding-bottom: 2rem;
-    
-  }
-
-  .search2{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    padding-left: 7.5rem;
-  }
-
-  .search3{
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    padding-right: 7.7rem;
-  }
-
-  .MuiDialog-paperFullWidth	{
-    width:50rem !important;
-    border-radius: 15px !important;
-  }
-
-
-
-  Button {
-    border-radius: 10px!important;
-    height: fit-content;
-}
-
-.MuiOutlinedInput-root.MuiInputBase-root.MuiInputBase-colorPrimary.MuiInputBase-formControl.MuiInputBase-adornedEnd.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
-  width: 53%;
-}
-
-#filter{
-  display: flex;
-  justify-content: center;
->>>>>>> aaeec2cd00512649f206ddee09d031fc5de25f01
 }
