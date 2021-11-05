@@ -61,6 +61,7 @@ class SearchModule extends Component {
   //     return filterByFrom.includes(flight)
   //   })
 
+<<<<<<< HEAD
   //   let filterByDep = flightData.filter(flight => {
   //     if (depDate) {
   //       let inDate = new Date(parseInt(flight.flightDate.$date.$numberLong))
@@ -72,6 +73,32 @@ class SearchModule extends Component {
   //     else return true
   //   })
   //     console.log(filterByDep)
+=======
+    let filterByDep = flightData.filter(flight => {
+      if (depDate) {
+        let inDate = new Date(parseInt(flight.flightDate.$date.$numberLong))
+        inDate.setHours(0, 0, 0, 0)
+        depDate.setHours(0, 0, 0, 0)
+        // console.log(   inDate.valueOf() === depDate.valueOf())
+        return inDate.valueOf() === depDate.valueOf()
+      }
+      else return true
+    })
+      console.log(filterByDep)
+
+    aggFilter = aggFilter.filter(flight => {
+      return filterByDep.includes(flight)
+    })
+
+    console.log(aggFilter)
+    this.setState({ flights: aggFilter })
+
+  }
+
+  closeFilter = () => {
+    this.setState({ to: '', from: '', depDate: new Date(), filterOpen: false })
+    console.log(this.state.flights)
+>>>>>>> aaeec2cd00512649f206ddee09d031fc5de25f01
 
   //   aggFilter = aggFilter.filter(flight => {
   //     return filterByDep.includes(flight)
@@ -85,6 +112,7 @@ class SearchModule extends Component {
 
   
 
+<<<<<<< HEAD
   // onflightNumChange = (event) => {
   //   this.setState({ flightNum: event.target.value })
   //   let filteredFlights = flightData.filter(flight => {
@@ -92,16 +120,25 @@ class SearchModule extends Component {
   //     id = id.substring(id.length - 2,)
   //     return id.startsWith(event.target.value)
   //   })
+=======
+  }
+>>>>>>> aaeec2cd00512649f206ddee09d031fc5de25f01
 
   //   console.log(filteredFlights)
 
   //   this.setState({ flights: filteredFlights })
 
+<<<<<<< HEAD
   // }
   // onFromChange = (event) => {
   //   let input = event.target.innerHTML
   //   if (input.length > 4) input = ""
   //   this.setState({ from: input })
+=======
+  }
+  onDepChange = (event) => {
+    this.setState({ depDate: event })
+>>>>>>> aaeec2cd00512649f206ddee09d031fc5de25f01
 
   // }
 
@@ -196,7 +233,14 @@ class SearchModule extends Component {
                 <DatePicker
                   label="Choose Departure Date"
                   value={depDate}
+<<<<<<< HEAD
                   onChange= {onDepChange}
+=======
+                  onChange={(newValue) => {
+                    console.log(newValue === null)
+                    this.setState({ depDate: newValue })
+                  }}
+>>>>>>> aaeec2cd00512649f206ddee09d031fc5de25f01
                   renderInput={(params) => <TextField {...params} />}
                   cancelText='Cancel'
                   clearable={true}
@@ -208,6 +252,7 @@ class SearchModule extends Component {
                 direction="row"
                 spacing={3}
               >
+<<<<<<< HEAD
 
                 <Button
                   variant="outlined"
@@ -217,6 +262,17 @@ class SearchModule extends Component {
                 <Button
                   variant="contained"
                   onClick={filterFlight}
+=======
+
+                <Button
+                  variant="outlined"
+                  onClick={this.closeFilter}
+                >Close</Button>
+
+                <Button
+                  variant="contained"
+                  onClick={this.filterFlight}
+>>>>>>> aaeec2cd00512649f206ddee09d031fc5de25f01
                 >Apply Filters</Button>
               </Stack>
 
