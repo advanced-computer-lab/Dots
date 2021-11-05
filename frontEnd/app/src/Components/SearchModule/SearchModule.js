@@ -77,6 +77,7 @@ class SearchModule extends Component {
       return filterByDep.includes(flight)
     })
 
+
     console.log(aggFilter)
     this.setState({ flights: aggFilter })
 
