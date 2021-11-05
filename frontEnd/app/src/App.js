@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import 'tachyons';
-import FlightsList from './Components/flightsList.js';
-import SearchModule from './Components/SearchModule/SearchModule';
+import FlightsList from './components/flightsList.js';
 
 
 class App extends Component {
@@ -11,7 +10,6 @@ class App extends Component {
     return (
       <div >
         <FlightsList />
-
       </div>
     );
   }
