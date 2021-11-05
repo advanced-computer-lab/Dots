@@ -9,6 +9,15 @@ import SearchModule from './SearchModule/SearchModule'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import ClearIcon from '@mui/icons-material/Clear';
+import Button from '@mui/material/Button'
+
+
 class FlightsList extends Component {
     constructor() {
         super()
@@ -18,16 +27,53 @@ class FlightsList extends Component {
             flightNum: '',
             from: '',
             to: '',
-            depDate: new Date()
+            depDate: new Date(),
+            openDialog:false,
+            selectedFlight:'',
+            dialogFlight:'',
+            
+
         }
     }
+
+    
+
+
+    onDialogShow = (id) => {
+        this.setState({ openDialog: true,selectedFlight:id,dialogFlight:id })
+      }
+    
+      onDialogClose = () => {
+        this.setState({ openDialog: false,selectedFlight:"null" })
+      }
+
+      onDialogCloseDelete = () => {
+
+        fetch("http://localhost:8000/flight/"+this.state.selectedFlight+"/delete", {
+            method: "POST", 
+          }).then(res => {
+            console.log("Request complete! response:", res);
+          }).then(()=> {
+                this.setState((prev) => ({
+                flights: prev.flights.filter(
+                (row) => row.id !== prev.selectedFlight
+            ),
+                selectedFlight:null,
+                openDialog: false
+          }));
+        })
+
+        
+
+      }
 
 
     componentDidMount() {
         //const {flights} = await axios.get('http://localhost:8000/flights');
         fetch('http://localhost:8000/flights')
             .then(response => response.json())
-            .then(flights => { this.setState({ permanentFlights: flights, flights: flights }) });
+            .then(flights => { this.setState({ permanentFlights: flights, flights: flights }) })
+            .catch(err => {console.log(err)});
 
 
         // this.setState({
@@ -80,7 +126,6 @@ class FlightsList extends Component {
             return filterByDep.includes(flight)
         })
 
-
         console.log(aggFilter)
         this.setState({ flights: aggFilter })
 
@@ -110,14 +155,10 @@ class FlightsList extends Component {
         let input = event.target.innerHTML
         if (input.length > 4) input = ""
         this.setState({ to: input })
-
-
     }
-
 
     onDepChange = (event) => {
         this.setState({ depDate: event })
-
     }
 
     handleEditClick = (_id) => (event) => {
@@ -128,21 +169,27 @@ class FlightsList extends Component {
         event.stopPropagation();
     };
 
+    
+
 
     render() {
-        const { flights, flightNum, from, to, depDate } = this.state;
+        const { flights, flightNum, from, to, depDate ,openDialog} = this.state;
         flights.map((flight, i) => {
-            return flight.id = i;
+            return flight.id = flight._id;
         });
+
         const handleEditClick = (id) => (event) => {
             event.stopPropagation();
         };
 
         const handleDeleteClick = (id) => (event) => {
+            this.onDialogShow(id);
             event.stopPropagation();
         };
         const columns = [
-            { field: 'from', headerName: 'From', width: 200 },
+            {   field: 'from',
+                headerName: 'From',
+                width: 200 },
             {
                 field: 'to',
                 headerName: 'To',
@@ -168,22 +215,23 @@ class FlightsList extends Component {
                 type: 'actions',
                 headerName: 'Actions',
                 width: 100,
-                getActions: ({ _id }) => {
+                getActions: ( {id} ) => {
                     return [
                         <GridActionsCellItem
                             icon={<EditIcon />}
                             label="Edit"
-                            onClick={handleEditClick(_id)}
+                            onClick={handleEditClick(id)}
                         />,
                         <GridActionsCellItem
                             icon={<DeleteIcon />}
                             label="Delete"
-                            onClick={handleDeleteClick(_id)}
+                            onClick={handleDeleteClick(id)}
                         />,
                     ];
                 },
             },
         ];
+
         return (
             <div>
                 <SearchModule flights={flights}
@@ -205,7 +253,37 @@ class FlightsList extends Component {
                         rowsPerPageOptions={[5]}
                     />
                 </div>
+
+                <Dialog
+                    open={openDialog}
+                    onClose={this.onDialogClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                    
+                >
+                <DialogTitle id="alert-dialog-title">{"Delete a Flight ?"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Pressing Yes will delete the Flight with ID {this.state.dialogFlight}.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.onDialogClose} color="primary">
+                    No
+                    </Button>
+                    <Button onClick={this.onDialogCloseDelete} color="primary" autoFocus>
+                    Yes
+                    </Button>
+                </DialogActions>
+                </Dialog>
+
+
+
+
+
+                
             </div>
+
         )
     }
 }
