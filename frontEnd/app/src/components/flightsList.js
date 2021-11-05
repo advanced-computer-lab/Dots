@@ -3,6 +3,7 @@ import 'tachyons';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 import SearchModule from './SearchModule/SearchModule'
+import CreateFlight from './createFlight';
 
 class FlightsList extends Component {
     constructor() {
@@ -29,7 +30,7 @@ class FlightsList extends Component {
         //   flights: flights
         // })
     }
-
+    
     filterFlight = () => {
         const { permanentFlights ,  flightNum, from, to, depDate  } = this.state;
         // console.log( this,state.flights[0]._id.$oid.substring(start) )
@@ -147,6 +148,7 @@ class FlightsList extends Component {
         ];
         return (
             <div>
+            <CreateFlight></CreateFlight>
                 <SearchModule flights={flights}
 
                     depDate={depDate}

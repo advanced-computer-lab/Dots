@@ -77,12 +77,13 @@ app.post('/flights', (req, res) => {
   console.log(req.body);
   Flight.create({
     from : req.body.from, 
+    flightTerminal: req.body.terminal,
     to: req.body.to, 
-    flightDate: req.body.flightDate,
+    flightDate: req.body.date,
     cabin: req.body.cabin,
-    seatsAvailable: req.body.seatsAvailable
+    seatsAvailable: req.body.availableseats
   });
-  res.send('Flight Created');
+  res.redirect('http://localhost:3000/');
 });
 
 app.post('/flight/:flightId/delete', async(req, res) => {
@@ -96,7 +97,6 @@ app.get('/flights',async (req,res)=>{
   const flights = await Flight.find({});
   res.send(flights);
 })
-
 
 // Starting server
 app.listen(port, () => {
