@@ -6,12 +6,9 @@ import {
 } from '@mui/x-data-grid';
 import axios from 'axios';
 import SearchModule from './SearchModule/SearchModule'
-<<<<<<< HEAD
 import CreateFlight from './createFlight';
-=======
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
->>>>>>> 5eb7decb876b1abe8d9bbe98143095c32b5cc2f6
 
 class FlightsList extends Component {
     constructor() {
