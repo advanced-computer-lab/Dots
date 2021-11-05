@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import 'tachyons';
-import { DataGrid } from '@mui/x-data-grid';
+import {
+    DataGrid,
+    GridActionsCellItem,
+} from '@mui/x-data-grid';
 import axios from 'axios';
 import SearchModule from './SearchModule/SearchModule'
+<<<<<<< HEAD
 import CreateFlight from './createFlight';
+=======
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+>>>>>>> 5eb7decb876b1abe8d9bbe98143095c32b5cc2f6
 
 class FlightsList extends Component {
     constructor() {
@@ -23,7 +31,7 @@ class FlightsList extends Component {
         //const {flights} = await axios.get('http://localhost:8000/flights');
         fetch('http://localhost:8000/flights')
             .then(response => response.json())
-            .then(flights => { this.setState({  permanentFlights: flights ,   flights: flights }) });
+            .then(flights => { this.setState({ permanentFlights: flights, flights: flights }) });
 
 
         // this.setState({
@@ -32,13 +40,13 @@ class FlightsList extends Component {
     }
     
     filterFlight = () => {
-        const { permanentFlights ,  flightNum, from, to, depDate  } = this.state;
+        const { permanentFlights, flightNum, from, to, depDate } = this.state;
         // console.log( this,state.flights[0]._id.$oid.substring(start) )
         console.log('From', from)
         console.log('To', to)
 
-        if( !depDate && from.length === 0 && to.length === 0 ){
-            this.setState( {flights :permanentFlights} )
+        if (!depDate && from.length === 0 && to.length === 0) {
+            this.setState({ flights: permanentFlights })
             return;
         }
 
@@ -60,12 +68,12 @@ class FlightsList extends Component {
 
         let filterByDep = this.state.permanentFlights.filter(flight => {
             if (depDate) {
-                console.log('Dep Date : ' , depDate)
+                console.log('Dep Date : ', depDate)
                 let inDate = new Date(flight.flightDate)
                 inDate.setHours(0, 0, 0, 0)
                 depDate.setHours(0, 0, 0, 0)
-                console.log('Input Date : ' , inDate)
-                console.log(   inDate.valueOf() === depDate.valueOf())
+                console.log('Input Date : ', inDate)
+                console.log(inDate.valueOf() === depDate.valueOf())
                 return inDate.valueOf() === depDate.valueOf()
             }
             else return true
@@ -106,23 +114,37 @@ class FlightsList extends Component {
         let input = event.target.innerHTML
         if (input.length > 4) input = ""
         this.setState({ to: input })
-   
+
 
     }
 
-    
+
     onDepChange = (event) => {
         this.setState({ depDate: event })
 
     }
 
+    handleEditClick = (_id) => (event) => {
+        event.stopPropagation();
+    };
+
+    handleDeleteClick = (_id) => (event) => {
+        event.stopPropagation();
+    };
 
 
     render() {
-        const { flights , flightNum , from , to , depDate } = this.state;
+        const { flights, flightNum, from, to, depDate } = this.state;
         flights.map((flight, i) => {
             return flight.id = i;
         });
+        const handleEditClick = (id) => (event) => {
+            event.stopPropagation();
+        };
+
+        const handleDeleteClick = (id) => (event) => {
+            event.stopPropagation();
+        };
         const columns = [
             { field: 'from', headerName: 'From', width: 200 },
             {
@@ -145,6 +167,26 @@ class FlightsList extends Component {
                 headerName: 'Seats Available',
                 width: 200,
             },
+            {
+                field: 'actions',
+                type: 'actions',
+                headerName: 'Actions',
+                width: 100,
+                getActions: ({ _id }) => {
+                    return [
+                        <GridActionsCellItem
+                            icon={<EditIcon />}
+                            label="Edit"
+                            onClick={handleEditClick(_id)}
+                        />,
+                        <GridActionsCellItem
+                            icon={<DeleteIcon />}
+                            label="Delete"
+                            onClick={handleDeleteClick(_id)}
+                        />,
+                    ];
+                },
+            },
         ];
         return (
             <div>
@@ -152,11 +194,11 @@ class FlightsList extends Component {
                 <SearchModule flights={flights}
 
                     depDate={depDate}
-                    onflightNumChange = {this.onflightNumChange}
-                    onFromChange = {this.onFromChange}
-                    onToChange = {this.onToChange}
-                    onDepChange = {this.onDepChange}
-                    filterFlight = {this.filterFlight}
+                    onflightNumChange={this.onflightNumChange}
+                    onFromChange={this.onFromChange}
+                    onToChange={this.onToChange}
+                    onDepChange={this.onDepChange}
+                    filterFlight={this.filterFlight}
 
                 > </SearchModule>
 
@@ -166,8 +208,6 @@ class FlightsList extends Component {
                         columns={columns}
                         pageSize={10}
                         rowsPerPageOptions={[5]}
-                        checkboxSelection
-                        disableSelectionOnClick
                     />
                 </div>
             </div>
