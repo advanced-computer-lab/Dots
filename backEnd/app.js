@@ -86,7 +86,7 @@ app.post('/flights', (req, res) => {
   res.redirect('http://localhost:3000/');
 });
 
-app.post('/flight/:flightId/delete', async(req, res) => {
+app.delete('/flight/:flightId/delete', async(req, res) => {
   var id = mongoose.Types.ObjectId(req.params.flightId);
   await Flight.findByIdAndDelete(id);
 

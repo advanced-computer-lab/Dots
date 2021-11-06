@@ -51,7 +51,7 @@ class FlightsList extends Component {
       onDialogCloseDelete = () => {
 
         fetch("http://localhost:8000/flight/"+this.state.selectedFlight+"/delete", {
-            method: "POST", 
+            method: "DELETE", 
           }).then(res => {
             console.log("Request complete! response:", res);
           }).then(()=> {
