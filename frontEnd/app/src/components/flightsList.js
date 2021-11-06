@@ -197,7 +197,7 @@ class FlightsList extends Component {
 
                 > </SearchModule>
 
-                <div style={{ height: 650, width: '100%' }}>
+                <div style={{ height: 400, width: '100%' }}>
                     <DataGrid
                         rows={flights}
                         columns={columns}
