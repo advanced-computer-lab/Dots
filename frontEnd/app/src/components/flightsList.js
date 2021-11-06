@@ -29,44 +29,44 @@ class FlightsList extends Component {
             from: '',
             to: '',
             depDate: new Date(),
-            openDialog:false,
-            selectedFlight:'',
-            dialogFlight:'',
-            
+            openDialog: false,
+            selectedFlight: '',
+            dialogFlight: '',
+
 
         }
     }
 
-    
+
 
 
     onDialogShow = (id) => {
-        this.setState({ openDialog: true,selectedFlight:id,dialogFlight:id })
-      }
-    
-      onDialogClose = () => {
-        this.setState({ openDialog: false,selectedFlight:"null" })
-      }
+        this.setState({ openDialog: true, selectedFlight: id, dialogFlight: id })
+    }
 
-      onDialogCloseDelete = () => {
+    onDialogClose = () => {
+        this.setState({ openDialog: false, selectedFlight: "null" })
+    }
 
-        fetch("http://localhost:8000/flight/"+this.state.selectedFlight+"/delete", {
-            method: "POST", 
-          }).then(res => {
+    onDialogCloseDelete = () => {
+
+        fetch("http://localhost:8000/flight/" + this.state.selectedFlight + "/delete", {
+            method: "POST",
+        }).then(res => {
             console.log("Request complete! response:", res);
-          }).then(()=> {
-                this.setState((prev) => ({
+        }).then(() => {
+            this.setState((prev) => ({
                 flights: prev.flights.filter(
-                (row) => row.id !== prev.selectedFlight
-            ),
-                selectedFlight:null,
+                    (row) => row.id !== prev.selectedFlight
+                ),
+                selectedFlight: null,
                 openDialog: false
-          }));
+            }));
         })
 
-        
 
-      }
+
+    }
 
 
     componentDidMount() {
@@ -74,14 +74,14 @@ class FlightsList extends Component {
         fetch('http://localhost:8000/flights')
             .then(response => response.json())
             .then(flights => { this.setState({ permanentFlights: flights, flights: flights }) })
-            .catch(err => {console.log(err)});
+            .catch(err => { console.log(err) });
 
 
         // this.setState({
         //   flights: flights
         // })
     }
-    
+
     filterFlight = () => {
         const { permanentFlights, flightNum, from, to, depDate } = this.state;
         // console.log( this,state.flights[0]._id.$oid.substring(start) )
@@ -170,11 +170,11 @@ class FlightsList extends Component {
         event.stopPropagation();
     };
 
-    
+
 
 
     render() {
-        const { flights, flightNum, from, to, depDate ,openDialog} = this.state;
+        const { flights, flightNum, from, to, depDate, openDialog } = this.state;
         flights.map((flight, i) => {
             return flight.id = flight._id;
         });
@@ -188,17 +188,39 @@ class FlightsList extends Component {
             event.stopPropagation();
         };
         const columns = [
-            {   field: 'from',
+            {
+                field: 'flightNumber',
+                headerName: 'Flight Number',
+                width: 200
+            },
+            {
+                field: 'from',
                 headerName: 'From',
-                width: 200 },
+                width: 200
+            },
             {
                 field: 'to',
                 headerName: 'To',
                 width: 200,
             },
             {
-                field: 'flightDate',
-                headerName: 'Flight Date',
+                field: 'departureTime',
+                headerName: 'Departure Time',
+                width: 200,
+            },
+            {
+                field: 'arrivalTime',
+                headerName: 'Arrival Time',
+                width: 200,
+            },
+            {
+                field: 'departureTerminal',
+                headerName: 'Departure Terminal',
+                width: 200,
+            },
+            {
+                field: 'arrivalTerminal',
+                headerName: 'Arrival Terminal',
                 width: 200,
             },
             {
@@ -216,7 +238,7 @@ class FlightsList extends Component {
                 type: 'actions',
                 headerName: 'Actions',
                 width: 100,
-                getActions: ( {id} ) => {
+                getActions: ({ id }) => {
                     return [
                         <GridActionsCellItem
                             icon={<EditIcon />}
@@ -235,7 +257,7 @@ class FlightsList extends Component {
 
         return (
             <div>
-            <CreateFlight></CreateFlight>
+                <CreateFlight></CreateFlight>
                 <SearchModule flights={flights}
 
                     depDate={depDate}
@@ -261,29 +283,29 @@ class FlightsList extends Component {
                     onClose={this.onDialogClose}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
-                    
+
                 >
-                <DialogTitle id="alert-dialog-title">{"Delete a Flight ?"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Pressing Yes will delete the Flight with ID {this.state.dialogFlight}.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={this.onDialogClose} color="primary">
-                    No
-                    </Button>
-                    <Button onClick={this.onDialogCloseDelete} color="primary" autoFocus>
-                    Yes
-                    </Button>
-                </DialogActions>
+                    <DialogTitle id="alert-dialog-title">{"Delete a Flight ?"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Pressing Yes will delete the Flight with ID {this.state.dialogFlight}.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.onDialogClose} color="primary">
+                            No
+                        </Button>
+                        <Button onClick={this.onDialogCloseDelete} color="primary" autoFocus>
+                            Yes
+                        </Button>
+                    </DialogActions>
                 </Dialog>
 
 
 
 
 
-                
+
             </div>
 
         )

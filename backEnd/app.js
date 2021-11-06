@@ -102,3 +102,28 @@ app.get('/flights',async (req,res)=>{
 app.listen(port, () => {
   console.log(`Listening to requests on http://localhost:${port}`);
 });
+
+const xlsx = require("xlsx");
+var wb = xlsx.readFile("new Data.xlsx", { cellDates: true });
+var ws = wb.Sheets['new Data'];
+
+var data = xlsx.utils.sheet_to_json(ws);
+const x = async function (data) {
+  for (let d of data) {
+    var f = new Flight();
+    f.flightNumber=d['Flight Number'];
+    f.from = d.From;
+    f.to = d.To;
+    f.departureTime=d['Departure Date'];
+    f.arrivalTime=d['Arrival Date'];
+    f.departureTerminal=d['Departure Terminal'];
+    f.arrivalTerminal=d['Arrival Terminal'];
+    f.cabin = d.Cabin;
+    f.seatsAvailable = d['Seats Available on Flight'];
+    await f.save();
+  }
+};
+
+x(data);
+
+
