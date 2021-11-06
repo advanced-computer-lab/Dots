@@ -1,24 +1,21 @@
-import React, { Component, useState } from 'react';
-import Button from '@mui/material/Button';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
-import TextField from '@mui/material/TextField';
-import Input from '@mui/material/Input';
-import FormControl from '@mui/material/FormControl';
-import Box from '@mui/material/Box';
+import React, { Component } from 'react';
 import DateAdapter from '@mui/lab/AdapterLuxon';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import axios from 'axios'
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton, Grid, Box,FormControl,TextField,Button} from '@mui/material';
 
 
 class EditForm extends Component {
     state = {
-        startDate: new Date(),
-        flightDate: new Date(),
-        seatsAvailable: 0,
+        _id: '',
+        arrivalTime: new Date(),
+        departureTime: new Date(),
+        seatsAvailable: '',
         cabin: '',
-        flightTerminal: '',
+        departureTerminal: '',
+        arrivalTerminal: '',
         from: '',
         to: '',
     };
@@ -27,12 +24,26 @@ class EditForm extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    onSubmit = () => {
+    handleChangeArrival = (value) => {
+        this.setState({ arrivalTime: value });
+    }
+
+    handleChangeDeparture = (value) => {
+        console.log(value)
+        this.setState({ departureTime: value });
+    }
+
+
+    onSubmit = (e) => {
+        e.preventDefault()
         const data = {
-            flightDate: this.state.flightDate,
+            _id: this.state._id,
+            arrivalTime: this.state.arrivalTime,
+            departureTime: this.state.departureTime,
             seatsAvailable: this.state.seatsAvailable,
             cabin: this.state.cabin,
-            flightTerminal: this.state.flightTerminal,
+            departureTerminal: this.state.departureTerminal,
+            arrivalTerminal: this.state.arrivalTerminal,
             from: this.state.from,
             to: this.state.to,
         }
@@ -41,43 +52,57 @@ class EditForm extends Component {
 
     componentDidMount() {
         axios.get(`http://localhost:8000/flights/${this.props.id}`)
-            .then((data) => {
-                console.log(data)
-                const { seatsAvailable, cabin, from, to, flightTerminal, flightDate } = data
+            .then(({ data }) => {
+                const { seatsAvailable, cabin, from, to, arrivalTime,
+                    departureTime, departureTerminal, arrivalTerminal,_id } = data
                 this.setState({
+                    _id,
                     seatsAvailable,
                     cabin,
                     from,
                     to,
-                    flightTerminal,
-                    flightDate,
+                    arrivalTime,
+                    departureTime,
+                    departureTerminal,
+                    arrivalTerminal
                 })
             })
+
     }
 
     render() {
-        const { seatsAvailable, cabin, from, to, flightTerminal, flightDate } = this.state
+        const { seatsAvailable, cabin, from, to, arrivalTime,
+            departureTime, departureTerminal, arrivalTerminal } = this.state
         return (
-            <Box component="form" sx={{ '& .MuiTextField-root': { m: 4, width: '40ch' }, }} noValidateautoComplete="off">
+            <Box sx={{ '& .MuiTextField-root': { m: 4, width: '40ch' }, }} noValidateautoComplete="off">
                 {/*change endpoint according to put */}
-                <form onsubmit={this.onSubmit}>
+                <form onSubmit={this.onSubmit}>
                     <FormControl>
-                        <TextField value={from} onChange={this.handleChange} label="From" required type="input" className="formElements" id="from" placeholder="From" name="from" ></TextField>
-                        <TextField value={to} onChange={this.handleChange} label="To" required type="input" className="to" id="to" placeholder="To" name="to" ></TextField>
+                       <Grid sx={{ml:"auto"}}> <IconButton onClick={this.props.close}><CloseIcon/></IconButton></Grid>
+                        <TextField value={from} onChange={this.handleChange} label="From" required type="input" className="formElements" id="from" placeholder="Ex: LAX" name="from" ></TextField>
+                        <TextField value={to} onChange={this.handleChange} label="To" required type="input" className="to" id="to" placeholder="Ex: JFK" name="to" ></TextField>
                         <LocalizationProvider dateAdapter={DateAdapter}>
                             <DateTimePicker
-                                label="Flight Date and Time"
-                                value={flightDate}
-                                onChange={this.handleChange}
+                                label="Departure Time"
+                                value={departureTime}
+                                onChange={this.handleChangeDeparture}
                                 renderInput={(params) => <TextField {...params} />}
-                                name="flightDate"
                             />
                         </LocalizationProvider>
-                        <TextField onChange={this.handleChange} value={flightTerminal} label="Flight Terminal" required type="input" className="formElements" id="terminal" placeholder="Cairo" name="terminal" ></TextField>
-                        <TextField onChange={this.handleChange} value={cabin} label="Cabin" required type="input" className="formElements" id="cabin" placeholder="Cabin" name="cabin" ></TextField>
-                        <TextField onChange={this.handleChange} value={seatsAvailable} label="Available Seats" required type="input" className="formElements" id="seats" placeholder="Seats" name="seatsAvailable" ></TextField>
-                        <Input type="hidden" name="date" flightDate={this.state.startDate ? this.state.flightDate : null} ></Input>
-                        <Button type="submit">Create Flight</Button>
+                        <LocalizationProvider dateAdapter={DateAdapter}>
+                            <DateTimePicker
+                                label="Arrival Time"
+                                value={arrivalTime}
+                                onChange={this.handleChangeArrival}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </LocalizationProvider>
+
+                        <TextField onChange={this.handleChange} value={departureTerminal} label="Departure Terminal" required type="input" className="formElements" id="dTerminal" placeholder="Ex: 1" name="departureTerminal" ></TextField>
+                        <TextField onChange={this.handleChange} value={arrivalTerminal} label="Arrival Termina;" required type="input" className="formElements" id="aTerminal" placeholder="Ex: 1" name="arrivalTerminal" ></TextField>
+                        <TextField onChange={this.handleChange} value={cabin} label="Cabin" required type="input" className="formElements" id="cabin" placeholder="Ex: Economy" name="cabin" ></TextField>
+                        <TextField onChange={this.handleChange} value={seatsAvailable} label="Available Seats" required type="input" className="formElements" id="seats" placeholder="Ex: 20" name="seatsAvailable" ></TextField>
+                        <Button type="submit">Submit</Button>
                     </FormControl>
                 </form>
             </Box>

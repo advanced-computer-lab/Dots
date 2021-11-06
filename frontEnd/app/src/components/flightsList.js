@@ -15,7 +15,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button'
 import EditForm from './EditForm';
 
@@ -43,7 +42,7 @@ class FlightsList extends Component {
         this.setState({ openEditDialog: true, selectedFlight: id, dialogFlight: id })
     }
     onDialogCloseEdit = () => {
-        this.setState({ openEditDialog: false, selectedFlight: "null" })
+        this.setState({ openEditDialog: false })
     }
 
 
@@ -77,6 +76,7 @@ class FlightsList extends Component {
     onSubmit = (data) => {
         axios.put(`http://localhost:8000/flights/${this.props.id}`, data)
             .then(() => {
+                console.log(data)
                 this.setState((prev) => ({
                     flights: prev.flights.map(
                         (row) => row.id === prev.dialogFlight ? data : row
@@ -103,7 +103,7 @@ class FlightsList extends Component {
     }
 
     filterFlight = () => {
-        const { permanentFlights, flightNum, from, to, depDate } = this.state;
+        const { permanentFlights, from, to, depDate } = this.state;
         // console.log( this,state.flights[0]._id.$oid.substring(start) )
         console.log('From', from)
         console.log('To', to)
@@ -189,10 +189,13 @@ class FlightsList extends Component {
     handleDeleteClick = (_id) => (event) => {
         event.stopPropagation();
     };
+    close = () => {
+        this.setState({ openEditDialog: false })
+    }
 
 
     render() {
-        const { flights, flightNum, from, to, depDate, openDialog } = this.state;
+        const { flights, depDate, openDialog } = this.state;
         flights.map((flight, i) => {
             return flight.id = flight._id;
         });
@@ -302,9 +305,10 @@ class FlightsList extends Component {
 
 
                 <Dialog
-                    open={this.openEditDialog}
+                    open={this.state.openEditDialog}
+                    onClose={this.onDialogCloseEdit}
                 >
-                    <EditForm id={this.state.dialogFlight} handleSubmit={this.onSubmit} />
+                    <EditForm id={this.state.dialogFlight} handleSubmit={this.onSubmit} close={this.close} />
                 </Dialog>
 
             </div>
