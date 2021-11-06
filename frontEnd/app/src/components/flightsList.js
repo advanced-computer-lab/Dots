@@ -41,18 +41,18 @@ class FlightsList extends Component {
 
 
     onDialogShow = (id) => {
-        this.setState({ openDialog: true, selectedFlight: id, dialogFlight: id })
-    }
+        this.setState({ openDialog: true,selectedFlight:id,dialogFlight:id })
+      }
+    
+      onDialogClose = () => {
+        this.setState({ openDialog: false,selectedFlight:"null" })
+      }
 
-    onDialogClose = () => {
-        this.setState({ openDialog: false, selectedFlight: "null" })
-    }
+      onDialogCloseDelete = () => {
 
-    onDialogCloseDelete = () => {
-
-        fetch("http://localhost:8000/flight/" + this.state.selectedFlight + "/delete", {
-            method: "POST",
-        }).then(res => {
+        fetch("http://localhost:8000/flight/"+this.state.selectedFlight+"/delete", {
+            method: "DELETE", 
+          }).then(res => {
             console.log("Request complete! response:", res);
         }).then(() => {
             this.setState((prev) => ({

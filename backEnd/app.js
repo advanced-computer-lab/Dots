@@ -86,7 +86,7 @@ app.post('/flights', (req, res) => {
   res.redirect('http://localhost:3000/');
 });
 
-app.post('/flight/:flightId/delete', async(req, res) => {
+app.delete('/flight/:flightId/delete', async(req, res) => {
   var id = mongoose.Types.ObjectId(req.params.flightId);
   await Flight.findByIdAndDelete(id);
 
@@ -103,27 +103,5 @@ app.listen(port, () => {
   console.log(`Listening to requests on http://localhost:${port}`);
 });
 
-const xlsx = require("xlsx");
-var wb = xlsx.readFile("new Data.xlsx", { cellDates: true });
-var ws = wb.Sheets['new Data'];
-
-var data = xlsx.utils.sheet_to_json(ws);
-const x = async function (data) {
-  for (let d of data) {
-    var f = new Flight();
-    f.flightNumber=d['Flight Number'];
-    f.from = d.From;
-    f.to = d.To;
-    f.departureTime=d['Departure Date'];
-    f.arrivalTime=d['Arrival Date'];
-    f.departureTerminal=d['Departure Terminal'];
-    f.arrivalTerminal=d['Arrival Terminal'];
-    f.cabin = d.Cabin;
-    f.seatsAvailable = d['Seats Available on Flight'];
-    await f.save();
-  }
-};
-
-x(data);
 
 
