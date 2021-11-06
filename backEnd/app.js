@@ -73,12 +73,12 @@ app.post("/login", (req, res, next) => {
 });
 
 app.post('/flights', (req, res) => {
-     
+
   console.log(req.body);
   Flight.create({
-    from : req.body.from, 
+    from : req.body.from,
     flightTerminal: req.body.terminal,
-    to: req.body.to, 
+    to: req.body.to,
     flightDate: req.body.date,
     cabin: req.body.cabin,
     seatsAvailable: req.body.availableseats
@@ -91,6 +91,14 @@ app.post('/flight/:flightId/delete', async(req, res) => {
   await Flight.findByIdAndDelete(id);
 
   res.send("Flight Deleted");
+});
+
+app.put('/flights/:flightId', async(req, res) => {
+  let doc = await Flight.findOneAndUpdate(req.params.flightId, req.body, {
+    new: true
+  });
+  console.log('done')
+  res.send(doc);
 });
 
 app.get('/flights',async (req,res)=>{
