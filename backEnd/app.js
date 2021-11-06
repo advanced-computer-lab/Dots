@@ -106,6 +106,11 @@ app.get('/flights',async (req,res)=>{
   res.send(flights);
 })
 
+app.get('/flights/:flightId',async (req,res)=>{
+  let flight = await Flight.findById(req.params.flightId).exec();
+  res.send(flight);
+})
+
 // Starting server
 app.listen(port, () => {
   console.log(`Listening to requests on http://localhost:${port}`);

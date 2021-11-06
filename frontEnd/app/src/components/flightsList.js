@@ -30,9 +30,9 @@ class FlightsList extends Component {
             from: '',
             to: '',
             depDate: new Date(),
-            openDialog:false,
-            selectedFlight:'',
-            dialogFlight:'',
+            openDialog: false,
+            selectedFlight: '',
+            dialogFlight: '',
             openEditDialog: false,
 
 
@@ -40,39 +40,53 @@ class FlightsList extends Component {
     }
 
     onDialogShowEdit = (id) => {
-        this.setState({ openEditDialog: true,selectedFlight:id,dialogFlight:id })
-      }
-      onDialogCloseEdit = () => {
-        this.setState({ openEditDialog: false,selectedFlight:"null" })
-      }
+        this.setState({ openEditDialog: true, selectedFlight: id, dialogFlight: id })
+    }
+    onDialogCloseEdit = () => {
+        this.setState({ openEditDialog: false, selectedFlight: "null" })
+    }
 
 
 
     onDialogShow = (id) => {
-        this.setState({ openDialog: true,selectedFlight:id,dialogFlight:id })
-      }
+        this.setState({ openDialog: true, selectedFlight: id, dialogFlight: id })
+    }
 
-      onDialogClose = () => {
-        this.setState({ openDialog: false,selectedFlight:"null" })
-      }
+    onDialogClose = () => {
+        this.setState({ openDialog: false, selectedFlight: "null" })
+    }
 
-      onDialogCloseDelete = () => {
+    onDialogCloseDelete = () => {
 
-        fetch("http://localhost:8000/flight/"+this.state.selectedFlight+"/delete", {
+        fetch("http://localhost:8000/flight/" + this.state.selectedFlight + "/delete", {
             method: "POST",
-          }).then(res => {
+        }).then(res => {
             console.log("Request complete! response:", res);
-          }).then(()=> {
-                this.setState((prev) => ({
+        }).then(() => {
+            this.setState((prev) => ({
                 flights: prev.flights.filter(
-                (row) => row.id !== prev.selectedFlight
-            ),
-                selectedFlight:null,
+                    (row) => row.id !== prev.selectedFlight
+                ),
+                selectedFlight: null,
                 openDialog: false
-          }));
+            }));
         })
 
-      }
+    }
+
+    onSubmit = (data) => {
+        axios.put(`http://localhost:8000/flights/${this.props.id}`, data)
+            .then(() => {
+                this.setState((prev) => ({
+                    flights: prev.flights.map(
+                        (row) => row.id === prev.dialogFlight ? data : row
+                    ),
+                    openEditDialog: false,
+                    dialogFlight: null
+                }))
+            })
+    }
+
 
 
     componentDidMount() {
@@ -80,7 +94,7 @@ class FlightsList extends Component {
         fetch('http://localhost:8000/flights')
             .then(response => response.json())
             .then(flights => { this.setState({ permanentFlights: flights, flights: flights }) })
-            .catch(err => {console.log(err)});
+            .catch(err => { console.log(err) });
 
 
         // this.setState({
@@ -178,7 +192,7 @@ class FlightsList extends Component {
 
 
     render() {
-        const { flights, flightNum, from, to, depDate ,openDialog} = this.state;
+        const { flights, flightNum, from, to, depDate, openDialog } = this.state;
         flights.map((flight, i) => {
             return flight.id = flight._id;
         });
@@ -193,9 +207,11 @@ class FlightsList extends Component {
             event.stopPropagation();
         };
         const columns = [
-            {   field: 'from',
+            {
+                field: 'from',
                 headerName: 'From',
-                width: 200 },
+                width: 200
+            },
             {
                 field: 'to',
                 headerName: 'To',
@@ -221,7 +237,7 @@ class FlightsList extends Component {
                 type: 'actions',
                 headerName: 'Actions',
                 width: 100,
-                getActions: ( {id} ) => {
+                getActions: ({ id }) => {
                     return [
                         <GridActionsCellItem
                             icon={<EditIcon />}
@@ -240,7 +256,7 @@ class FlightsList extends Component {
 
         return (
             <div>
-            <CreateFlight></CreateFlight>
+                <CreateFlight></CreateFlight>
                 <SearchModule flights={flights}
 
                     depDate={depDate}
@@ -268,27 +284,27 @@ class FlightsList extends Component {
                     aria-describedby="alert-dialog-description"
 
                 >
-                <DialogTitle id="alert-dialog-title">{"Delete a Flight ?"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Pressing Yes will delete the Flight with ID {this.state.dialogFlight}.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={this.onDialogClose} color="primary">
-                    No
-                    </Button>
-                    <Button onClick={this.onDialogCloseDelete} color="primary" autoFocus>
-                    Yes
-                    </Button>
-                </DialogActions>
+                    <DialogTitle id="alert-dialog-title">{"Delete a Flight ?"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Pressing Yes will delete the Flight with ID {this.state.dialogFlight}.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.onDialogClose} color="primary">
+                            No
+                        </Button>
+                        <Button onClick={this.onDialogCloseDelete} color="primary" autoFocus>
+                            Yes
+                        </Button>
+                    </DialogActions>
                 </Dialog>
 
 
                 <Dialog
-                open={this.openEditDialog}
-                onClose={this.onDialogCloseEdit}>
-                    <EditForm id={this.state.dialogFlight}/>
+                    open={this.openEditDialog}
+                >
+                    <EditForm id={this.state.dialogFlight} handleSubmit={this.onSubmit} />
                 </Dialog>
 
             </div>
