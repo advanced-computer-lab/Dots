@@ -94,10 +94,11 @@ app.post('/flight/:flightId/delete', async(req, res) => {
 });
 
 app.put('/flights/:flightId', async(req, res) => {
-  let doc = await Flight.findOneAndUpdate(req.params.flightId, req.body, {
+  const dataWithoutId = req.body
+  delete dataWithoutId._id
+  let doc = await Flight.findOneAndUpdate(req.params.flightId, dataWithoutId, {
     new: true
   });
-  console.log('done')
   res.send(doc);
 });
 
