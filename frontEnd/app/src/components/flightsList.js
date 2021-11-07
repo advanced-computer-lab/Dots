@@ -82,6 +82,9 @@ class FlightsList extends Component {
                     flights: prev.flights.map(
                         (row) => row.id === prev.dialogFlight ? data : row
                     ),
+                    permanentFlights: prev.permanentFlights.map(
+                        (row) => row.id === prev.dialogFlight ? data : row
+                    ),
                     openEditDialog: false,
                     dialogFlight: null
                 }))
