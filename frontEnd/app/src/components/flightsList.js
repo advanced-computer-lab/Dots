@@ -21,7 +21,7 @@ class FlightsList extends Component {
             to: '',
             depDate: new Date()
         }
-    }
+    } 
 
 
     componentDidMount() {
