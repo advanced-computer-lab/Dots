@@ -6,7 +6,6 @@ import CreateFlights from '../createFlight'
 
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
-import Box from '@mui/material/Box';
 // import AutoComplete from "../autoComplete/AutoComplete";
 import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button'
@@ -17,11 +16,8 @@ import DatePicker from '@mui/lab/DatePicker';
 import FilterAltRoundedIcon from '@mui/icons-material/FilterAltRounded';
 import Stack from '@mui/material/Stack';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import ClearIcon from '@mui/icons-material/Clear';
 import TimePicker from '@mui/lab/TimePicker';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -64,24 +60,23 @@ class SearchModule extends Component {
   }
 
 
-
   onFilterShow = () => {
     this.setState({ filterOpen: true })
-  }
+}
+  
 
-  onFilterClose = () => {
-    this.setState({ filterOpen: false })
-  }
+  // onFilterClose = () => {
+  //   this.setState({ filterOpen: false })
+  // }
 
-  closeFilter = () => {
-    this.setState({ to: '', from: '', depDate: new Date(), filterOpen: false })
-    console.log(this.state.flights)
+  // closeFilter = () => {
+  //   this.setState({ to: '', from: '', depDate: new Date(), filterOpen: false })
+  //   console.log(this.state.flights)
 
-  }
+  // }
   render() {
-    const { filterOpen } = this.state
     const { depDate, arrDate, arrTime, depTime, onflightNumChange, onFromChange, onToChange, onDepChange, filterFlight, onDepTimeChange, onArrChange, onArrTimeChange,
-      onArrTerminalChange, onDepTerminalChange, onCabinChange, onSeatsChange } = this.props
+      onArrTerminalChange, onDepTerminalChange, onCabinChange, onSeatsChange, onFilterClose } = this.props
     return <div className="search">
       <div className="search1" >
         <Stack direction="row" spacing={50}>
@@ -121,8 +116,8 @@ class SearchModule extends Component {
         <Dialog
           fullWidth={true}
           maxWidth={false}
-          open={filterOpen}
-          onClose={this.onFilterClose}
+          open={this.state.filterOpen}
+          onClose={ () => { onFilterClose(); this.state.filterOpen = false } }
         >
           <DialogTitle>Filter By</DialogTitle>
           <DialogContent>
@@ -248,7 +243,7 @@ class SearchModule extends Component {
 
                 <Button
                   variant="outlined"
-                  onClick={this.closeFilter}
+                  onClick={onFilterClose}
                 >Close</Button>
 
                 <Button
@@ -306,12 +301,12 @@ const airports = ["LAX",
 ]
 
 
-const flightData = [
-  { "_id": { "$oid": "617ee2fed20e685a3485cf79" }, "seatsAvailable": { "$numberInt": "20" }, "from": "LAX", "to": "JFK", "flightDate": { "$date": { "$numberLong": "1641938391000" } }, "cabin": "Economy", "__v": { "$numberInt": "0" } },
-  { "_id": { "$oid": "617ee300d20e685a3485cf7c" }, "seatsAvailable": { "$numberInt": "10" }, "from": "LAX", "to": "JFK", "flightDate": { "$date": { "$numberLong": "1641938391000" } }, "cabin": "Business", "__v": { "$numberInt": "0" } },
-  { "_id": { "$oid": "617ee301d20e685a3485cf94" }, "seatsAvailable": { "$numberInt": "22" }, "from": "CAI", "to": "DXB", "flightDate": { "$date": { "$numberLong": "1649541591000" } }, "cabin": "Business", "__v": { "$numberInt": "0" } }
+// const flightData = [
+//   { "_id": { "$oid": "617ee2fed20e685a3485cf79" }, "seatsAvailable": { "$numberInt": "20" }, "from": "LAX", "to": "JFK", "flightDate": { "$date": { "$numberLong": "1641938391000" } }, "cabin": "Economy", "__v": { "$numberInt": "0" } },
+//   { "_id": { "$oid": "617ee300d20e685a3485cf7c" }, "seatsAvailable": { "$numberInt": "10" }, "from": "LAX", "to": "JFK", "flightDate": { "$date": { "$numberLong": "1641938391000" } }, "cabin": "Business", "__v": { "$numberInt": "0" } },
+//   { "_id": { "$oid": "617ee301d20e685a3485cf94" }, "seatsAvailable": { "$numberInt": "22" }, "from": "CAI", "to": "DXB", "flightDate": { "$date": { "$numberLong": "1649541591000" } }, "cabin": "Business", "__v": { "$numberInt": "0" } }
 
-]
+// ]
 
 
 

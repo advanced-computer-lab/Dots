@@ -15,6 +15,9 @@ const Admin = require('./models/admins')
 
 const MongoURI = process.env.MONGO_URI;
 
+const short = require('short-uuid');
+const translator = short();
+
 
 var cors = require('cors')
 
@@ -72,19 +75,70 @@ app.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
-app.post('/flights', (req, res) => {
-     
+async function rand () {
+  const rand =  translator.generate().substring(0, 5);
+  return rand;
+}
+app.post('/flights', async (req, res) => {
+  const uuid = await rand();
   console.log(req.body);
-  Flight.create({
-    from : req.body.from, 
+  if (req.body.economy == "on") {
+    Flight.create({
+      flightNumber: uuid,
+      from : req.body.from,
+      departureTerminal: req.body.departure,
+      arrivalTerminal: req.body.arrival,
+      to: req.body.to,
+      departureTime: req.body.datedepart,
+      arrivalTime: req.body.datearrive,
+      cabin: "Economy",
+      seatsAvailable: req.body.economyseats
+    });
+  }
+
+
+     if (req.body.business == "on") {
+      Flight.create({
+        flightNumber: uuid,
+        from : req.body.from,
+        departureTerminal: req.body.departure,
+        arrivalTerminal: req.body.arrival,
+        to: req.body.to,
+        departureTime: req.body.datedepart,
+        arrivalTime: req.body.datearrive,
+        cabin: "Business",
+        seatsAvailable: req.body.businessseats
+      });
+    }
+
+
+     if (req.body.first == "on") {
+        Flight.create({
+          flightNumber: uuid,
+          from : req.body.from,
+          departureTerminal: req.body.departure,
+          arrivalTerminal: req.body.arrival,
+          to: req.body.to,
+          departureTime: req.body.datedepart,
+          arrivalTime: req.body.datearrive,
+          cabin: "First Class",
+          seatsAvailable: req.body.firstseats
+        });
+      }
+
+      if (req.body.first != "on" && req.body.business != "on" && req.body.economy != "on") {res.redirect('http://localhost:3000/');}
+
+ /* Flight.create({
+    from : req.body.from,
     flightTerminal: req.body.terminal,
-    to: req.body.to, 
+    to: req.body.to,
     flightDate: req.body.date,
     cabin: req.body.cabin,
     seatsAvailable: req.body.availableseats
-  });
+  });*/
   res.redirect('http://localhost:3000/');
 });
+
 
 app.delete('/flight/:flightId/delete', async(req, res) => {
   var id = mongoose.Types.ObjectId(req.params.flightId);
@@ -93,15 +147,30 @@ app.delete('/flight/:flightId/delete', async(req, res) => {
   res.send("Flight Deleted");
 });
 
+app.put('/flights/:flightId', async(req, res) => {
+  const dataWithoutId = req.body
+  delete dataWithoutId._id
+  let doc = await Flight.findOneAndUpdate(req.params.flightId, dataWithoutId, {
+    new: true
+  });
+  res.send(doc);
+});
+
 app.get('/flights',async (req,res)=>{
   const flights = await Flight.find({});
   res.send(flights);
+})
+
+app.get('/flights/:flightId',async (req,res)=>{
+  let flight = await Flight.findById(req.params.flightId).exec();
+  res.send(flight);
 })
 
 // Starting server
 app.listen(port, () => {
   console.log(`Listening to requests on http://localhost:${port}`);
 });
+
 
 
 

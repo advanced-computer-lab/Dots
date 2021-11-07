@@ -8,14 +8,18 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import ClearIcon from '@mui/icons-material/Clear';
-import Button from '@mui/material/Button';
+
 import { GridActionsCellItem } from '@mui/x-data-grid';
-import { GridCellItem } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { GridRowItem } from '@mui/x-data-grid';
+import Button from '@mui/material/Button'
+import EditForm from './EditForm';
+
+import DialogTitle from '@mui/material/DialogTitle';
+
+
+
+
 
 class FlightsList extends Component {
     constructor() {
@@ -35,9 +39,100 @@ class FlightsList extends Component {
             pageSize: 10,
             cabin: '',
             seats: '',
-            // airports: []
+            openDialog: false,
+            openDeleteDialog: false,
+            selectedFlight: '',
+            dialogFlight: '',
+            openEditDialog: false,
+            filterOpen: false,
+
+
+
         }
     }
+
+
+    onFilterClose = () => {
+        this.setState({
+            filterOpen: false, from: '',
+            to: '',
+            depDate: null,
+            arrDate: null,
+            depTime: null,
+            arrTime: null,
+            arrTerminal: '',
+            depTerminal: '',
+            cabin: '',
+            seats: ''
+        })
+
+    }
+
+    onFilterShow = () => {
+        this.setState({ filterOpen: true })
+    }
+
+
+    onDialogShowEdit = (id) => {
+        this.setState({ openEditDialog: true, selectedFlight: id, dialogFlight: id })
+    }
+    onDialogCloseEdit = () => {
+        this.setState({ openEditDialog: false })
+    }
+
+
+
+    onDialogShow = (id) => {
+        this.setState({ openDialog: true })
+    }
+    onDialogShowDelete = (id) => {
+        this.setState({ openDeleteDialog: true, selectedFlight: id, dialogFlight: id })
+    }
+
+    onDialogClose = () => {
+        this.setState({ openDialog: false })
+    }
+
+    onCancelDelete = () => {
+        this.setState({ openDeleteDialog: false, selectedFlight: "null" })
+    }
+
+    onDialogCloseDelete = () => {
+
+        fetch("http://localhost:8000/flight/" + this.state.selectedFlight + "/delete", {
+            method: "DELETE",
+        }).then(res => {
+            console.log("Request complete! response:", res);
+        }).then(() => {
+            this.setState((prev) => ({
+                flights: prev.flights.filter(
+                    (row) => row.id !== prev.selectedFlight
+                ),
+                permanentFlights: prev.permanentFlights.filter(
+                    (row) => row.id !== prev.selectedFlight
+                ),
+                selectedFlight: null,
+                openDeleteDialog: false
+            }));
+        })
+
+    }
+
+    onSubmit = (data) => {
+        axios.put(`http://localhost:8000/flights/${this.props.id}`, data)
+            .then(() => {
+                this.setState((prev) => ({
+                    flights: prev.flights.map(
+                        (row) => row.id === prev.dialogFlight ? data : row
+                    ),
+                    openEditDialog: false,
+                    dialogFlight: null
+                }))
+            })
+    }
+
+
+
 
 
     componentDidMount() {
@@ -65,6 +160,18 @@ class FlightsList extends Component {
     filterFlight = () => {
         const { permanentFlights, from, to, depDate, arrDate, depTime, arrTime, depTerminal,
             arrTerminal, cabin, seats } = this.state;
+
+        if (!depDate && from.length === 0 && to.length === 0 && depTime === null && arrTime === null && depTerminal.length === 0 &&
+            arrTerminal.length === 0 && cabin.length === 0 && seats.length === 0) {
+            this.setState({ flights: permanentFlights })
+            console.log('Break')
+            return;
+        }
+
+
+
+
+
         console.log('Dep Date', depDate);
         const intersectionFLights = (arr1, arr2) => {
             return arr1.filter(x => arr2.includes(x));
@@ -72,10 +179,6 @@ class FlightsList extends Component {
         console.log('From', from)
         console.log('To', to)
 
-        // if (!depDate && from.length === 0 && to.length === 0) {
-        //     this.setState({ flights: permanentFlights })
-        //     return;
-        // }
 
         let filterByFrom = permanentFlights.filter(flight => {
             return from === flight.from || from.length === 0
@@ -227,7 +330,7 @@ class FlightsList extends Component {
         let filteredFlights = this.state.permanentFlights.filter(flight => {
             let id = flight.flightNumber
 
-            return (id.toLowerCase()).startsWith( (event.target.value.toLowerCase()) )
+            return (id.toLowerCase()).startsWith((event.target.value.toLowerCase()))
         })
 
         console.log(filteredFlights)
@@ -298,20 +401,31 @@ class FlightsList extends Component {
 
     setPageSize = (newVal) => {
         this.setState({ pageSize: newVal })
+        // handleDeleteClick = (_id) => (event) => {
+        //     event.stopPropagation();
+        // };
     }
+
+    close = () => {
+        this.setState({ openEditDialog: false })
+    }
+
 
 
     render() {
         const { flights, flightNum, from, to, depDate, pageSize, airports } = this.state;
-        flights.map((flight, i) => {
-            return flight.id = i;
+        console.log(this.state.onDialogShowDelete)
+
+        flights.map((flight) => {
+            return flight.id = flight._id;
         });
         const handleEditClick = (id) => (event) => {
+            this.onDialogShowEdit(id);
             event.stopPropagation();
         };
 
         const handleDeleteClick = (id) => (event) => {
-            this.onDialogShow(id);
+            this.onDialogShowDelete(id);
             event.stopPropagation();
         };
         const columns = [
@@ -401,6 +515,10 @@ class FlightsList extends Component {
                     onDepTerminalChange={this.onDepTerminalChange}
                     onCabinChange={this.onCabinChange}
                     onSeatsChange={this.onSeatsChange}
+                    onFilterClose={this.onFilterClose}
+                    filterOpen={this.state.filterOpen}
+                    onFilterShow={this.onFilterShow}
+
                 > </SearchModule>
 
                 <div style={{ height: 650, width: '70%', position: 'fixed', left: 190 }}>
@@ -414,9 +532,45 @@ class FlightsList extends Component {
                         disableSelectionOnClick
                     />
                 </div>
+
+                <Dialog
+                    open={this.state.openDeleteDialog}
+                    onClose={this.onCancelDelete}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+
+                >
+                    <DialogTitle id="alert-dialog-title">{"Delete a Flight ?"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Pressing Yes will delete the Flight with ID {this.state.dialogFlight}.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.onCancelDelete} color="primary">
+                            No
+                        </Button>
+                        <Button onClick={this.onDialogCloseDelete} color="primary" autoFocus>
+                            Yes
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
+
+                <Dialog
+                    open={this.state.openEditDialog}
+                    onClose={this.onDialogCloseEdit}
+                >
+                    <EditForm id={this.state.dialogFlight} handleSubmit={this.onSubmit} close={this.close} />
+                </Dialog>
+
+
+
+
             </div>
         )
     }
+
 }
 
 
