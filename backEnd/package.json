@@ -18,7 +18,9 @@
     "nodemon": "^2.0.14",
     "passport": "^0.5.0",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^6.1.0"
+    "passport-local-mongoose": "^6.1.0",
+    "short-uuid": "^4.2.0",
+    "xlsx": "^0.17.3"
   },
   "repository": {
     "type": "git",
