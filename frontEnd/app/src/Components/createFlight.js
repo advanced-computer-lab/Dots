@@ -1,5 +1,4 @@
-import React, {Component, useState} from 'react';
-import {Route, BrowserRouter, Routes} from 'react-router-dom';
+import React, {useState} from 'react';
 import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
@@ -10,22 +9,17 @@ import Box from '@mui/material/Box';
 import DateAdapter from '@mui/lab/AdapterLuxon';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
-import stringifyObject from 'stringify-object';
 
 
 
 function SimpleDialog(props) {
     const { onClose, selectedValue, open } = props;
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate] = useState(new Date());
     const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'));
 
-  
+
     const handleClose = () => {
       onClose(selectedValue);
-    };
-  
-    const handleListItemClick = (value) => {
-      onClose(value);
     };
 
     const handleChange = (newValue) => {
@@ -65,7 +59,6 @@ function SimpleDialog(props) {
 
 
 const CreateFlight = () => {
-        const [startDate, setStartDate] = useState(new Date());
         const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -74,7 +67,7 @@ const CreateFlight = () => {
 
   const handleClose = (value) => {
     setOpen(false);
-    
+
   };
         return (
             <div>
@@ -86,7 +79,7 @@ const CreateFlight = () => {
         onClose={handleClose}
       />
       </div>
-      
+
             /*<form action = 'http://localhost:3000/flights' method = "POST">
                 <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                 <label htmlFor = "from"> from </label><br/>
@@ -101,11 +94,11 @@ const CreateFlight = () => {
                 <input type = "Submit"></input>
             </form>*/
         )}
-    
-    
 
 
 
 
 
-export default CreateFlight;  
+
+
+export default CreateFlight;
