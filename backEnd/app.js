@@ -87,7 +87,7 @@ app.post('/flights', async (req, res) => {
   }
 
   console.log(req.body);
-  if (req.body.economy == "on") {
+  
     try {
       Flight.create({
         flightNumber: uuid,
@@ -103,10 +103,10 @@ app.post('/flights', async (req, res) => {
     } catch (error) {
       console.log(error);
     }
-  }
+  
 
 
-  if (req.body.business == "on") {
+  
     try {
       Flight.create({
         flightNumber: uuid,
@@ -123,10 +123,10 @@ app.post('/flights', async (req, res) => {
       console.log(error);
     }
 
-  }
+  
 
 
-  if (req.body.first == "on") {
+ 
     try {
       Flight.create({
         flightNumber: uuid,
@@ -143,9 +143,9 @@ app.post('/flights', async (req, res) => {
       console.log(error);
     }
 
-  }
+  
 
-  if (req.body.first != "on" && req.body.business != "on" && req.body.economy != "on") { res.redirect('http://localhost:3000/'); }
+  
 
   /* Flight.create({
      from : req.body.from,
