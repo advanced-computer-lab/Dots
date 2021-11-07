@@ -78,7 +78,7 @@ const CreateFlight = () => {
   };
         return (
             <div>
-            <Button variant="outlined" onClick={handleClickOpen}>
+            <Button variant="contained" onClick={handleClickOpen}>
         Create Flight
       </Button>
       <SimpleDialog id= "dialog"

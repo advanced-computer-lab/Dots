@@ -2,6 +2,8 @@ import React from "react";
 import TextField from '@mui/material/TextField';
 import { Component } from 'react';
 import './SearchModule.css';
+import CreateFlights from '../createFlight'
+
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import Box from '@mui/material/Box';
@@ -20,9 +22,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import ClearIcon from '@mui/icons-material/Clear';
-
+import TimePicker from '@mui/lab/TimePicker';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 class SearchModule extends Component {
+
+
 
 
   constructor(props) {
@@ -33,10 +41,28 @@ class SearchModule extends Component {
       // to: '',
       // depDate: new Date(),
       // flights: flightData,
-      filterOpen: false
+      filterOpen: false,
+      airports: []
     }
 
   }
+
+  componentDidMount() {
+    //const {flights} = await axios.get('http://localhost:8000/flights');
+    fetch('http://localhost:8000/flights')
+      .then(response => response.json())
+      .then(flights => {
+
+        let airportSet = new Set();
+        flights.map((flight) => {
+          airportSet.add(flight.from)
+          airportSet.add(flight.to)
+        })
+        this.setState({ airports: Array.from(airportSet) })
+
+      });
+  }
+
 
 
   onFilterShow = () => {
@@ -53,8 +79,9 @@ class SearchModule extends Component {
 
   }
   render() {
-     const { filterOpen } = this.state
-    const {  depDate , onflightNumChange , onFromChange , onToChange , onDepChange ,  filterFlight } = this.props
+    const { filterOpen } = this.state
+    const { depDate, arrDate, arrTime, depTime, onflightNumChange, onFromChange, onToChange, onDepChange, filterFlight, onDepTimeChange, onArrChange, onArrTimeChange,
+      onArrTerminalChange, onDepTerminalChange, onCabinChange, onSeatsChange } = this.props
     return <div className="search">
       <div className="search1" >
         <Stack direction="row" spacing={50}>
@@ -72,12 +99,22 @@ class SearchModule extends Component {
             }}
           /></div>
 
-          <Button variant="outlined"
-            startIcon={<FilterAltRoundedIcon />}
-            onClick={this.onFilterShow}
-          >
-            Filter
-          </Button>
+          <Stack direction="row" spacing={5}>
+
+            <Button variant="outlined"
+              startIcon={<FilterAltRoundedIcon />}
+              onClick={this.onFilterShow}
+            >
+              Filter
+            </Button>
+
+            <CreateFlights />
+
+
+          </Stack>
+
+
+
         </Stack>
 
 
@@ -96,7 +133,7 @@ class SearchModule extends Component {
               <div>  <Autocomplete
                 disablePortal
                 id="combo-box-demo"
-                options={airports}
+                options={this.state.airports}
                 sx={{ width: 400 }}
                 onInputChange={onFromChange}
                 renderInput={(params) =>
@@ -107,7 +144,7 @@ class SearchModule extends Component {
               <div>   <Autocomplete
                 disablePortal
                 id="combo-box-demo"
-                options={airports}
+                options={this.state.airports}
                 sx={{ width: 400 }}
                 renderInput={(params) => <TextField {...params} label="To" />}
                 onChange={onToChange}
@@ -118,13 +155,91 @@ class SearchModule extends Component {
                 <DatePicker
                   label="Choose Departure Date"
                   value={depDate}
-                  onChange= {onDepChange}
-                  renderInput={(params) => <TextField {...params} />}
+                  onChange={onDepChange}
+                  renderInput={(params) => <TextField error={false}
+                    {...params} />}
                   cancelText='Cancel'
                   clearable={true}
                   allowSameDateSelection={true}
+                  error={false}
                 />
               </LocalizationProvider>
+
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label="Choose Arrival Date"
+                  value={arrDate}
+                  onChange={onArrChange}
+                  renderInput={(params) => <TextField error={false}
+                    {...params} />}
+                  cancelText='Cancel'
+                  clearable={true}
+                  allowSameDateSelection={true}
+                  error={false}
+
+                />
+              </LocalizationProvider>
+
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <TimePicker
+                  label="Choose Departure Time"
+                  value={depTime}
+                  onChange={onDepTimeChange}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <TimePicker
+                  label="Choose Arrival Time"
+                  value={arrTime}
+                  onChange={onArrTimeChange}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+
+
+              <div>  <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={['1', '2', '3']}
+                sx={{ width: 400 }}
+                onInputChange={onDepTerminalChange}
+                renderInput={(params) =>
+                  <TextField {...params} label="Departure Terminal" onChange={onDepTerminalChange} />}
+
+              /></div>
+
+              <div>  <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={['1', '2', '3']}
+                sx={{ width: 400 }}
+                onInputChange={onArrTerminalChange}
+                renderInput={(params) =>
+                  <TextField {...params} label="Arrival Terminal" onChange={onArrTerminalChange} />}
+
+              /></div>
+
+              <div>  <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={['Economy', 'Business', 'First']}
+                sx={{ width: 400 }}
+                onInputChange={onCabinChange}
+                renderInput={(params) =>
+                  <TextField {...params} label="Cabin" onChange={onCabinChange} />}
+
+              /></div>
+
+              <div>  <TextField id="outlined-basic"
+                label="Filter By Minimum Available Seats"
+                variant="outlined"
+                onChange={onSeatsChange}
+                id="seats"
+              />
+              </div>
+
 
               <Stack
                 direction="row"
@@ -178,7 +293,18 @@ class SearchModule extends Component {
   }
 }
 
-const airports = [{ label: 'LAX' }, { label: 'CAI' }, { label: 'JFK' }, { label: 'DXB' }]
+const airports = ["LAX",
+  "JFK",
+  "LHR",
+  "CAI",
+  "DXB",
+  "CDG",
+  "MUC",
+  "RUH",
+  "YYZ",
+  "FRA"
+]
+
 
 const flightData = [
   { "_id": { "$oid": "617ee2fed20e685a3485cf79" }, "seatsAvailable": { "$numberInt": "20" }, "from": "LAX", "to": "JFK", "flightDate": { "$date": { "$numberLong": "1641938391000" } }, "cabin": "Economy", "__v": { "$numberInt": "0" } },

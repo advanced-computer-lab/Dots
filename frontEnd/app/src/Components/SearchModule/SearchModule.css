@@ -40,11 +40,21 @@ Button {
   height: fit-content;
 }
 
-.MuiOutlinedInput-root.MuiInputBase-root.MuiInputBase-colorPrimary.MuiInputBase-formControl.MuiInputBase-adornedEnd.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
+.MuiOutlinedInput-root.MuiInputBase-root.MuiInputBase-colorPrimary.MuiInputBase-formControl.MuiInputBase-adornedEnd.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root , .MuiSelect-root {
 width: 53%;
 }
 
 #filter{
 display: flex;
 justify-content: center;
+}
+
+.MuiFormControl-root.MuiTextField-root.flightNumber.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+  position: relative;
+  right: 5rem;
+}
+
+#seats{
+ width: fit-content;
+  width: 400px;
 }
