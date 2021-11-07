@@ -11,13 +11,15 @@ import DateAdapter from '@mui/lab/AdapterLuxon';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import stringifyObject from 'stringify-object';
-
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import FormGroup from '@mui/material/FormGroup';
 
 
 function SimpleDialog(props) {
     const { onClose, selectedValue, open } = props;
-    const [startDate, setStartDate] = useState(new Date());
-    const [value, setValue] = React.useState(new Date('2014-08-18T21:11:54'));
+    const [value1, setValue1] = React.useState(new Date('2014-08-18T21:11:54'));
+    const [value2, setValue2] = React.useState(new Date('2014-08-18T21:11:54'));
 
   
     const handleClose = () => {
@@ -28,8 +30,11 @@ function SimpleDialog(props) {
       onClose(value);
     };
 
-    const handleChange = (newValue) => {
-      setValue(newValue);
+    const handleChange1 = (newValue) => {
+      setValue1(newValue);
+    };
+    const handleChange2 = (newValue) => {
+      setValue2(newValue);
     };
     return (
         <Dialog onClose={handleClose} open={open}>
@@ -41,16 +46,31 @@ function SimpleDialog(props) {
                 <TextField label = "To" required type="input" className = "to" id = "to" placeholder = "To" name = "to" ></TextField>
                 <LocalizationProvider dateAdapter={DateAdapter}>
                      <DateTimePicker
-                         label="Flight Date and Time"
-                         value={value}
-                         onChange={handleChange}
+                         label="Arrival Date and Time"
+                         value={value1}
+                         onChange={handleChange1}
                          renderInput={(params) => <TextField {...params} />}
                     />
                 </LocalizationProvider>
-                <TextField label = "Flight Terminal" required type="input" className = "formElements" id = "terminal" placeholder = "Cairo" name = "terminal" ></TextField>
-                <TextField label = "Cabin" required type="input" className = "formElements" id = "cabin" placeholder = "Cabin" name = "cabin" ></TextField>
-                <TextField label = "Available Seats" required type="input" className = "formElements" id = "seats" placeholder = "Seats" name = "availableSeats" ></TextField>
-                <Input type = "hidden" name = "date" value = {startDate ? value: null} ></Input>
+                <LocalizationProvider dateAdapter={DateAdapter}>
+                     <DateTimePicker
+                         label="Departure Date and Time"
+                         value={value2}
+                         onChange={handleChange2}
+                         renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
+                <TextField label = "Arrival Terminal" required type="input" className = "formElements" id = "terminal" placeholder = "Cairo" name = "arrival" ></TextField>
+                <TextField label = "Departure Terminal" required type="input" className = "formElements" id = "terminal" placeholder = "Cairo" name = "departure" ></TextField>
+                <Input type = "hidden" name = "datearrive" value = {value1 ? new Date(value1): null} ></Input>
+                <Input type = "hidden" name = "datedepart" value = {value2 ? new Date(value2): null} ></Input>
+                <FormControlLabel type = "input" name = "economy" control={<Checkbox />} label="Economy" />
+                <TextField label = "Economy Available Seats"  type="input" className = "formElements" id = "seats" placeholder = "Seats" name = "economyseats" ></TextField>
+                <FormControlLabel type = "input" name = "business" control={<Checkbox />} label="Business" />
+                <TextField label = "Business Available Seats" type="input" className = "formElements" id = "seats" placeholder = "Seats" name = "businessseats" ></TextField>
+                <FormControlLabel type = "input" name = "first" control={<Checkbox />} label="First Class" />
+                <TextField label = "First Class Available Seats" type="input" className = "formElements" id = "seats" placeholder = "Seats" name = "firstseats" ></TextField>
+                
                 <Button type="submit">Create Flight</Button>
             </FormControl>
             </form>
