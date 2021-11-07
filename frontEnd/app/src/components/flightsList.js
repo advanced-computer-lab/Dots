@@ -15,8 +15,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button'
+import EditForm from './EditForm';
 
 
 class FlightsList extends Component {
@@ -29,21 +29,30 @@ class FlightsList extends Component {
             from: '',
             to: '',
             depDate: new Date(),
+
             openDialog: false,
             selectedFlight: '',
             dialogFlight: '',
+            openEditDialog: false,
 
 
         }
-    } 
+    }
 
+
+    onDialogShowEdit = (id) => {
+        this.setState({ openEditDialog: true, selectedFlight: id, dialogFlight: id })
+    }
+    onDialogCloseEdit = () => {
+        this.setState({ openEditDialog: false })
+    }
 
 
 
     onDialogShow = (id) => {
         this.setState({ openDialog: true,selectedFlight:id,dialogFlight:id })
       }
-    
+
       onDialogClose = () => {
         this.setState({ openDialog: false,selectedFlight:"null" })
       }
@@ -51,7 +60,7 @@ class FlightsList extends Component {
       onDialogCloseDelete = () => {
 
         fetch("http://localhost:8000/flight/"+this.state.selectedFlight+"/delete", {
-            method: "DELETE", 
+            method: "DELETE",
           }).then(res => {
             console.log("Request complete! response:", res);
         }).then(() => {
@@ -64,9 +73,23 @@ class FlightsList extends Component {
             }));
         })
 
-
-
     }
+
+    onSubmit = (data) => {
+        axios.put(`http://localhost:8000/flights/${this.props.id}`, data)
+            .then(() => {
+                this.setState((prev) => ({
+                    flights: prev.flights.map(
+                        (row) => row.id === prev.dialogFlight ? data : row
+                    ),
+                    openEditDialog: false,
+                    dialogFlight: null
+                }))
+            })
+    }
+
+
+
 
 
     componentDidMount() {
@@ -83,7 +106,7 @@ class FlightsList extends Component {
     }
 
     filterFlight = () => {
-        const { permanentFlights, flightNum, from, to, depDate } = this.state;
+        const { permanentFlights, from, to, depDate } = this.state;
         // console.log( this,state.flights[0]._id.$oid.substring(start) )
         console.log('From', from)
         console.log('To', to)
@@ -135,7 +158,7 @@ class FlightsList extends Component {
     onflightNumChange = (event) => {
         this.setState({ flightNum: event.target.value })
         let filteredFlights = this.state.flights.filter(flight => {
-            let id = flight._id.$oid // simulate that we have an ID till we decide what is a flight ID 
+            let id = flight._id.$oid // simulate that we have an ID till we decide what is a flight ID
             id = id.substring(id.length - 2,)
             return id.startsWith(event.target.value)
         })
@@ -169,8 +192,9 @@ class FlightsList extends Component {
     handleDeleteClick = (_id) => (event) => {
         event.stopPropagation();
     };
-
-
+    close = () => {
+        this.setState({ openEditDialog: false })
+    }
 
 
     render() {
@@ -180,6 +204,7 @@ class FlightsList extends Component {
         });
 
         const handleEditClick = (id) => (event) => {
+            this.onDialogShowEdit(id);
             event.stopPropagation();
         };
 
@@ -302,6 +327,12 @@ class FlightsList extends Component {
                 </Dialog>
 
 
+                <Dialog
+                    open={this.state.openEditDialog}
+                    onClose={this.onDialogCloseEdit}
+                >
+                    <EditForm id={this.state.dialogFlight} handleSubmit={this.onSubmit} close={this.close} />
+                </Dialog>
 
 
 

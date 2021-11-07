@@ -85,9 +85,9 @@ app.post('/flights', async (req, res) => {
   if (req.body.economy == "on") {
     Flight.create({
       flightNumber: uuid,
-      from : req.body.from, 
+      from : req.body.from,
       departureTerminal: req.body.departure,
-      arrivalTerminal: req.body.arrival, 
+      arrivalTerminal: req.body.arrival,
       to: req.body.to,
       departureTime: req.body.datedepart,
       arrivalTime: req.body.datearrive,
@@ -95,14 +95,14 @@ app.post('/flights', async (req, res) => {
       seatsAvailable: req.body.economyseats
     });
   }
- 
+
 
      if (req.body.business == "on") {
       Flight.create({
         flightNumber: uuid,
-        from : req.body.from, 
+        from : req.body.from,
         departureTerminal: req.body.departure,
-        arrivalTerminal: req.body.arrival, 
+        arrivalTerminal: req.body.arrival,
         to: req.body.to,
         departureTime: req.body.datedepart,
         arrivalTime: req.body.datearrive,
@@ -110,14 +110,14 @@ app.post('/flights', async (req, res) => {
         seatsAvailable: req.body.businessseats
       });
     }
-    
+
 
      if (req.body.first == "on") {
         Flight.create({
           flightNumber: uuid,
-          from : req.body.from, 
+          from : req.body.from,
           departureTerminal: req.body.departure,
-          arrivalTerminal: req.body.arrival, 
+          arrivalTerminal: req.body.arrival,
           to: req.body.to,
           departureTime: req.body.datedepart,
           arrivalTime: req.body.datearrive,
@@ -127,11 +127,11 @@ app.post('/flights', async (req, res) => {
       }
 
       if (req.body.first != "on" && req.body.business != "on" && req.body.economy != "on") {res.redirect('http://localhost:3000/');}
-  
+
  /* Flight.create({
-    from : req.body.from, 
+    from : req.body.from,
     flightTerminal: req.body.terminal,
-    to: req.body.to, 
+    to: req.body.to,
     flightDate: req.body.date,
     cabin: req.body.cabin,
     seatsAvailable: req.body.availableseats
@@ -147,9 +147,23 @@ app.delete('/flight/:flightId/delete', async(req, res) => {
   res.send("Flight Deleted");
 });
 
+app.put('/flights/:flightId', async(req, res) => {
+  const dataWithoutId = req.body
+  delete dataWithoutId._id
+  let doc = await Flight.findOneAndUpdate(req.params.flightId, dataWithoutId, {
+    new: true
+  });
+  res.send(doc);
+});
+
 app.get('/flights',async (req,res)=>{
   const flights = await Flight.find({});
   res.send(flights);
+})
+
+app.get('/flights/:flightId',async (req,res)=>{
+  let flight = await Flight.findById(req.params.flightId).exec();
+  res.send(flight);
 })
 
 // Starting server

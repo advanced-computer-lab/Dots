@@ -1,5 +1,4 @@
-import React, {Component, useState} from 'react';
-import {Route, BrowserRouter, Routes} from 'react-router-dom';
+import React, {useState} from 'react';
 import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
@@ -16,18 +15,17 @@ import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 
 
+
 function SimpleDialog(props) {
     const { onClose, selectedValue, open } = props;
     const [value1, setValue1] = React.useState(new Date('2014-08-18T21:11:54'));
     const [value2, setValue2] = React.useState(new Date('2014-08-18T21:11:54'));
 
-  
+    
+
+
     const handleClose = () => {
       onClose(selectedValue);
-    };
-  
-    const handleListItemClick = (value) => {
-      onClose(value);
     };
 
     const handleChange1 = (newValue) => {
@@ -85,7 +83,6 @@ function SimpleDialog(props) {
 
 
 const CreateFlight = () => {
-        const [startDate, setStartDate] = useState(new Date());
         const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -94,7 +91,7 @@ const CreateFlight = () => {
 
   const handleClose = (value) => {
     setOpen(false);
-    
+
   };
         return (
             <div>
@@ -106,7 +103,7 @@ const CreateFlight = () => {
         onClose={handleClose}
       />
       </div>
-      
+
             /*<form action = 'http://localhost:3000/flights' method = "POST">
                 <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                 <label htmlFor = "from"> from </label><br/>
@@ -121,11 +118,11 @@ const CreateFlight = () => {
                 <input type = "Submit"></input>
             </form>*/
         )}
-    
-    
 
 
 
 
 
-export default CreateFlight;  
+
+
+export default CreateFlight;
