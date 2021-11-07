@@ -73,6 +73,7 @@ class FlightsList extends Component {
     }
 
 
+
     onDialogShowEdit = (id) => {
         this.setState({ openEditDialog: true, selectedFlight: id, dialogFlight: id })
     }
@@ -125,6 +126,9 @@ class FlightsList extends Component {
                     flights: prev.flights.map(
                         (row) => row.id === prev.dialogFlight ? data : row
                     ),
+                    permanentFlights: prev.permanentFlights.map(
+                        (row) => row.id === prev.dialogFlight ? data : row
+                    ),
                     openEditDialog: false,
                     dialogFlight: null
                 }))
@@ -150,7 +154,7 @@ class FlightsList extends Component {
                 this.setState({ airports: Array.from(airportSet) })
                 console.log(this.state.airports)
 
-            });
+            }).catch( err => { console.log(err) } ) 
 
     }
 

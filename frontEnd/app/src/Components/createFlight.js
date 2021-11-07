@@ -38,44 +38,44 @@ function SimpleDialog(props) {
     <Dialog onClose={handleClose} open={open} fullWidth={true}
     >
       <DialogTitle>Flight Details: </DialogTitle>
-      <Box component="form" sx={{ '& .MuiTextField-root': { m: 4, width: '40ch' }, }} noValidateautoComplete="off">
-        <form action='http://localhost:8000/flights' method="POST">
-          <FormControl>
-            <TextField label="From" required type="input" className="formElements" id="from" placeholder="From" name="from" ></TextField>
-            <TextField label="To" required type="input" className="to" id="to" placeholder="To" name="to" ></TextField>
-            <LocalizationProvider dateAdapter={DateAdapter}>
-              <DateTimePicker
-                label="Arrival Date and Time"
-                value={value1}
-                onChange={handleChange1}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-            <LocalizationProvider dateAdapter={DateAdapter}>
-              <DateTimePicker
-                label="Departure Date and Time"
-                value={value2}
-                onChange={handleChange2}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-            <TextField label="Arrival Terminal" required type="input" className="formElements" id="terminal" placeholder="1" name="arrival" ></TextField>
-            <TextField label="Departure Terminal" required type="input" className="formElements" id="terminal" placeholder="1" name="departure" ></TextField>
-            <Input type="hidden" name="datearrive" value={value1 ? new Date(value1) : null} ></Input>
-            <Input type="hidden" name="datedepart" value={value2 ? new Date(value2) : null} ></Input>
-            <FormControlLabel type="input" name="economy" control={<Checkbox />} label="Economy" />
-            <TextField label="Economy Available Seats" type="input" className="formElements" id="seats" placeholder="Seats" name="economyseats" ></TextField>
-            <FormControlLabel type="input" name="business" control={<Checkbox />} label="Business" />
-            <TextField label="Business Available Seats" type="input" className="formElements" id="seats" placeholder="Seats" name="businessseats" ></TextField>
-            <FormControlLabel type="input" name="first" control={<Checkbox />} label="First Class" />
-            <TextField label="First Class Available Seats" type="input" className="formElements" id="seats" placeholder="Seats" name="firstseats" ></TextField>
-
-            <Button type="submit">Create Flight</Button>
-          </FormControl>
-        </form>
-      </Box>
-    </Dialog>
-  )
+      <Box component="form" sx= {{'& .MuiTextField-root': { m: 4, width: '40ch' },}} noValidateautoComplete="off">
+            <form action = 'http://localhost:8000/flights' method = "POST">
+            <FormControl>
+                <TextField label = "From" required type="input" className = "formElements" id = "from" placeholder = "From" name = "from" ></TextField>
+                <TextField label = "To" required type="input" className = "to" id = "to" placeholder = "To" name = "to" ></TextField>
+                <LocalizationProvider dateAdapter={DateAdapter}>
+                     <DateTimePicker
+                         label="Arrival Date and Time"
+                         value={value1}
+                         onChange={handleChange1}
+                         renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
+                <LocalizationProvider dateAdapter={DateAdapter}>
+                     <DateTimePicker
+                         label="Departure Date and Time"
+                         value={value2}
+                         onChange={handleChange2}
+                         renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
+                <TextField label = "Arrival Terminal" required type="input" className = "formElements" id = "terminal" placeholder = "Cairo" name = "arrival" ></TextField>
+                <TextField label = "Departure Terminal" required type="input" className = "formElements" id = "terminal" placeholder = "Cairo" name = "departure" ></TextField>
+                <Input type = "hidden" name = "datearrive" value = {value1 ? new Date(value1): null} ></Input>
+                <Input type = "hidden" name = "datedepart" value = {value2 ? new Date(value2): null} ></Input>
+                {/*<FormControlLabel type = "input" name = "economy" control={<Checkbox />} label="Economy" />*/}
+                <TextField label = "Economy Available Seats" required  type="input" className = "formElements" id = "seats" placeholder = "Seats" name = "economyseats" ></TextField>
+                {/*<FormControlLabel type = "input" name = "business" control={<Checkbox />} label="Business" />*/}
+                <TextField label = "Business Available Seats" required type="input" className = "formElements" id = "seats" placeholder = "Seats" name = "businessseats" ></TextField>
+                {/*<FormControlLabel type = "input" name = "first" control={<Checkbox />} label="First Class" />*/}
+                <TextField label = "First Class Available Seats" required type="input" className = "formElements" id = "seats" placeholder = "Seats" name = "firstseats" ></TextField>
+                
+                <Button type="submit">Create Flight</Button>
+            </FormControl>
+            </form>
+        </Box>
+      </Dialog>
+    )
 
 }
 
