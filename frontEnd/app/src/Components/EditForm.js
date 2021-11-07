@@ -9,6 +9,7 @@ import { IconButton, Box, FormControl, TextField, Button, MenuItem } from '@mui/
 class EditForm extends Component {
     state = {
         _id: '',
+        flightNumber: '',
         arrivalTime: new Date(),
         departureTime: new Date(),
         seatsAvailable: '',
@@ -79,6 +80,7 @@ class EditForm extends Component {
         e.preventDefault()
         const data = {
             _id: this.state._id,
+            flightNumber: this.state.flightNumber,
             arrivalTime: this.state.arrivalTime,
             departureTime: this.state.departureTime,
             seatsAvailable: this.state.seatsAvailable,
@@ -95,9 +97,10 @@ class EditForm extends Component {
         axios.get(`http://localhost:8000/flights/${this.props.id}`)
             .then(({ data }) => {
                 const { seatsAvailable, cabin, from, to, arrivalTime,
-                    departureTime, departureTerminal, arrivalTerminal, _id } = data
+                    departureTime, departureTerminal, arrivalTerminal, _id, flightNumber } = data
                 this.setState({
                     _id,
+                    flightNumber,
                     seatsAvailable,
                     cabin,
                     from,
