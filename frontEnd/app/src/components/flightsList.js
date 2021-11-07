@@ -76,7 +76,6 @@ class FlightsList extends Component {
     onSubmit = (data) => {
         axios.put(`http://localhost:8000/flights/${this.props.id}`, data)
             .then(() => {
-                console.log(data)
                 this.setState((prev) => ({
                     flights: prev.flights.map(
                         (row) => row.id === prev.dialogFlight ? data : row
