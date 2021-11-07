@@ -62,11 +62,11 @@ function SimpleDialog(props) {
                 <TextField label = "Departure Terminal" required type="input" className = "formElements" id = "terminal" placeholder = "Cairo" name = "departure" ></TextField>
                 <Input type = "hidden" name = "datearrive" value = {value1 ? new Date(value1): null} ></Input>
                 <Input type = "hidden" name = "datedepart" value = {value2 ? new Date(value2): null} ></Input>
-                <FormControlLabel type = "input" name = "economy" control={<Checkbox />} label="Economy" />
+                {/*<FormControlLabel type = "input" name = "economy" control={<Checkbox />} label="Economy" />*/}
                 <TextField label = "Economy Available Seats"  type="input" className = "formElements" id = "seats" placeholder = "Seats" name = "economyseats" ></TextField>
-                <FormControlLabel type = "input" name = "business" control={<Checkbox />} label="Business" />
+                {/*<FormControlLabel type = "input" name = "business" control={<Checkbox />} label="Business" />*/}
                 <TextField label = "Business Available Seats" type="input" className = "formElements" id = "seats" placeholder = "Seats" name = "businessseats" ></TextField>
-                <FormControlLabel type = "input" name = "first" control={<Checkbox />} label="First Class" />
+                /*<FormControlLabel type = "input" name = "first" control={<Checkbox />} label="First Class" />*/}
                 <TextField label = "First Class Available Seats" type="input" className = "formElements" id = "seats" placeholder = "Seats" name = "firstseats" ></TextField>
                 
                 <Button type="submit">Create Flight</Button>
