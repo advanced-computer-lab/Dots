@@ -87,7 +87,7 @@ app.post('/flights', async (req, res) => {
     try {
 
       Flight.create({
-        flightNumber: uuid,
+        flightNumber: req.body.flightNo,
         from: req.body.from,
         departureTerminal: req.body.departure,
         arrivalTerminal: req.body.arrival,
@@ -106,7 +106,7 @@ app.post('/flights', async (req, res) => {
 
     try {
       Flight.create({
-        flightNumber: uuid,
+        flightNumber: req.body.flightNo,
         from: req.body.from,
         departureTerminal: req.body.departure,
         arrivalTerminal: req.body.arrival,
@@ -127,7 +127,7 @@ app.post('/flights', async (req, res) => {
     try {
       console.log( "R" ,  req.body.firstseats);
       Flight.create({
-        flightNumber: uuid,
+        flightNumber: req.body.flightNo,
         from: req.body.from,
         departureTerminal: req.body.departure,
         arrivalTerminal: req.body.arrival,
