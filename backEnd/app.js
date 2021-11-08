@@ -26,7 +26,7 @@ const app = express();
 const port = process.env.PORT || "8000";
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()) 
+app.use(express.json())
 // Mongo DB
 mongoose.connect(MongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB is now connected"))
@@ -79,15 +79,15 @@ async function rand() {
   return rand;
 }
 app.post('/flights', async (req, res) => {
- 
-    const uuid = await rand();
-  
-  // console.log(req.body);
-  
+
+  const uuid = await rand();
+
+  console.log(req.body);
+
     try {
 
       Flight.create({
-        flightNumber: uuid,
+        flightNumber: req.body.flightNo,
         from: req.body.from,
         departureTerminal: req.body.departure,
         arrivalTerminal: req.body.arrival,
@@ -100,13 +100,10 @@ app.post('/flights', async (req, res) => {
     } catch (error) {
       console.log(error);
     }
-  
 
-
-  
     try {
       Flight.create({
-        flightNumber: uuid,
+        flightNumber: req.body.flightNo,
         from: req.body.from,
         departureTerminal: req.body.departure,
         arrivalTerminal: req.body.arrival,
@@ -120,14 +117,14 @@ app.post('/flights', async (req, res) => {
       console.log(error);
     }
 
-  
 
 
- 
+
+
     try {
       console.log( "R" ,  req.body.firstseats);
       Flight.create({
-        flightNumber: uuid,
+        flightNumber: req.body.flightNo,
         from: req.body.from,
         departureTerminal: req.body.departure,
         arrivalTerminal: req.body.arrival,
@@ -141,9 +138,9 @@ app.post('/flights', async (req, res) => {
       console.log(error);
     }
 
-    
 
-  
+
+
 
   /* Flight.create({
      from : req.body.from,
@@ -170,17 +167,24 @@ app.delete('/flight/:flightId/delete', async (req, res) => {
 });
 
 app.put('/flights/:flightId', async (req, res) => {
-  const dataWithoutId = req.body
-  delete dataWithoutId._id
+  const updateData = req.body
+  const seats = { seatsAvailable: updateData.seatsAvailable }
+  const oldFN = updateData.oldFlightNumber
+
+  delete updateData._id
+  delete updateData.cabin
+  delete updateData.oldFlightNumber
+  delete updateData.seatsAvailable
+
+  const searchId = mongoose.Types.ObjectId(req.params.flightId);
+
   try {
-    let doc = await Flight.findOneAndUpdate(req.params.flightId, dataWithoutId, {
-      new: true
-    });
-    res.send(doc);
+    const doc1 = await Flight.findByIdAndUpdate(searchId, seats, { new: true });
+    const doc2 = await Flight.updateMany({ flightNumber: oldFN }, updateData);
+    res.send(doc2);
   } catch (error) {
     console.log(error);
   }
-
 });
 
 app.get('/flights', async (req, res) => {

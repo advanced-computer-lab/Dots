@@ -9,6 +9,7 @@ import { IconButton, Box, FormControl, TextField, Button, MenuItem } from '@mui/
 class EditForm extends Component {
     state = {
         _id: '',
+        oldFlightNumber: '',
         flightNumber: '',
         arrivalTime: new Date(),
         departureTime: new Date(),
@@ -19,6 +20,7 @@ class EditForm extends Component {
         from: '',
         to: '',
 
+        flightNumberError: '',
         seatsAvailableError: '',
         departureTerminalError: '',
         arrivalTerminalError: '',
@@ -64,13 +66,15 @@ class EditForm extends Component {
 
     areFieldsValid() {
         const {
+            flightNumberError,
             seatsAvailableError,
             departureTerminalError,
             arrivalTerminalError,
             fromError,
             toError } = this.state
 
-        return seatsAvailableError === '' &&
+        return flightNumberError === '' &&
+            seatsAvailableError === '' &&
             departureTerminalError === '' &&
             arrivalTerminalError === '' &&
             fromError === '' &&
@@ -80,6 +84,7 @@ class EditForm extends Component {
         e.preventDefault()
         const data = {
             _id: this.state._id,
+            oldFlightNumber: this.state.oldFlightNumber,
             flightNumber: this.state.flightNumber,
             arrivalTime: this.state.arrivalTime,
             departureTime: this.state.departureTime,
@@ -101,6 +106,7 @@ class EditForm extends Component {
                 this.setState({
                     _id,
                     flightNumber,
+                    oldFlightNumber: flightNumber,
                     seatsAvailable,
                     cabin,
                     from,
@@ -117,12 +123,13 @@ class EditForm extends Component {
     render() {
         const { seatsAvailable, cabin, from, to, arrivalTime,
             departureTime, departureTerminal, arrivalTerminal, fromError, toError, departureTerminalError,
-            arrivalTerminalError, seatsAvailableError } = this.state
+            arrivalTerminalError, seatsAvailableError, flightNumber, flightNumberError } = this.state
         return (
             <Box sx={{ '& .MuiTextField-root': { m: 4, width: '40ch' }, }} noValidateautoComplete="off">
                 <form onSubmit={this.onSubmit}>
                     <FormControl >
                         <IconButton sx={{ ml: "auto" }} onClick={this.props.close}><CloseIcon /></IconButton>
+                        <TextField error={flightNumberError !== ''} helperText={flightNumberError} value={flightNumber} onChange={this.handleChange} label="Flight Number" required type="input" className="formElements" id="flightNumber" placeholder="Ex: kM7wXs" name="flightNumber" ></TextField>
                         <TextField error={fromError !== ''} helperText={fromError} value={from} onChange={this.handleChange} label="From" required type="input" className="formElements" id="from" placeholder="Ex: LAX" name="from" ></TextField>
                         <TextField error={toError !== ''} helperText={toError} value={to} onChange={this.handleChange} label="To" required type="input" className="to" id="to" placeholder="Ex: JFK" name="to" ></TextField>
                         <LocalizationProvider dateAdapter={DateAdapter}>
@@ -147,6 +154,7 @@ class EditForm extends Component {
                         <TextField onChange={this.handleChange} error={departureTerminalError !== ''} helperText={departureTerminalError} value={departureTerminal} label="Departure Terminal" required type="input" className="formElements" id="dTerminal" placeholder="Ex: 1" name="departureTerminal" ></TextField>
                         <TextField onChange={this.handleChange} error={arrivalTerminalError !== ''} helperText={arrivalTerminalError} value={arrivalTerminal} label="Arrival Terminal" required type="input" className="formElements" id="aTerminal" placeholder="Ex: 1" name="arrivalTerminal" ></TextField>
                         <TextField
+                            disabled
                             select
                             id="cabin"
                             name="cabin"
