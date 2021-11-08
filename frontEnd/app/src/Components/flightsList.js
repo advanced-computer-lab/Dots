@@ -124,10 +124,24 @@ class FlightsList extends Component {
             .then(() => {
                 this.setState((prev) => ({
                     flights: prev.flights.map(
-                        (row) => row.id === prev.dialogFlight ? data : row
+                        (row) => {
+                            if (row._id === data._id)
+                                return data
+                            else if (row.flightNumber === data.flightNumber)
+                                return { ...data, seatsAvailable: row.seatsAvailable, cabin: row.cabin, _id: row._id }
+                            else
+                                return row
+                        }
                     ),
                     permanentFlights: prev.permanentFlights.map(
-                        (row) => row.id === prev.dialogFlight ? data : row
+                        (row) => {
+                            if (row._id === data._id)
+                                return data
+                            else if (row.flightNumber === data.flightNumber)
+                                return { ...data, seatsAvailable: row.seatsAvailable, cabin: row.cabin }
+                            else
+                                return row
+                        }
                     ),
                     openEditDialog: false,
                     dialogFlight: null
@@ -154,7 +168,7 @@ class FlightsList extends Component {
                 this.setState({ airports: Array.from(airportSet) })
                 console.log(this.state.airports)
 
-            }).catch( err => { console.log(err) } )
+            }).catch(err => { console.log(err) })
 
     }
 
@@ -421,8 +435,8 @@ class FlightsList extends Component {
         console.log(this.state.onDialogShowDelete)
 
         flights.map((flight) => {
-            flight.arrivalTime= new Date(flight.arrivalTime);
-            flight.departureTime= new Date(flight.departureTime);
+            flight.arrivalTime = new Date(flight.arrivalTime);
+            flight.departureTime = new Date(flight.departureTime);
             return flight.id = flight._id;
         });
         const handleEditClick = (id) => (event) => {

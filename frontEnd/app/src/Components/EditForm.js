@@ -117,12 +117,13 @@ class EditForm extends Component {
     render() {
         const { seatsAvailable, cabin, from, to, arrivalTime,
             departureTime, departureTerminal, arrivalTerminal, fromError, toError, departureTerminalError,
-            arrivalTerminalError, seatsAvailableError } = this.state
+            arrivalTerminalError, seatsAvailableError, flightNumber } = this.state
         return (
             <Box sx={{ '& .MuiTextField-root': { m: 4, width: '40ch' }, }} noValidateautoComplete="off">
                 <form onSubmit={this.onSubmit}>
                     <FormControl >
                         <IconButton sx={{ ml: "auto" }} onClick={this.props.close}><CloseIcon /></IconButton>
+                        <TextField disabled value={flightNumber} onChange={this.handleChange} label="Flight Number" required type="input" className="formElements" id="flightNumber" placeholder="Ex: kM7wXs" name="flightNumber" ></TextField>
                         <TextField error={fromError !== ''} helperText={fromError} value={from} onChange={this.handleChange} label="From" required type="input" className="formElements" id="from" placeholder="Ex: LAX" name="from" ></TextField>
                         <TextField error={toError !== ''} helperText={toError} value={to} onChange={this.handleChange} label="To" required type="input" className="to" id="to" placeholder="Ex: JFK" name="to" ></TextField>
                         <LocalizationProvider dateAdapter={DateAdapter}>
@@ -147,6 +148,7 @@ class EditForm extends Component {
                         <TextField onChange={this.handleChange} error={departureTerminalError !== ''} helperText={departureTerminalError} value={departureTerminal} label="Departure Terminal" required type="input" className="formElements" id="dTerminal" placeholder="Ex: 1" name="departureTerminal" ></TextField>
                         <TextField onChange={this.handleChange} error={arrivalTerminalError !== ''} helperText={arrivalTerminalError} value={arrivalTerminal} label="Arrival Terminal" required type="input" className="formElements" id="aTerminal" placeholder="Ex: 1" name="arrivalTerminal" ></TextField>
                         <TextField
+                            disabled
                             select
                             id="cabin"
                             name="cabin"

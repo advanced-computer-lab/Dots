@@ -80,66 +80,66 @@ async function rand() {
 }
 app.post('/flights', async (req, res) => {
 
-    const uuid = await rand();
+  const uuid = await rand();
 
   console.log(req.body);
 
-    try {
+  try {
 
-      Flight.create({
-        flightNumber: uuid,
-        from: req.body.from,
-        departureTerminal: req.body.departure,
-        arrivalTerminal: req.body.arrival,
-        to: req.body.to,
-        departureTime: req.body.datedepart,
-        arrivalTime: req.body.datearrive,
-        cabin: "Economy",
-        seatsAvailable: (req.body.economyseats === null )?0 : req.body.economyseats,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-
-
-
-
-    try {
-      Flight.create({
-        flightNumber: uuid,
-        from: req.body.from,
-        departureTerminal: req.body.departure,
-        arrivalTerminal: req.body.arrival,
-        to: req.body.to,
-        departureTime: req.body.datedepart,
-        arrivalTime: req.body.datearrive,
-        cabin: "Business",
-        seatsAvailable: (req.body.businessseats === null )?0 : req.body.businessseats,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    Flight.create({
+      flightNumber: uuid,
+      from: req.body.from,
+      departureTerminal: req.body.departure,
+      arrivalTerminal: req.body.arrival,
+      to: req.body.to,
+      departureTime: req.body.datedepart,
+      arrivalTime: req.body.datearrive,
+      cabin: "Economy",
+      seatsAvailable: (req.body.economyseats === null) ? 0 : req.body.economyseats,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 
 
 
 
+  try {
+    Flight.create({
+      flightNumber: uuid,
+      from: req.body.from,
+      departureTerminal: req.body.departure,
+      arrivalTerminal: req.body.arrival,
+      to: req.body.to,
+      departureTime: req.body.datedepart,
+      arrivalTime: req.body.datearrive,
+      cabin: "Business",
+      seatsAvailable: (req.body.businessseats === null) ? 0 : req.body.businessseats,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 
-    try {
-      console.log( "R" ,  req.body.firstseats);
-      Flight.create({
-        flightNumber: uuid,
-        from: req.body.from,
-        departureTerminal: req.body.departure,
-        arrivalTerminal: req.body.arrival,
-        to: req.body.to,
-        departureTime: req.body.datedepart,
-        arrivalTime: req.body.datearrive,
-        cabin: "First",
-        seatsAvailable: (req.body.firstseats === undefined )?0 : req.body.firstseats,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+
+
+
+
+  try {
+    console.log("R", req.body.firstseats);
+    Flight.create({
+      flightNumber: uuid,
+      from: req.body.from,
+      departureTerminal: req.body.departure,
+      arrivalTerminal: req.body.arrival,
+      to: req.body.to,
+      departureTime: req.body.datedepart,
+      arrivalTime: req.body.datearrive,
+      cabin: "First",
+      seatsAvailable: (req.body.firstseats === undefined) ? 0 : req.body.firstseats,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 
 
 
@@ -170,14 +170,19 @@ app.delete('/flight/:flightId/delete', async (req, res) => {
 });
 
 app.put('/flights/:flightId', async (req, res) => {
-  const dataWithoutId = req.body
-  delete dataWithoutId._id
-  var searchId = mongoose.Types.ObjectId(req.params.flightId);
+  const updateData = req.body
+  delete updateData._id
+  delete updateData.cabin
+  const seats = { seatsAvailable: updateData.seatsAvailable }
+  delete updateData.seatsAvailable
+
+  const searchId = mongoose.Types.ObjectId(req.params.flightId);
+
+  console.log(updateData)
   try {
-    let doc = await Flight.findByIdAndUpdate(searchId, dataWithoutId, {
-      new: true
-    });
-    res.send(doc);
+    const doc1 = await Flight.findByIdAndUpdate(searchId, seats, { new: true });
+    const doc2 = await Flight.updateMany({ flightNumber: updateData.flightNumber }, updateData);
+    res.send(doc2);
   } catch (error) {
     console.log(error);
   }
