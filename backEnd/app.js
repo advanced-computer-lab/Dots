@@ -84,62 +84,59 @@ app.post('/flights', async (req, res) => {
 
   console.log(req.body);
 
-  try {
+    try {
 
-    Flight.create({
-      flightNumber: uuid,
-      from: req.body.from,
-      departureTerminal: req.body.departure,
-      arrivalTerminal: req.body.arrival,
-      to: req.body.to,
-      departureTime: req.body.datedepart,
-      arrivalTime: req.body.datearrive,
-      cabin: "Economy",
-      seatsAvailable: (req.body.economyseats === null) ? 0 : req.body.economyseats,
-    });
-  } catch (error) {
-    console.log(error);
-  }
+      Flight.create({
+        flightNumber: req.body.flightNo,
+        from: req.body.from,
+        departureTerminal: req.body.departure,
+        arrivalTerminal: req.body.arrival,
+        to: req.body.to,
+        departureTime: req.body.datedepart,
+        arrivalTime: req.body.datearrive,
+        cabin: "Economy",
+        seatsAvailable: (req.body.economyseats === null )?0 : req.body.economyseats,
+      });
+    } catch (error) {
+      console.log(error);
+    }
 
-
-
-
-  try {
-    Flight.create({
-      flightNumber: uuid,
-      from: req.body.from,
-      departureTerminal: req.body.departure,
-      arrivalTerminal: req.body.arrival,
-      to: req.body.to,
-      departureTime: req.body.datedepart,
-      arrivalTime: req.body.datearrive,
-      cabin: "Business",
-      seatsAvailable: (req.body.businessseats === null) ? 0 : req.body.businessseats,
-    });
-  } catch (error) {
-    console.log(error);
-  }
+    try {
+      Flight.create({
+        flightNumber: req.body.flightNo,
+        from: req.body.from,
+        departureTerminal: req.body.departure,
+        arrivalTerminal: req.body.arrival,
+        to: req.body.to,
+        departureTime: req.body.datedepart,
+        arrivalTime: req.body.datearrive,
+        cabin: "Business",
+        seatsAvailable: (req.body.businessseats === null )?0 : req.body.businessseats,
+      });
+    } catch (error) {
+      console.log(error);
+    }
 
 
 
 
 
-  try {
-    console.log("R", req.body.firstseats);
-    Flight.create({
-      flightNumber: uuid,
-      from: req.body.from,
-      departureTerminal: req.body.departure,
-      arrivalTerminal: req.body.arrival,
-      to: req.body.to,
-      departureTime: req.body.datedepart,
-      arrivalTime: req.body.datearrive,
-      cabin: "First",
-      seatsAvailable: (req.body.firstseats === undefined) ? 0 : req.body.firstseats,
-    });
-  } catch (error) {
-    console.log(error);
-  }
+    try {
+      console.log( "R" ,  req.body.firstseats);
+      Flight.create({
+        flightNumber: req.body.flightNo,
+        from: req.body.from,
+        departureTerminal: req.body.departure,
+        arrivalTerminal: req.body.arrival,
+        to: req.body.to,
+        departureTime: req.body.datedepart,
+        arrivalTime: req.body.datearrive,
+        cabin: "First",
+        seatsAvailable: (req.body.firstseats === undefined )?0 : req.body.firstseats,
+      });
+    } catch (error) {
+      console.log(error);
+    }
 
 
 
