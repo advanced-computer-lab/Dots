@@ -120,7 +120,7 @@ class FlightsList extends Component {
     }
 
     onSubmit = (data) => {
-        axios.put(`http://localhost:8000/flights/${this.props.id}`, data)
+        axios.put(`http://localhost:8000/flights/${data._id}`, data)
             .then(() => {
                 this.setState((prev) => ({
                     flights: prev.flights.map(
@@ -154,7 +154,7 @@ class FlightsList extends Component {
                 this.setState({ airports: Array.from(airportSet) })
                 console.log(this.state.airports)
 
-            }).catch( err => { console.log(err) } ) 
+            }).catch( err => { console.log(err) } )
 
     }
 
@@ -421,6 +421,8 @@ class FlightsList extends Component {
         console.log(this.state.onDialogShowDelete)
 
         flights.map((flight) => {
+            flight.arrivalTime= new Date(flight.arrivalTime);
+            flight.departureTime= new Date(flight.departureTime);
             return flight.id = flight._id;
         });
         const handleEditClick = (id) => (event) => {

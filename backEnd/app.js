@@ -26,7 +26,7 @@ const app = express();
 const port = process.env.PORT || "8000";
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()) 
+app.use(express.json())
 // Mongo DB
 mongoose.connect(MongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB is now connected"))
@@ -79,11 +79,11 @@ async function rand() {
   return rand;
 }
 app.post('/flights', async (req, res) => {
- 
+
     const uuid = await rand();
-  
-  // console.log(req.body);
-  
+
+  console.log(req.body);
+
     try {
 
       Flight.create({
@@ -100,10 +100,10 @@ app.post('/flights', async (req, res) => {
     } catch (error) {
       console.log(error);
     }
-  
 
 
-  
+
+
     try {
       Flight.create({
         flightNumber: uuid,
@@ -120,10 +120,10 @@ app.post('/flights', async (req, res) => {
       console.log(error);
     }
 
-  
 
 
- 
+
+
     try {
       console.log( "R" ,  req.body.firstseats);
       Flight.create({
@@ -141,9 +141,9 @@ app.post('/flights', async (req, res) => {
       console.log(error);
     }
 
-    
 
-  
+
+
 
   /* Flight.create({
      from : req.body.from,
@@ -172,15 +172,15 @@ app.delete('/flight/:flightId/delete', async (req, res) => {
 app.put('/flights/:flightId', async (req, res) => {
   const dataWithoutId = req.body
   delete dataWithoutId._id
+  var searchId = mongoose.Types.ObjectId(req.params.flightId);
   try {
-    let doc = await Flight.findOneAndUpdate(req.params.flightId, dataWithoutId, {
+    let doc = await Flight.findByIdAndUpdate(searchId, dataWithoutId, {
       new: true
     });
     res.send(doc);
   } catch (error) {
     console.log(error);
   }
-
 });
 
 app.get('/flights', async (req, res) => {

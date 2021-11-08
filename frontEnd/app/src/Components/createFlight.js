@@ -6,20 +6,22 @@ import TextField from '@mui/material/TextField';
 import Input from '@mui/material/Input';
 import FormControl from '@mui/material/FormControl';
 import Box from '@mui/material/Box';
-import DateAdapter from '@mui/lab/AdapterLuxon';
+// import DateAdapter from '@mui/lab/AdapterLuxon';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import stringifyObject from 'stringify-object';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
+import moment from 'moment-timezone';
+import DateAdapter from '@mui/lab/AdapterDateFns';
 
 
 
 function SimpleDialog(props) {
   const { onClose, selectedValue, open } = props;
-  const [value1, setValue1] = React.useState(new Date('2014-08-18T21:11:54'));
-  const [value2, setValue2] = React.useState(new Date('2014-08-18T21:11:54'));
+  const [value1, setValue1] = React.useState(new Date());
+  const [value2, setValue2] = React.useState(new Date());
 
 
 
@@ -45,24 +47,24 @@ function SimpleDialog(props) {
                 <TextField label = "To" required type="input" className = "to" id = "to" placeholder = "To" name = "to" ></TextField>
                 <LocalizationProvider dateAdapter={DateAdapter}>
                      <DateTimePicker
-                         label="Arrival Date and Time"
-                         value={value1}
-                         onChange={handleChange1}
-                         renderInput={(params) => <TextField {...params} />}
-                    />
-                </LocalizationProvider>
-                <LocalizationProvider dateAdapter={DateAdapter}>
-                     <DateTimePicker
                          label="Departure Date and Time"
                          value={value2}
                          onChange={handleChange2}
                          renderInput={(params) => <TextField {...params} />}
                     />
                 </LocalizationProvider>
+                <LocalizationProvider dateAdapter={DateAdapter}>
+                     <DateTimePicker
+                         label="Arrival Date and Time"
+                         value={value1}
+                         onChange={handleChange1}
+                         renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
                 <TextField label = "Arrival Terminal" required type="input" className = "formElements" id = "terminal" placeholder = "Cairo" name = "arrival" ></TextField>
                 <TextField label = "Departure Terminal" required type="input" className = "formElements" id = "terminal" placeholder = "Cairo" name = "departure" ></TextField>
-                <Input type = "hidden" name = "datearrive" value = {value1 ? new Date(value1): null} ></Input>
-                <Input type = "hidden" name = "datedepart" value = {value2 ? new Date(value2): null} ></Input>
+                <Input type = "hidden" name = "datedepart" value = {value2 ? moment.tz(new Date(value2), "Africa/Cairo").format(): null} ></Input>
+                <Input type = "hidden" name = "datearrive" value = {value1 ? moment.tz(new Date(value1), "Africa/Cairo").format(): null} ></Input>
                 {/*<FormControlLabel type = "input" name = "economy" control={<Checkbox />} label="Economy" />*/}
                 <TextField label = "Economy Available Seats" required  type="input" className = "formElements" id = "seats" placeholder = "Seats" name = "economyseats" ></TextField>
                 {/*<FormControlLabel type = "input" name = "business" control={<Checkbox />} label="Business" />*/}
