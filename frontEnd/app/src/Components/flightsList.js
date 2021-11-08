@@ -127,7 +127,7 @@ class FlightsList extends Component {
                         (row) => {
                             if (row._id === data._id)
                                 return data
-                            else if (row.flightNumber === data.flightNumber)
+                            else if (row.flightNumber === data.oldFlightNumber)
                                 return { ...data, seatsAvailable: row.seatsAvailable, cabin: row.cabin, _id: row._id }
                             else
                                 return row
@@ -137,7 +137,7 @@ class FlightsList extends Component {
                         (row) => {
                             if (row._id === data._id)
                                 return data
-                            else if (row.flightNumber === data.flightNumber)
+                            else if (row.flightNumber === data.oldFlightNumber)
                                 return { ...data, seatsAvailable: row.seatsAvailable, cabin: row.cabin }
                             else
                                 return row
