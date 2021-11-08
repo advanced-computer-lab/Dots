@@ -194,7 +194,7 @@ class SearchModule extends Component {
               </LocalizationProvider>
 
 
-              <div>  <Autocomplete
+              {/* <div>  <Autocomplete
                 disablePortal
                 id="combo-box-demo"
                 options={['1', '2', '3']}
@@ -203,9 +203,15 @@ class SearchModule extends Component {
                 renderInput={(params) =>
                   <TextField {...params} label="Departure Terminal" onChange={onDepTerminalChange} />}
 
+              /></div> */}
+
+              <div>  <TextField id="outlined-basic"
+                label="Departure Terminal"
+                variant="outlined"
+                onChange={onDepTerminalChange}
               /></div>
 
-              <div>  <Autocomplete
+              {/* <div>  <Autocomplete
                 disablePortal
                 id="combo-box-demo"
                 options={['1', '2', '3']}
@@ -214,6 +220,13 @@ class SearchModule extends Component {
                 renderInput={(params) =>
                   <TextField {...params} label="Arrival Terminal" onChange={onArrTerminalChange} />}
 
+              /></div> */}
+
+
+              <div>  <TextField id="outlined-basic"
+                label="Arrival Terminal"
+                variant="outlined"
+                onChange={onArrTerminalChange}
               /></div>
 
               <div>  <Autocomplete

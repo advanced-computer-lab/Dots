@@ -394,14 +394,12 @@ class FlightsList extends Component {
     }
 
     onArrTerminalChange = (event) => {
-        let input = event.target.innerHTML
-        if (input.length > 4) input = ""
+        let input = event.target.value
         this.setState({ arrTerminal: input })
 
     }
     onDepTerminalChange = (event) => {
-        let input = event.target.innerHTML
-        if (input.length > 4) input = ""
+        let input = event.target.value
         this.setState({ depTerminal: input })
 
     }
@@ -432,7 +430,6 @@ class FlightsList extends Component {
 
     render() {
         const { flights, flightNum, from, to, depDate, pageSize, airports } = this.state;
-        console.log(this.state.onDialogShowDelete)
 
         flights.map((flight) => {
             flight.arrivalTime = new Date(flight.arrivalTime);
