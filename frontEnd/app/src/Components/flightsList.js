@@ -421,6 +421,8 @@ class FlightsList extends Component {
         console.log(this.state.onDialogShowDelete)
 
         flights.map((flight) => {
+            flight.arrivalTime= new Date(flight.arrivalTime);
+            flight.departureTime= new Date(flight.departureTime);
             return flight.id = flight._id;
         });
         const handleEditClick = (id) => (event) => {

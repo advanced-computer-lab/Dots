@@ -82,7 +82,7 @@ app.post('/flights', async (req, res) => {
  
     const uuid = await rand();
   
-  // console.log(req.body);
+  console.log(req.body);
   
     try {
 

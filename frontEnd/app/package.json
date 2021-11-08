@@ -23,6 +23,7 @@
     "date-fns": "^2.25.0",
     "install": "^0.13.0",
     "luxon": "^1.28.0",
+    "moment-timezone": "^0.5.33",
     "npm": "^8.1.2",
     "react": "^17.0.2",
     "react-bootstrap": "^2.0.1",
