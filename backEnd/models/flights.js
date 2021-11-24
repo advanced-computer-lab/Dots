@@ -30,14 +30,36 @@ const flightSchema = new Schema({
         type:Date,
         required:true
     },
-    cabin: {
-        type:String,
-        required:true
-    },
-    seatsAvailable:
+    economySeatsAvailable:
     {
         type: Number,
-        default: 0,
+        default: 0
+    },
+    businessSeatsAvailable:
+    {
+        type: Number,
+        default: 0
+    },
+    firstSeatsAvailable:
+    {
+        type: Number,
+        default: 0
+    },
+    takenSeats:
+    [
+        { 
+            seatNumber: String,
+            seatType:{type:String,enum:["Economy","First","Business"]}
+        }
+    ],
+    passengers:
+    [
+            { type: Schema.Types.ObjectId, ref: 'User' }
+    ],
+    baggageAllowance:
+    {
+        type: Number,
+        default: 0
     }
 });
 
