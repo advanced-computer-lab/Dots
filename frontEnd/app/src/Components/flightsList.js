@@ -124,24 +124,10 @@ class FlightsList extends Component {
             .then(() => {
                 this.setState((prev) => ({
                     flights: prev.flights.map(
-                        (row) => {
-                            if (row._id === data._id)
-                                return data
-                            else if (row.flightNumber === data.oldFlightNumber)
-                                return { ...data, seatsAvailable: row.seatsAvailable, cabin: row.cabin, _id: row._id }
-                            else
-                                return row
-                        }
+                        row => row._id === data._id ? data : row
                     ),
                     permanentFlights: prev.permanentFlights.map(
-                        (row) => {
-                            if (row._id === data._id)
-                                return data
-                            else if (row.flightNumber === data.oldFlightNumber)
-                                return { ...data, seatsAvailable: row.seatsAvailable, cabin: row.cabin }
-                            else
-                                return row
-                        }
+                        row => row._id === data._id ? data : row
                     ),
                     openEditDialog: false,
                     dialogFlight: null

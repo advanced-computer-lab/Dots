@@ -168,20 +168,13 @@ app.delete('/flight/:flightId/delete', async (req, res) => {
 
 app.put('/flights/:flightId', async (req, res) => {
   const updateData = req.body
-  const seats = { seatsAvailable: updateData.seatsAvailable }
-  const oldFN = updateData.oldFlightNumber
-
   delete updateData._id
-  delete updateData.cabin
-  delete updateData.oldFlightNumber
-  delete updateData.seatsAvailable
 
   const searchId = mongoose.Types.ObjectId(req.params.flightId);
 
   try {
-    const doc1 = await Flight.findByIdAndUpdate(searchId, seats, { new: true });
-    const doc2 = await Flight.updateMany({ flightNumber: oldFN }, updateData);
-    res.send(doc2);
+    const doc = await Flight.findByIdAndUpdate(searchId, updateData, { new: true });
+    res.send(doc);
   } catch (error) {
     console.log(error);
   }
