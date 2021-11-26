@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Reservation = require('./reservations');
+
 
 const flightSchema = new Schema({
     flightNumber:{
@@ -45,22 +47,10 @@ const flightSchema = new Schema({
         type: Number,
         default: 0
     },
-    takenSeats:
+    reservations:
     [
-        { 
-            seatNumber: String,
-            seatType:{type:String,enum:["Economy","First","Business"]}
-        }
-    ],
-    passengers:
-    [
-            { type: Schema.Types.ObjectId, ref: 'User' }
-    ],
-    baggageAllowance:
-    {
-        type: Number,
-        default: 0
-    }
+            { type: Schema.Types.ObjectId, ref: 'Reservation' }
+    ]
 });
 
 module.exports = mongoose.model("Flight", flightSchema);
