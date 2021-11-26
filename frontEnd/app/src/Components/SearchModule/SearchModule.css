@@ -1,4 +1,4 @@
-.search{
+/* .search{
   display: flex;
   flex-direction: column;
   padding-top: 2rem;
@@ -40,9 +40,7 @@ Button {
   height: fit-content;
 }
 
-.MuiOutlinedInput-root.MuiInputBase-root.MuiInputBase-colorPrimary.MuiInputBase-formControl.MuiInputBase-adornedEnd.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root , .MuiSelect-root {
-width: 53%;
-}
+
 
 #filter{
 display: flex;
@@ -57,4 +55,44 @@ justify-content: center;
 #seats{
  width: fit-content;
   width: 400px;
+} */
+
+/* 
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+  padding: 22.5px 100px !important;
+
+}
+
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input{
+  padding: 28.5px;
+
+}
+
+ .css-12xvzhw-MuiAutocomplete-root {
+  padding: 27.5px 4px 7.5px 6px;
+} */
+
+/* .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root{
+  padding-bottom: 20px;
+} */
+
+/* .css-12xvzhw-MuiAutocomplete-root .MuiAutocomplete-input {
+  padding: 29.5px 4px 7.5px 6px;
+} */
+
+.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+width:400px;
+}
+
+.css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root{
+  margin-right: -7px;
+} 
+
+/* #text1{
+  padding-bottom: 20px !important;
+} */
+
+.MuiFormControl-root.MuiTextField-root.flightNumber.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+  position: relative;
+  right: 5rem;
 }

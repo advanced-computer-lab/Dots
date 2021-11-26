@@ -235,7 +235,7 @@ class FlightsList extends Component {
                 arrDate.setHours(0, 0, 0, 0)
                 // console.log('Input Date : ', inDate)
                 // console.log(inDate.valueOf() === depDate.valueOf())
-                return inDate.valueOf() === depDate.valueOf()
+                return inDate.valueOf() === arrDate.valueOf()
             }
             else return true
         })

@@ -1,0 +1,18 @@
+#flight{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+#line{
+border: 4px;
+border-style: solid;
+border-color: black;
+}
+
+hr {width: 150px;margin-left: auto;margin-right: auto;height: 100px;background-color:#666;}
+
+vertical {
+    border-left: 5px solid black;
+    height: 200px;
+}

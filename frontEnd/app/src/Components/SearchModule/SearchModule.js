@@ -62,8 +62,8 @@ class SearchModule extends Component {
 
   onFilterShow = () => {
     this.setState({ filterOpen: true })
-}
-  
+  }
+
 
   // onFilterClose = () => {
   //   this.setState({ filterOpen: false })
@@ -74,9 +74,20 @@ class SearchModule extends Component {
   //   console.log(this.state.flights)
 
   // }
+
+  setTextPadding(padding) {
+    const style = {
+      style: {
+        paddingBottom: padding,
+      }
+    }
+    return style
+  }
+
   render() {
     const { depDate, arrDate, arrTime, depTime, onflightNumChange, onFromChange, onToChange, onDepChange, filterFlight, onDepTimeChange, onArrChange, onArrTimeChange,
       onArrTerminalChange, onDepTerminalChange, onCabinChange, onSeatsChange, onFilterClose } = this.props
+
     return <div className="search">
       <div className="search1" >
         <Stack direction="row" spacing={50}>
@@ -117,26 +128,30 @@ class SearchModule extends Component {
           fullWidth={true}
           maxWidth={false}
           open={this.state.filterOpen}
-          onClose={ () => { onFilterClose(); this.state.filterOpen = false } }
+          onClose={() => { onFilterClose(); this.state.filterOpen = false }}
         >
           <DialogTitle>Filter By</DialogTitle>
           <DialogContent>
             <Stack
               spacing={5}
               id="filters"
+              alignItems="center"
             >
-              <div>  <Autocomplete
+
+              <TextField id="outlined-basic" label="Outlined" variant="outlined" />
+
+
+               <Autocomplete
                 disablePortal
                 id="combo-box-demo"
                 options={this.state.airports}
                 sx={{ width: 400 }}
-                onInputChange={onFromChange}
-                renderInput={(params) =>
-                  <TextField {...params} label="From" onChange={onFromChange} />}
+                renderInput={(params) => <TextField id="text1" {...params} label="From" />}
+                onChange={onFromChange}
 
-              /></div>
+              />
 
-              <div>   <Autocomplete
+              <Autocomplete
                 disablePortal
                 id="combo-box-demo"
                 options={this.state.airports}
@@ -144,12 +159,13 @@ class SearchModule extends Component {
                 renderInput={(params) => <TextField {...params} label="To" />}
                 onChange={onToChange}
 
-              /></div>
+              />
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
                   label="Choose Departure Date"
                   value={depDate}
+                  sx={{ width: 400 }}
                   onChange={onDepChange}
                   renderInput={(params) => <TextField error={false}
                     {...params} />}
@@ -194,42 +210,24 @@ class SearchModule extends Component {
               </LocalizationProvider>
 
 
-              {/* <div>  <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={['1', '2', '3']}
-                sx={{ width: 400 }}
-                onInputChange={onDepTerminalChange}
-                renderInput={(params) =>
-                  <TextField {...params} label="Departure Terminal" onChange={onDepTerminalChange} />}
+        
 
-              /></div> */}
-
-              <div>  <TextField id="outlined-basic"
+               <TextField id="outlined-basic"
                 label="Departure Terminal"
                 variant="outlined"
                 onChange={onDepTerminalChange}
-              /></div>
+              />
 
-              {/* <div>  <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={['1', '2', '3']}
-                sx={{ width: 400 }}
-                onInputChange={onArrTerminalChange}
-                renderInput={(params) =>
-                  <TextField {...params} label="Arrival Terminal" onChange={onArrTerminalChange} />}
-
-              /></div> */}
+           
 
 
-              <div>  <TextField id="outlined-basic"
+               <TextField id="outlined-basic"
                 label="Arrival Terminal"
                 variant="outlined"
                 onChange={onArrTerminalChange}
-              /></div>
+              />
 
-              <div>  <Autocomplete
+                <Autocomplete
                 disablePortal
                 id="combo-box-demo"
                 options={['Economy', 'Business', 'First']}
@@ -238,15 +236,15 @@ class SearchModule extends Component {
                 renderInput={(params) =>
                   <TextField {...params} label="Cabin" onChange={onCabinChange} />}
 
-              /></div>
+              />
 
-              <div>  <TextField id="outlined-basic"
+             <TextField id="outlined-basic"
                 label="Filter By Minimum Available Seats"
                 variant="outlined"
                 onChange={onSeatsChange}
                 id="seats"
               />
-              </div>
+              
 
 
               <Stack
@@ -268,7 +266,6 @@ class SearchModule extends Component {
             </Stack>
 
 
-
           </DialogContent>
 
 
@@ -279,20 +276,7 @@ class SearchModule extends Component {
 
 
       </div>
-      <div>
-        <div className="search2">
 
-        </div>
-
-        <div className="search3">
-          <div>
-
-          </div>
-
-        </div>
-
-
-      </div>
 
 
 
