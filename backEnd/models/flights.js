@@ -12,13 +12,17 @@ const flightSchema = new Schema({
         type:String,
         required:true
     },
-    departureTerminal: {
-        type:String,
-        required:true
+    departureLocation: {
+        country:{type:String , required:true},
+        city:{type:String , required:true},
+        airport:{type:String , required:true},
+        terminal:{type:String , required:true}
     },
-    arrivalTerminal: {
-        type:String,
-        required:true
+    arrivalLocation: {
+        country:{type:String , required:true},
+        city:{type:String , required:true},
+        airport:{type:String , required:true},
+        terminal:{type:String , required:true}
     },
     to: {
         type:String,
@@ -43,6 +47,21 @@ const flightSchema = new Schema({
         default: 0
     },
     firstSeatsAvailable:
+    {
+        type: Number,
+        default: 0
+    },
+    totalEconomySeats:
+    {
+        type: Number,
+        default: 0
+    },
+    totalBusinessSeats:
+    {
+        type: Number,
+        default: 0
+    },
+    totalFirstSeats:
     {
         type: Number,
         default: 0
