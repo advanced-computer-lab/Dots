@@ -19,11 +19,11 @@ const reservationSchema = new Schema({
         type:String,enum:["Economy","First","Business"]
     },
     passengers: [{
-        firstName: String,
-        lastName: String,
-        passportNumber:String,
-        inBoundSeat:String,
-        outBoundSeat:String
+        firstName:{type: String} ,
+        lastName: {type: String},
+        passportNumber:{type: String},
+        inBoundSeat:{type: String},
+        outBoundSeat:{type: String}
     }]
 
 });

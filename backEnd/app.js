@@ -92,7 +92,9 @@ app.post('/flights', async (req, res) => {
         economySeatsAvailable: (req.body.economyseats === null )?0 : req.body.economyseats,
         businessSeatsAvailable: (req.body.businessseats === null )?0 : req.body.businessseats,
         firstSeatsAvailable: (req.body.firstseats === null )?0 : req.body.firstseats,
-        baggageAllowance: req.body.bags
+        totalEconomySeats: (req.body.economyseats === null )?0 : req.body.economyseats,
+        totalBusinessSeats: (req.body.businessseats === null )?0 : req.body.businessseats,
+        totalFirstSeats: (req.body.firstseats === null )?0 : req.body.firstseats,
       });
     } catch (error) {
       console.log(error);
