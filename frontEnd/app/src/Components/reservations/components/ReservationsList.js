@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
+import ReservationCard from './ReservationCard'
 
 class ReservationsList extends Component {
     render() {
         return (
-            <div>
-
-            </div>
+            <ReservationCard />
         );
     }
 }
