@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+1:wght@300&display=swap");
+.formElements {
+  font-family: "M PLUS 1", sans-serif;
+  display: flex;
+  flex-direction: column;
+  margin-left: 35px;
+}
+
+.invisible {
+  display: none;
+}
+
+#submitButton {
+  width: 250px;
+  margin-left: 70px;
+  margin-bottom: 10px;
+}
+
+#dt {
+  height: 100px;
+}
+
+#title {
+  font-family: "M PLUS 1", sans-serif;
+  font-weight: bolder;
+  margin-left: 120px;
+}

@@ -79,28 +79,7 @@ async function rand() {
   return rand;
 }
 app.post('/flights', async (req, res) => {
-
-  const uuid = await rand();
-
   console.log(req.body);
-
-    try {
-
-      Flight.create({
-        flightNumber: req.body.flightNo,
-        from: req.body.from,
-        departureTerminal: req.body.departure,
-        arrivalTerminal: req.body.arrival,
-        to: req.body.to,
-        departureTime: req.body.datedepart,
-        arrivalTime: req.body.datearrive,
-        cabin: "Economy",
-        seatsAvailable: (req.body.economyseats === null )?0 : req.body.economyseats,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-
     try {
       Flight.create({
         flightNumber: req.body.flightNo,
@@ -110,46 +89,14 @@ app.post('/flights', async (req, res) => {
         to: req.body.to,
         departureTime: req.body.datedepart,
         arrivalTime: req.body.datearrive,
-        cabin: "Business",
-        seatsAvailable: (req.body.businessseats === null )?0 : req.body.businessseats,
+        economySeatsAvailable: (req.body.economyseats === null )?0 : req.body.economyseats,
+        businessSeatsAvailable: (req.body.businessseats === null )?0 : req.body.businessseats,
+        firstSeatsAvailable: (req.body.firstseats === null )?0 : req.body.firstseats,
+        baggageAllowance: req.body.bags
       });
     } catch (error) {
       console.log(error);
     }
-
-
-
-
-
-    try {
-      console.log( "R" ,  req.body.firstseats);
-      Flight.create({
-        flightNumber: req.body.flightNo,
-        from: req.body.from,
-        departureTerminal: req.body.departure,
-        arrivalTerminal: req.body.arrival,
-        to: req.body.to,
-        departureTime: req.body.datedepart,
-        arrivalTime: req.body.datearrive,
-        cabin: "First",
-        seatsAvailable: (req.body.firstseats === undefined )?0 : req.body.firstseats,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-
-
-
-
-
-  /* Flight.create({
-     from : req.body.from,
-     flightTerminal: req.body.terminal,
-     to: req.body.to,
-     flightDate: req.body.date,
-     cabin: req.body.cabin,
-     seatsAvailable: req.body.availableseats
-   });*/
   res.redirect('http://localhost:3000/');
 });
 
