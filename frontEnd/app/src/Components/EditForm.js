@@ -13,15 +13,18 @@ class EditForm extends Component {
         flightNumber: '',
         arrivalTime: new Date(),
         departureTime: new Date(),
-        seatsAvailable: '',
-        cabin: '',
+        economySeatsAvailable: '',
+        businessSeatsAvailable: '',
+        firstSeatsAvailable: '',
         departureTerminal: '',
         arrivalTerminal: '',
         from: '',
         to: '',
 
         flightNumberError: '',
-        seatsAvailableError: '',
+        economySeatsAvailableError: '',
+        businessSeatsAvailableError: '',
+        firstSeatsAvailableError: '',
         departureTerminalError: '',
         arrivalTerminalError: '',
         fromError: '',
@@ -40,9 +43,9 @@ class EditForm extends Component {
         if (e.target.value === '')
             errorMsg = 'This field is required'
 
-        else if ((e.target.name === 'arrivalTerminal'
-            || e.target.name === 'departureTerminal'
-            || e.target.name === 'seatsAvailable')
+        else if ((e.target.name === 'economySeatsAvailable'
+            || e.target.name === 'businessSeatsAvailable'
+            || e.target.name === 'firstSeatsAvailable')
             && !numReg.test(e.target.value))
 
             errorMsg = 'Input must be a number'
@@ -67,14 +70,18 @@ class EditForm extends Component {
     areFieldsValid() {
         const {
             flightNumberError,
-            seatsAvailableError,
+            economySeatsAvailableError,
+            businessSeatsAvailableError,
+            firstSeatsAvailableError,
             departureTerminalError,
             arrivalTerminalError,
             fromError,
             toError } = this.state
 
         return flightNumberError === '' &&
-            seatsAvailableError === '' &&
+            economySeatsAvailableError === '' &&
+            businessSeatsAvailableError === '' &&
+            firstSeatsAvailableError === '' &&
             departureTerminalError === '' &&
             arrivalTerminalError === '' &&
             fromError === '' &&
@@ -88,8 +95,9 @@ class EditForm extends Component {
             flightNumber: this.state.flightNumber,
             arrivalTime: this.state.arrivalTime,
             departureTime: this.state.departureTime,
-            seatsAvailable: this.state.seatsAvailable,
-            cabin: this.state.cabin,
+            economySeatsAvailable: this.state.economySeatsAvailable,
+            businessSeatsAvailable: this.state.businessSeatsAvailable,
+            firstSeatsAvailable: this.state.firstSeatsAvailable,
             departureTerminal: this.state.departureTerminal,
             arrivalTerminal: this.state.arrivalTerminal,
             from: this.state.from,
@@ -101,14 +109,16 @@ class EditForm extends Component {
     componentDidMount() {
         axios.get(`http://localhost:8000/flights/${this.props.id}`)
             .then(({ data }) => {
-                const { seatsAvailable, cabin, from, to, arrivalTime,
-                    departureTime, departureTerminal, arrivalTerminal, _id, flightNumber } = data
+                const { economySeatsAvailable, businessSeatsAvailable, firstSeatsAvailable,
+                    from, to, arrivalTime, departureTime, departureTerminal, arrivalTerminal,
+                    _id, flightNumber } = data
                 this.setState({
                     _id,
                     flightNumber,
                     oldFlightNumber: flightNumber,
-                    seatsAvailable,
-                    cabin,
+                    economySeatsAvailable,
+                    businessSeatsAvailable,
+                    firstSeatsAvailable,
                     from,
                     to,
                     arrivalTime,
@@ -121,9 +131,10 @@ class EditForm extends Component {
     }
 
     render() {
-        const { seatsAvailable, cabin, from, to, arrivalTime,
+        const { economySeatsAvailable, businessSeatsAvailable, firstSeatsAvailable, from, to, arrivalTime,
             departureTime, departureTerminal, arrivalTerminal, fromError, toError, departureTerminalError,
-            arrivalTerminalError, seatsAvailableError, flightNumber, flightNumberError } = this.state
+            arrivalTerminalError, economySeatsAvailableError, businessSeatsAvailableError, firstSeatsAvailableError,
+            flightNumber, flightNumberError } = this.state
         return (
             <Box sx={{ '& .MuiTextField-root': { m: 4, width: '40ch' }, }} noValidateautoComplete="off">
                 <form onSubmit={this.onSubmit}>
@@ -153,21 +164,9 @@ class EditForm extends Component {
 
                         <TextField onChange={this.handleChange} error={departureTerminalError !== ''} helperText={departureTerminalError} value={departureTerminal} label="Departure Terminal" required type="input" className="formElements" id="dTerminal" placeholder="Ex: 1" name="departureTerminal" ></TextField>
                         <TextField onChange={this.handleChange} error={arrivalTerminalError !== ''} helperText={arrivalTerminalError} value={arrivalTerminal} label="Arrival Terminal" required type="input" className="formElements" id="aTerminal" placeholder="Ex: 1" name="arrivalTerminal" ></TextField>
-                        <TextField
-                            disabled
-                            select
-                            id="cabin"
-                            name="cabin"
-                            value={cabin}
-                            label="Cabin"
-                            className="formElements"
-                            onChange={this.handleChange}
-                        >
-                            <MenuItem value='Economy'>Economy</MenuItem>
-                            <MenuItem value='Business'>Business</MenuItem>
-                            <MenuItem value='First'>First</MenuItem>
-                        </TextField>
-                        <TextField onChange={this.handleChange} error={seatsAvailableError !== ''} helperText={seatsAvailableError} value={seatsAvailable} label="Available Seats" required type="input" className="formElements" id="seats" placeholder="Ex: 20" name="seatsAvailable" ></TextField>
+                        <TextField onChange={this.handleChange} error={economySeatsAvailableError !== ''} helperText={economySeatsAvailableError} value={economySeatsAvailable} label="Available Economy Class Seats" required type="input" className="formElements" id="economySeats" placeholder="Ex: 20" name="economySeatsAvailable" ></TextField>
+                        <TextField onChange={this.handleChange} error={businessSeatsAvailableError !== ''} helperText={businessSeatsAvailableError} value={businessSeatsAvailable} label="Available Business Class Seats" required type="input" className="formElements" id="businessSeats" placeholder="Ex: 20" name="businessSeatsAvailable" ></TextField>
+                        <TextField onChange={this.handleChange} error={firstSeatsAvailableError !== ''} helperText={firstSeatsAvailableError} value={firstSeatsAvailable} label="Available First Class Seats" required type="input" className="formElements" id="firstSeats" placeholder="Ex: 20" name="firstSeatsAvailable" ></TextField>
                         <Button disabled={!this.areFieldsValid()} type="submit">Submit</Button>
                     </FormControl>
                 </form>
