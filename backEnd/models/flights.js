@@ -47,11 +47,6 @@ const flightSchema = new Schema({
         type: Number,
         default: 0
     },
-    baggageAllowance:
-    {
-        type: Number,
-        default: 0
-    },
     reservations:
     [
             { type: Schema.Types.ObjectId, ref: 'Reservation' }
