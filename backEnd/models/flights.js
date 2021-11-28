@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Reservation = require('./reservations');
+
 
 const flightSchema = new Schema({
     flightNumber:{
@@ -10,13 +12,17 @@ const flightSchema = new Schema({
         type:String,
         required:true
     },
-    departureTerminal: {
-        type:String,
-        required:true
+    departureLocation: {
+        country:{type:String , required:true},
+        city:{type:String , required:true},
+        airport:{type:String , required:true},
+        terminal:{type:String , required:true}
     },
-    arrivalTerminal: {
-        type:String,
-        required:true
+    arrivalLocation: {
+        country:{type:String , required:true},
+        city:{type:String , required:true},
+        airport:{type:String , required:true},
+        terminal:{type:String , required:true}
     },
     to: {
         type:String,
@@ -45,22 +51,25 @@ const flightSchema = new Schema({
         type: Number,
         default: 0
     },
-    takenSeats:
-    [
-        { 
-            seatNumber: String,
-            seatType:{type:String,enum:["Economy","First","Business"]}
-        }
-    ],
-    passengers:
-    [
-            { type: Schema.Types.ObjectId, ref: 'User' }
-    ],
-    baggageAllowance:
+    totalEconomySeats:
     {
         type: Number,
         default: 0
-    }
+    },
+    totalBusinessSeats:
+    {
+        type: Number,
+        default: 0
+    },
+    totalFirstSeats:
+    {
+        type: Number,
+        default: 0
+    },
+    reservations:
+    [
+            { type: Schema.Types.ObjectId, ref: 'Reservation' }
+    ]
 });
 
 module.exports = mongoose.model("Flight", flightSchema);

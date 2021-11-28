@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const passportLocalMongoose = require('passport-local-mongoose');
+const Reservation = require('./reservations');
 
 const userSchema = new Schema({
     email: {
@@ -33,19 +34,12 @@ const userSchema = new Schema({
         required:true,
         unique:true
     },
-    flights: [
-        {
-            flightId:{ type: Schema.Types.ObjectId, ref: 'Flight' },
-            chosenSeats:[{ seatNumber: String, seatType:{type:String,enum:["Economy","First","Business"]}}]
-        }
-    ]
-
-
-
-
+    reservations:[{
+        type: Schema.Types.ObjectId, ref: 'Reservation' 
+    }]
 
 });
 
-adminSchema.plugin(passportLocalMongoose);
+userSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model("User", userSchema);
