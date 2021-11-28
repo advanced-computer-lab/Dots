@@ -8,7 +8,11 @@ const reservationSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    flight: { 
+    outBoundflight: { 
+        type: Schema.Types.ObjectId,
+        ref: 'Flight'
+    },
+    inBoundflight: { 
         type: Schema.Types.ObjectId,
         ref: 'Flight'
     },
@@ -19,11 +23,11 @@ const reservationSchema = new Schema({
         type:String,enum:["Economy","First","Business"]
     },
     passengers: [{
-        firstName: String,
-        lastName: String,
-        passportNumber:String,
-        inBoundSeat:String,
-        outBoundSeat:String
+        firstName:{type: String} ,
+        lastName: {type: String},
+        passportNumber:{type: String},
+        outBoundSeat:{type: String},
+        inBoundSeat:{type: String}
     }]
 
 });
