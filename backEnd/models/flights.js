@@ -69,7 +69,22 @@ const flightSchema = new Schema({
     reservations:
     [
             { type: Schema.Types.ObjectId, ref: 'Reservation' }
-    ]
+    ],
+    firstClassPrice:
+    {
+        type: Number,
+        default: 0
+    },
+    businessClassPrice:
+    {
+        type: Number,
+        default: 0
+    },
+    economyClassPrice:
+    {
+        type: Number,
+        default: 0
+    },
 });
 
 module.exports = mongoose.model("Flight", flightSchema);
