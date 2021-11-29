@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import GuestNavBar from '../GuestNavBar/GuestNavBar';
-import Flight from '../Flight/Flight';
+import UserFlightList from '../UserFlightList/userFlightList.js';
 
 import './UserLanding.css';
 
@@ -12,7 +12,7 @@ class UserLanding extends Component {
             <div>
 
                 <GuestNavBar />
-                <Flight/>
+               <UserFlightList/>
 
 
             </div>
