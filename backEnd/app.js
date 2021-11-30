@@ -181,13 +181,12 @@ app.post("/flights/flightquery", async (req, res) => {
 
   outDates = []
   inDates = []
-   for (  let i = 7; i >-8; i--) {
-    let  tempOut = new Date ( queryOutDate ) ;
-    let  tempIn = new Date ( queryInDate) ;
+  for (let i = 7; i > -8; i--) {
+    let tempOut = new Date(queryOutDate);
+    let tempIn = new Date(queryInDate);
     outDates.push(tempOut.setDate(tempOut.getDate() - i));
     inDates.push(tempIn.setDate(tempIn.getDate() - i));
-    console.log( i  , new Date (outDates[i] ) );
-   }
+  }
 
 
   let filteredOutFlights = outFlights.filter((flight) => {
@@ -236,7 +235,7 @@ app.post("/flights/flightquery", async (req, res) => {
   })
 
 
-   
+
   res.send({ "out": outDates, "in": inDates });
 
   ///////////////////// Do this once for departure and once for arrival 
@@ -247,6 +246,8 @@ app.post("/flights/flightquery", async (req, res) => {
   // get all unique dates and put them in a new array where the key is the date and the value is the set of flights in this date 
 
 })
+
+
 
 
 // Starting server
