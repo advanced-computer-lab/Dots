@@ -159,91 +159,140 @@ app.get('/flights/:flightId', async (req, res) => {
 
 
 app.post("/flights/flightquery", async (req, res) => {
-  let body = req.body;
-  let outward = req.body.out
-  let inward = req.body.in
+
+  try {
+    let body = req.body;
+    let outward = req.body.out
+    let inward = req.body.in
 
 
-  let outDepDate = outward.dep;
-  let inDepDate = inward.dep;
-  let outClass = outward.class;
-  let inClass = inward.class;
+    let outDepDate = outward.dep;
+    let inDepDate = inward.dep;
+    let outClass = outward.class;
+    let inClass = inward.class;
 
 
-  let rawOutData = { "from": body.from, "to": body.to }
-  let rawInData = { "from": body.to, "to": body.from }
+    let rawOutData = { "departureLocation.airport": body.from, "arrivalLocation.airport": body.to }
+    let rawInData = { "departureLocation.airport": body.to, "arrivalLocation.airport": body.from }
 
-  let outFlights = await Flight.find(rawOutData);
-  let inFlights = await Flight.find(rawInData);
+    let outFlights = await Flight.find(rawOutData).exec();
+    let inFlights = await Flight.find(rawInData).exec();
 
-  let queryOutDate = new Date(outDepDate);
-  let queryInDate = new Date(inDepDate);
+    let queryOutDate = new Date(outDepDate);
+    let queryInDate = new Date(inDepDate);
 
-  outDates = []
-  inDates = []
-  for (let i = 7; i > -8; i--) {
-    let tempOut = new Date(queryOutDate);
-    let tempIn = new Date(queryInDate);
-    outDates.push(tempOut.setDate(tempOut.getDate() - i));
-    inDates.push(tempIn.setDate(tempIn.getDate() - i));
+    queryOutDate.setTime(queryOutDate.getTime() + (2 * 60 * 60 * 1000));
+    queryInDate.setTime(queryInDate.getTime() + (2 * 60 * 60 * 1000));
+
+    console.log(queryOutDate);
+    console.log(queryInDate);
+
+
+    outDates = []
+    inDates = []
+    for (let i = 7; i > -8; i--) {
+      let tempOut = new Date(queryOutDate);
+      let tempIn = new Date(queryInDate);
+      outDates.push(tempOut.setDate(tempOut.getDate() - i));
+      inDates.push(tempIn.setDate(tempIn.getDate() - i));
+    }
+
+
+    let filteredOutFlights = outFlights.filter((flight) => {
+      queryOutDate.setHours(0, 0, 0, 0);
+      let flightDate = new Date(flight.departureTime);
+      flightDate.setHours(0, 0, 0, 0);
+      let difference = Math.abs(queryOutDate - flightDate);
+      difference = difference / 1000 / 60 / 60 / 24;
+      if (difference > 7) {
+        return false;
+      }
+      else {
+        let passengers = parseInt(body.kids) + parseInt(body.adults);
+        switch (outClass) {
+          case "economy": return flight.economySeatsAvailable >= passengers; break;
+          case "business": return flight.businessSeatsAvailable >= passengers; break;
+          case "first": return flight.firstSeatsAvailable >= passengers; break;
+          default: return false;
+        }
+
+      }
+
+    })
+
+
+    let filteredInFlights = inFlights.filter((flight) => {
+      queryInDate.setHours(0, 0, 0, 0);
+      let flightDate = new Date(flight.arrivalTime);
+      flightDate.setHours(0, 0, 0, 0);
+      let difference = Math.abs(queryInDate - flightDate);
+      difference = difference / 1000 / 60 / 60 / 24;
+      if (difference > 7) {
+        return false;
+      }
+      else {
+        let passengers = parseInt(body.kids) + parseInt(body.adults);
+        switch (inClass) {
+          case "economy": return flight.economySeatsAvailable >= passengers; break;
+          case "business": return flight.businessSeatsAvailable >= passengers; break;
+          case "first": return flight.firstSeatsAvailable >= passengers; break;
+          default: return false;
+        }
+
+      }
+
+    })
+
+    // for every date in outDates, check if there is a flight with the same date in filteredOutFlights
+
+    console.log(filteredOutFlights[0]);
+
+
+
+    let outFlightsWithDate = []
+    for (let i = 0; i < outDates.length; i++) {
+      let tempDate = new Date(outDates[i]);
+      let tempDateString = tempDate.toISOString().substring(0, 10);
+      let tempFlights = filteredOutFlights.filter((flight) => {
+        let flightDate = new Date(flight.departureTime);
+        let flightDateString = flightDate.toISOString().substring(0, 10);
+        // console.log( "tempDate" , tempDateString)
+        // console.log( "flightDate" , flightDateString)
+        return flightDateString === tempDateString;
+      })
+
+      let dateObject = {}
+      dateObject[tempDateString] = tempFlights;
+      outFlightsWithDate.push({ "date": tempDateString, "flights": tempFlights });
+
+    }
+
+
+    let inFlightsWithDate = []
+    for (let i = 0; i < inDates.length; i++) {
+      let tempDate = new Date(inDates[i]);
+      let tempDateString = tempDate.toISOString().substring(0, 10);
+      let tempFlights = filteredInFlights.filter((flight) => {
+        let flightDate = new Date(flight.departureTime);
+        let flightDateString = flightDate.toISOString().substring(0, 10);
+        // console.log( "tempDate" , tempDateString)
+        // console.log( "flightDate" , flightDateString)
+        return flightDateString === tempDateString;
+      })
+
+      let dateObject = {}
+      dateObject[tempDateString] = tempFlights;
+      inFlightsWithDate.push({ "date": tempDateString, "flights": tempFlights });
+
+    }
+
+    res.status(200).send({ "out": outFlightsWithDate, "in": inFlightsWithDate });
   }
-
-
-  let filteredOutFlights = outFlights.filter((flight) => {
-    queryOutDate.setHours(0, 0, 0, 0);
-    let flightDate = new Date(flight.departureTime);
-    flightDate.setHours(0, 0, 0, 0);
-    let difference = Math.abs(queryOutDate - flightDate);
-    difference = difference / 1000 / 60 / 60 / 24;
-    if (difference > 7) {
-      return false;
-    }
-    else {
-      let passengers = parseInt(body.kids) + parseInt(body.adults);
-      switch (outClass) {
-        case "economy": return flight.economySeatsAvailable >= passengers; break;
-        case "business": return flight.businessSeatsAvailable >= passengers; break;
-        case "first": return flight.firstSeatsAvailable >= passengers; break;
-        default: return false;
-      }
-
-    }
-
-  })
-
-
-  let filteredInFlights = inFlights.filter((flight) => {
-    queryInDate.setHours(0, 0, 0, 0);
-    let flightDate = new Date(flight.arrivalTime);
-    flightDate.setHours(0, 0, 0, 0);
-    let difference = Math.abs(queryInDate - flightDate);
-    difference = difference / 1000 / 60 / 60 / 24;
-    if (difference > 7) {
-      return false;
-    }
-    else {
-      let passengers = parseInt(body.kids) + parseInt(body.adults);
-      switch (inClass) {
-        case "economy": return flight.economySeatsAvailable >= passengers; break;
-        case "business": return flight.businessSeatsAvailable >= passengers; break;
-        case "first": return flight.firstSeatsAvailable >= passengers; break;
-        default: return false;
-      }
-
-    }
-
-  })
-
-
-
-  res.send({ "out": outDates, "in": inDates });
-
-  ///////////////////// Do this once for departure and once for arrival 
-  // Get all flights with the parameters except the dates and seats 
-  // economy + business + first >= kids + adults 
-  // Loop through the flights and set the time in all dates to 0 
-  // filter the flights to get all flights before and after the dates by 7 days (n days to be generic)
-  // get all unique dates and put them in a new array where the key is the date and the value is the set of flights in this date 
+  catch (error) {
+    console.log(error);
+    res.status(400).send( null);
+  }
+  
 
 })
 
