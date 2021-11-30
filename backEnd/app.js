@@ -80,25 +80,25 @@ async function rand() {
 }
 app.post('/flights', async (req, res) => {
   console.log(req.body);
-    try {
-      Flight.create({
-        flightNumber: req.body.flightNo,
-        from: req.body.from,
-        departureTerminal: req.body.departure,
-        arrivalTerminal: req.body.arrival,
-        to: req.body.to,
-        departureTime: req.body.datedepart,
-        arrivalTime: req.body.datearrive,
-        economySeatsAvailable: (req.body.economyseats === null )?0 : req.body.economyseats,
-        businessSeatsAvailable: (req.body.businessseats === null )?0 : req.body.businessseats,
-        firstSeatsAvailable: (req.body.firstseats === null )?0 : req.body.firstseats,
-        totalEconomySeats: (req.body.economyseats === null )?0 : req.body.economyseats,
-        totalBusinessSeats: (req.body.businessseats === null )?0 : req.body.businessseats,
-        totalFirstSeats: (req.body.firstseats === null )?0 : req.body.firstseats,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+  try {
+    Flight.create({
+      flightNumber: req.body.flightNo,
+      from: req.body.from,
+      departureTerminal: req.body.departure,
+      arrivalTerminal: req.body.arrival,
+      to: req.body.to,
+      departureTime: req.body.datedepart,
+      arrivalTime: req.body.datearrive,
+      economySeatsAvailable: (req.body.economyseats === null) ? 0 : req.body.economyseats,
+      businessSeatsAvailable: (req.body.businessseats === null) ? 0 : req.body.businessseats,
+      firstSeatsAvailable: (req.body.firstseats === null) ? 0 : req.body.firstseats,
+      totalEconomySeats: (req.body.economyseats === null) ? 0 : req.body.economyseats,
+      totalBusinessSeats: (req.body.businessseats === null) ? 0 : req.body.businessseats,
+      totalFirstSeats: (req.body.firstseats === null) ? 0 : req.body.firstseats,
+    });
+  } catch (error) {
+    console.log(error);
+  }
   res.redirect('http://localhost:3000/');
 });
 
@@ -148,6 +148,100 @@ app.get('/flights/:flightId', async (req, res) => {
     console.log(error);
   }
 })
+
+
+
+app.post("/flights/flightquery", async (req, res) => {
+  let body = req.body;
+  let outward = req.body.out
+  let inward = req.body.in
+
+
+  let outDepDate = outward.dep;
+  let inDepDate = inward.dep;
+  let outClass = outward.class;
+  let inClass = inward.class;
+
+
+  let rawOutData = { "from": body.from, "to": body.to }
+  let rawInData = { "from": body.to, "to": body.from }
+
+  let outFlights = await Flight.find(rawOutData);
+  let inFlights = await Flight.find(rawInData);
+
+  let queryOutDate = new Date(outDepDate);
+  let queryInDate = new Date(inDepDate);
+
+  outDates = []
+  inDates = []
+  for (let i = 7; i > -8; i--) {
+    let tempOut = new Date(queryOutDate);
+    let tempIn = new Date(queryInDate);
+    outDates.push(tempOut.setDate(tempOut.getDate() - i));
+    inDates.push(tempIn.setDate(tempIn.getDate() - i));
+  }
+
+
+  let filteredOutFlights = outFlights.filter((flight) => {
+    queryOutDate.setHours(0, 0, 0, 0);
+    let flightDate = new Date(flight.departureTime);
+    flightDate.setHours(0, 0, 0, 0);
+    let difference = Math.abs(queryOutDate - flightDate);
+    difference = difference / 1000 / 60 / 60 / 24;
+    if (difference > 7) {
+      return false;
+    }
+    else {
+      let passengers = parseInt(body.kids) + parseInt(body.adults);
+      switch (outClass) {
+        case "economy": return flight.economySeatsAvailable >= passengers; break;
+        case "business": return flight.businessSeatsAvailable >= passengers; break;
+        case "first": return flight.firstSeatsAvailable >= passengers; break;
+        default: return false;
+      }
+
+    }
+
+  })
+
+
+  let filteredInFlights = inFlights.filter((flight) => {
+    queryInDate.setHours(0, 0, 0, 0);
+    let flightDate = new Date(flight.arrivalTime);
+    flightDate.setHours(0, 0, 0, 0);
+    let difference = Math.abs(queryInDate - flightDate);
+    difference = difference / 1000 / 60 / 60 / 24;
+    if (difference > 7) {
+      return false;
+    }
+    else {
+      let passengers = parseInt(body.kids) + parseInt(body.adults);
+      switch (inClass) {
+        case "economy": return flight.economySeatsAvailable >= passengers; break;
+        case "business": return flight.businessSeatsAvailable >= passengers; break;
+        case "first": return flight.firstSeatsAvailable >= passengers; break;
+        default: return false;
+      }
+
+    }
+
+  })
+
+
+
+  res.send({ "out": outDates, "in": inDates });
+
+  ///////////////////// Do this once for departure and once for arrival 
+  // Get all flights with the parameters except the dates and seats 
+  // economy + business + first >= kids + adults 
+  // Loop through the flights and set the time in all dates to 0 
+  // filter the flights to get all flights before and after the dates by 7 days (n days to be generic)
+  // get all unique dates and put them in a new array where the key is the date and the value is the set of flights in this date 
+
+})
+
+
+
 
 // Starting server
 app.listen(port, () => {
