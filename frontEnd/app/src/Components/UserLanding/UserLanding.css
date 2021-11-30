@@ -16,8 +16,8 @@ body {
 }
 
  #search{
-    background: rgb(255 255 255 / 100%);
-    box-shadow: 0 8px 32px 0 rgb(31 38 135 / 37%);
+    background: rgb(255 255 255 / 80%);
+    box-shadow: 0 8px 32px 0 rgb(31 38 135 / 80%);
     backdrop-filter: blur( 34px );
     -webkit-backdrop-filter: blur( 0.0px );
     border-radius: 15px;
@@ -31,6 +31,12 @@ body {
      color:#ffffff;
      font-family: 'Raleway', sans-serif;
      font-weight: 400;
+ }
+
+ #alignTitle{
+    position: relative;
+    right: 350px;
+    top: 80px;
  }
 
  .center{

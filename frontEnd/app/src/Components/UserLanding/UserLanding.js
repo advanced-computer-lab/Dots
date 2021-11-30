@@ -34,10 +34,12 @@ class UserLanding extends Component {
             }}>
 
                 <GuestNavBar />
-                <Stack spacing = {34} alignItems = "center">
-                    <Typography id="title" variant="h3" gutterBottom component="div">
+                <Stack spacing = {30} alignItems = "center">
+                    <Stack id = "alignTitle" direction = "row" justifyContent="flex-start" > 
+                    <Typography id="title" variant="h2" gutterBottom component="div">
                         Explore the world with Takeoff
                     </Typography>
+                    </Stack>
 
                     <Card id="search" sx={{ maxWidth: 900, borderRadius: 5 }}>
 
