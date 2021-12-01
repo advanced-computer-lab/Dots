@@ -98,7 +98,7 @@ class FlightClassCard extends Component {
                                 </Typography>
                             </CardContent>
                             <CardActions className='zeropaddingMargin' >
-                                <Button variant="outlined" id="classButton"  >$500</Button>
+                                <Button variant="outlined" id="classButton"  onClick={this.changee}  >$500</Button>
                             </CardActions>
                         </Card>
                     </Grid>
@@ -177,7 +177,7 @@ class FlightClassCard extends Component {
                                 </Typography>
                             </CardContent>
                             <CardActions className='zeropaddingMargin' >
-                                <Button variant="outlined" id="classButton"  >$500</Button>
+                                <Button variant="outlined" id="classButton"  onClick={this.changee} >$500</Button>
                             </CardActions>
                         </Card>
                     </Grid>

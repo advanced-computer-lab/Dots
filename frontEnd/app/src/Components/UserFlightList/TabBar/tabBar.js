@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import './tabBar.css';
 import Flight from '../../Flight/Flight';
 import FlightClassCard from '../collapsedCard/collapsedCard';
 import Collapse from '@mui/material/Collapse';
+import Button from '@mui/material/Button';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 class TabPanel extends Component {
     constructor(props) {
@@ -30,7 +31,7 @@ class TabPanel extends Component {
                 flights: [this.props.flight]
             });
             console.log(f);
-            this.props.update2(f);
+            this.props.update2(f,this.props.flight);
         }
     }
 
@@ -51,7 +52,7 @@ class TabPanel extends Component {
             >
                 {value === index && (
                     <div>
-                        <Flight faded={this.state.faded} flight={flight} selectFlight={selectFlight} />
+                        <Flight faded={this.state.faded} flight={flight} selectFlight={selectFlight} return={this.props.return} />
                         <Collapse in={this.state.collapseCard && !this.state.faded} collapsedSize={0}>
                             <FlightClassCard update={this.update} />
                         </Collapse>
@@ -90,15 +91,31 @@ class BasicTabs extends Component {
 
     handleChange = (event, newValue) => {
         console.log(newValue);
-        this.setState({ value: newValue })
+        this.setState({ value: newValue });
+        this.props.updatevalue(newValue);
     };
     update1 = (val) => {
-        this.setState({ faded: val })// or with es6 this.setState({name})
+        this.setState({ faded: val })
+        this.props.updateFaded(val);// or with es6 this.setState({name})
     }
-    update2 = (val) => {
-        this.setState({ Allflights: val })// or with es6 this.setState({name})
+    update2 = (val,val1) => {
+        this.setState({ Allflights: val,chosenflight:val1 })
+        this.props.updateAllflights(val);
+        this.props.updatechosenflight(val1);
     }
 
+    reset= ()=>{
+        this.setState({
+            Allflights: this.state.OriginalFlights,
+            chosenflight: null,
+            faded:!this.state.faded,
+            
+        });
+        this.props.updateAllflights(this.state.Allflights);
+        this.props.updatechosenflight(this.state.chosenflight);
+        this.props.updateFaded(this.state.faded);
+    
+    }
 
     render() {
         const { Allflights } = this.state;
@@ -125,7 +142,12 @@ class BasicTabs extends Component {
 
                 {Allflights?.map((flight, i) => (
                     flight.flights?.map((f, j) => (
-                        this.state.faded ? <TabPanel value={flight.date} Allflights={Allflights} update2={this.update2} update1={this.update1} index={this.state.value} flight={f}></TabPanel> : <Flight flight={f} faded={!this.state.faded} />
+                        this.state.faded ?
+                            <TabPanel return={this.props.return} value={flight.date} Allflights={Allflights} update2={this.update2} update1={this.update1} index={this.state.value} flight={f}></TabPanel> :
+                            <div id="chosendiv">
+                                <Flight id="flightCard"  return={this.props.return}  flight={f} faded={!this.state.faded} />
+                                <Button variant="text" id='diffFlighttext' onClick={this.reset}> <HighlightOffIcon/>Choose different flight</Button>
+                            </div>
                     ))
                 ))}
 

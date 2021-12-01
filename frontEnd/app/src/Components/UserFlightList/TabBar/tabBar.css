@@ -17,3 +17,14 @@
     padding-top: 0.7em;
 }
 
+#diffFlighttext{
+    text-decoration: underline;
+    margin-right: 16em;
+    direction: ltr;
+}
+#flightCard{
+    direction: ltr;
+}
+#chosendiv{
+    direction: rtl;
+}

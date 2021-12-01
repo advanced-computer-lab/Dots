@@ -11,6 +11,11 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import {
+    ThemeProvider,
+    createTheme,
+    withStyles,
+} from "@material-ui/core/styles";
 
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import './Flight.css';
@@ -29,8 +34,10 @@ class Flight extends Component {
     handleChange = (event) => {
         this.setState({ class: event.target.value });
     };
-    click=()=>{
-        this.props.selectFlight(this.props.flight);
+    click = () => {
+        if (this.props.selectFlight) {
+            this.props.selectFlight(this.props.flight);
+        }
     }
 
     render() {
@@ -39,44 +46,53 @@ class Flight extends Component {
             let time = date.toLocaleTimeString('en-US');
             let timearr = time.split(':');
             let x = timearr[2];
-            let y='';
-            if (timearr[0].length===1){
-                y=`0${timearr[0]}`;
+            let y = '';
+            if (timearr[0].length === 1) {
+                y = `0${timearr[0]}`;
             }
-            else{
-                y=`${timearr[0]}`;
+            else {
+                y = `${timearr[0]}`;
             }
             return `${y}:${timearr[1]} ${x.charAt(3)}${x.charAt(4)}`
         }
-        const timediff=function (dateFuture, dateNow) {
+        const timediff = function (dateFuture, dateNow) {
             let diffInMilliSeconds = Math.abs(dateFuture - dateNow) / 1000;
-        
+
             // calculate days
             const days = Math.floor(diffInMilliSeconds / 86400);
             diffInMilliSeconds -= days * 86400;
-           
-        
+
+
             // calculate hours
             const hours = Math.floor(diffInMilliSeconds / 3600) % 24;
             diffInMilliSeconds -= hours * 3600;
-           // console.log('calculated hours', hours);
-        
+            // console.log('calculated hours', hours);
+
             // calculate minutes
             const minutes = Math.floor(diffInMilliSeconds / 60) % 60;
             diffInMilliSeconds -= minutes * 60;
-           // console.log('minutes', minutes);
-        
+            // console.log('minutes', minutes);
+
             let difference = '';
             if (days > 0) {
-              difference += (days === 1) ? `${days}D ` : `${days}D `;
+                difference += (days === 1) ? `${days}D ` : `${days}D `;
             }
-        
+
             difference += (hours === 0 || hours === 1) ? `${hours}H ` : `${hours}H `;
-        
-            difference += (minutes === 0 || hours === 1) ? `${minutes}M` : `${minutes}M`; 
-        
+
+            difference += (minutes === 0 || hours === 1) ? `${minutes}M` : `${minutes}M`;
+
             return difference;
-          }
+        }
+        const DirectionAwareFlightTakeoffIcon = withStyles((theme) => ({
+            root: {
+                transform: theme.direction === "rtl" ? "scaleX(-1)" : undefined,
+            },
+        }))(FlightTakeoffIcon);
+
+        const ltrTheme = createTheme({ direction: "ltr" });
+        const rtlTheme = createTheme({ direction: "rtl" });
+        const isRtl = true;
         return (
 
             <Card sx={{ maxWidth: 1200 }} id='flightCard'>
@@ -112,9 +128,11 @@ class Flight extends Component {
                                             }}
                                         />
                                         <Stack alignItems="center" spacing={0.5}>
-                                            <FlightTakeoffIcon />
+                                            {!this.props.return ? <FlightTakeoffIcon /> : <ThemeProvider theme={isRtl ? rtlTheme : ltrTheme}>
+                                                <DirectionAwareFlightTakeoffIcon />
+                                            </ThemeProvider>}
                                             <Typography variant="overline" gutterBottom component="div" >
-                                                Duration {timediff(flight.arrivalTime,flight.departureTime )}
+                                                Duration {timediff(flight.arrivalTime, flight.departureTime)}
                                             </Typography>
                                         </Stack>
                                         <hr
