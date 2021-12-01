@@ -27,7 +27,7 @@ class UserLanding extends Component {
                 backgroundPosition: 'center',
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
-                height: "540px"
+                height: "765px"
 
 
 

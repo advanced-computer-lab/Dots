@@ -27,15 +27,16 @@ class UserSearch extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            depClass: "",
-            arrClass: "",
+            depClass: 0,
+            arrClass: 0,
             depDate: new Date(),
             arrDate: new Date(),
             from: "",
             to: "",
             adults: 1,
             kids: 0,
-            openAlert: false
+            openAlert: false,
+            errorMessage: "",
         }
     }
 
@@ -84,11 +85,8 @@ class UserSearch extends Component {
 
     areFieldsValid = () => {
         const {
-            adults, kids, arrClass, from, depClass, to } = this.state
-        //    console.log(from.length > 0 &&  to.length > 0)
-        const depc = classes[depClass]
-        const arrc = classes[arrClass]
-        return (parseInt(adults) > 0 || parseInt(kids) > 0) && from.length > 0 && to.length > 0 && depc && arrc
+            from, to } = this.state
+        return from.length > 0 && to.length > 0
 
     }
 
@@ -101,13 +99,36 @@ class UserSearch extends Component {
     };
 
 
+    isDateValid = () => {
+        const { depDate, arrDate } = this.state
+        return depDate < arrDate
+    }
+
+    arePassengersValid = () => {
+        const { adults, kids } = this.state
+        return parseInt(adults) + parseInt(kids) > 0
+    }
+
+
     onSearch = () => {
 
         if (this.areFieldsValid()) {
-            console.log("Search")
+            if (this.isDateValid()) {
+                if (this.arePassengersValid()) {
+                    console.log("Search")
+
+                }
+                else {
+                    this.setState({ openAlert: true, errorMessage: "Please select at least one passenger" })
+                }
+
+            } else {
+                this.setState({ openAlert: true, errorMessage: "Departure date must be before arrival date" })
+            }
+
         }
         else {
-            this.setState({ openAlert: true })
+            this.setState({ openAlert: true, errorMessage: "Please fill Departure and Return airports" })
 
         }
     }
@@ -262,7 +283,7 @@ class UserSearch extends Component {
                 </Stack>
                 <Snackbar open={this.state.openAlert} autoHideDuration={5000} onClose={this.handleCloseAlert}>
                     <Alert onClose={this.handleCloseAlert} severity="error" sx={{ width: '100%' }}>
-                        Complete all fields to searh flights
+                        {this.state.errorMessage}
                     </Alert>
                 </Snackbar>
 
