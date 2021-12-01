@@ -9,9 +9,12 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require("express-session");
 
+const nodemailer = require("nodemailer");
 
 const Flight = require('./models/flights');
-const Admin = require('./models/admins')
+const Admin = require('./models/admins');
+const Reservation = require('./models/reservations');
+const User = require('./models/users')
 
 const MongoURI = process.env.MONGO_URI;
 
@@ -33,6 +36,17 @@ mongoose.connect(MongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .catch(err => console.log(err));
 app.use(cors({ origin: true, credentials: true }));
 
+
+//------------------nodemailer transporter--------------------
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  secure: false,
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
+  },
+});
+//--------------------------
 
 // Flight.create({ from: "LAX", to: "JFK", flightDate: 2022-1-12, cabin: "Cairo"});
 
@@ -149,6 +163,28 @@ app.get('/flights/:flightId', async (req, res) => {
   }
 })
 
+//------------------reservations delete--------
+app.delete('/reservations/:reservationId', async (req, res) => {
+  try{
+    const reservationId = mongoose.Types.ObjectId(req.params.reservationId);
+
+    Reservation.findByIdAndDelete(reservationId)
+    .then((reservationDeleted)=>{
+      User.findById(reservationDeleted.user)
+      .then((userFound)=>{
+        let mailoptions = {
+          from: process.env.MAIL_USER,
+          to: "omarelsawi98@gmail.com",
+          subject: "Refund Confirmation",
+          html: `<h2>Hello ${userFound.email}</h2>`
+        }
+      })
+    })
+  } catch (error) {
+    res.send(error)
+  }
+})
+//----------------
 
 
 app.post("/flights/flightquery", async (req, res) => {
@@ -231,12 +267,12 @@ app.post("/flights/flightquery", async (req, res) => {
 
   res.send({ "out": outDates, "in": inDates });
 
-  ///////////////////// Do this once for departure and once for arrival 
-  // Get all flights with the parameters except the dates and seats 
-  // economy + business + first >= kids + adults 
-  // Loop through the flights and set the time in all dates to 0 
+  ///////////////////// Do this once for departure and once for arrival
+  // Get all flights with the parameters except the dates and seats
+  // economy + business + first >= kids + adults
+  // Loop through the flights and set the time in all dates to 0
   // filter the flights to get all flights before and after the dates by 7 days (n days to be generic)
-  // get all unique dates and put them in a new array where the key is the date and the value is the set of flights in this date 
+  // get all unique dates and put them in a new array where the key is the date and the value is the set of flights in this date
 
 })
 
