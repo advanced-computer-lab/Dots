@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import GuestNavBar from '../GuestNavBar/GuestNavBar';
-import Flight from '../Flight/Flight';
+import UserFlightList from '../UserFlightList/userFlightList.js';
 import UserSearch from '../UserSearch/UserSearch';
 import Typography from "@material-ui/core/Typography";
 import Card from '@mui/material/Card';
@@ -48,6 +48,8 @@ class UserLanding extends Component {
                         </CardContent>
 
                     </Card>
+
+                    
 
 
                 </Stack>
