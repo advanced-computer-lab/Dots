@@ -165,21 +165,30 @@ app.get('/flights/:flightId', async (req, res) => {
 
 //------------------reservations delete--------
 app.delete('/reservations/:reservationId', async (req, res) => {
-  try{
+  try {
     const reservationId = mongoose.Types.ObjectId(req.params.reservationId);
-
     Reservation.findByIdAndDelete(reservationId)
-    .then((reservationDeleted)=>{
-      User.findById(reservationDeleted.user)
-      .then((userFound)=>{
-        let mailoptions = {
-          from: process.env.MAIL_USER,
-          to: "omarelsawi98@gmail.com",
-          subject: "Refund Confirmation",
-          html: `<h2>Hello ${userFound.email}</h2>`
-        }
+      .then((reservationDeleted) => {
+        User.findByIdAndUpdate(reservationDeleted.user, { $pull: { reservations: reservationId } }, { new: true })
+          .then((userFound) => {
+            console.log(userFound)
+            console.log('hi')
+            let mailOptions = {
+              from: `'Takeoff Airways' <${process.env.MAIL_USER}>`,
+              to: userFound.email,
+              subject: "Refund Confirmation",
+              html: `<h2>Hello ${userFound.firstName}!</h2>
+              <p>this mail is to confirm your refund of $${reservationDeleted.price}</p>`
+            }
+            transporter.sendMail(mailOptions,(err,data)=>{
+              if (err)
+              console.log('Error: ',err)
+              else
+              res.send("Email Sent")
+              console.log('Email Sent')
+            })
+          })
       })
-    })
   } catch (error) {
     res.send(error)
   }
@@ -319,7 +328,7 @@ app.post("/flights/flightquery", async (req, res) => {
   }
   catch (error) {
     console.log(error);
-    res.status(400).send( null);
+    res.status(400).send(null);
   }
 
 

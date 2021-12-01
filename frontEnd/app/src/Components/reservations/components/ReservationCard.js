@@ -16,7 +16,10 @@ class ReservationCard extends Component {
 
     onDeleteReservation = () => {
         //add user and reservation id later to the path and afterwards remove reservation from front-end
-        axios.delete(`/reservations`)
+        axios.delete(`http://localhost:8000/reservations/${'61a7f10e4f6448c1e7a8cd10'}`)
+            .then(() => {
+                this.setState({ openCancelDialog: false })
+            })
     }
 
     render() {

@@ -3,6 +3,8 @@ import './App.css';
 import FlightsList from './Components/flightsList.js';
 import UserLanding from './Components/UserLanding/UserLanding.js';
 import ReservationsPage from './Components/reservations/ReservationsPage'
+import UserFlightList from './Components/UserFlightList/userFlightList.js';
+
 import { Navbar } from 'react-bootstrap'
 import { Nav } from 'react-bootstrap'
 import { NavDropdown } from 'react-bootstrap'
@@ -19,7 +21,8 @@ class App extends Component {
       <BrowserRouter>
 
         <Routes>
-          <Route exact path="/" element={<UserLanding />} />
+          <Route path="/" element={<UserLanding />} />
+          <Route path="/flights" element={<UserFlightList/>} />
           <Route path="/admin" element={<FlightsList />} />
           <Route path="/reservations" element={<ReservationsPage/>} />
 
