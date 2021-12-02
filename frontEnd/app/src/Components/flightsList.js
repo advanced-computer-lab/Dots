@@ -452,14 +452,24 @@ class FlightsList extends Component {
                 width: 200
             },
             {
-                field: 'from',
+                field: 'departureLocation',
                 headerName: 'From',
-                width: 200
+                width: 200,
+                renderCell: (params) => (
+                    <div>
+                        {params.value.airport}
+                    </div>
+                ),
             },
             {
-                field: 'to',
+                field: 'arrivalLocation',
                 headerName: 'To',
                 width: 200,
+                renderCell: (params) => (
+                    <div>
+                        {params.value.airport}
+                    </div>
+                ),
             },
             {
                 field: 'departureTime',
@@ -472,23 +482,48 @@ class FlightsList extends Component {
                 width: 200,
             },
             {
-                field: 'departureTerminal',
+                field: 'departureLocationTermianl',
                 headerName: 'Departure Terminal',
                 width: 200,
+                valueGetter: (params) =>
+                    `${(params.getValue(params.id, 'departureLocation')).terminal || ''}`,
             },
             {
-                field: 'arrivalTerminal',
+                field: 'arrivalLocationTerminal',
                 headerName: 'Arrival Terminal',
                 width: 200,
+                valueGetter: (params) =>
+                `${(params.getValue(params.id, 'arrivalLocation')).terminal || ''}`
+                
             },
             {
-                field: 'cabin',
-                headerName: 'Cabin',
+                field: 'economySeatsAvailable',
+                headerName: 'Available Economy Seats',
                 width: 200,
             },
             {
-                field: 'seatsAvailable',
-                headerName: 'Seats Available',
+                field: 'firstSeatsAvailable',
+                headerName: 'Available First Seats',
+                width: 200,
+            },
+            {
+                field: 'businessSeatsAvailable',
+                headerName: 'Available Business Seats',
+                width: 200,
+            },
+            {
+                field: 'economyClassPrice',
+                headerName: 'Economy Seats Price',
+                width: 200,
+            },
+            {
+                field: 'firstClassPrice',
+                headerName: 'First Seats Price',
+                width: 200,
+            },
+            {
+                field: 'businessClassPrice',
+                headerName: 'Business Seats Price',
                 width: 200,
             },
             {
