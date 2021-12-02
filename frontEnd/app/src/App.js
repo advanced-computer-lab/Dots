@@ -12,6 +12,7 @@ import { Container } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import EditPage from './Components/EditUser/EditPage';
 
 
 class App extends Component {
@@ -25,7 +26,7 @@ class App extends Component {
           <Route path="/flights" element={<UserFlightList/>} />
           <Route path="/admin" element={<FlightsList />} />
           <Route path="/reservations" element={<ReservationsPage/>} />
-
+          <Route path="/:userName/edit-info" element={<EditPage/>} />
         </Routes>
 
       </BrowserRouter>
