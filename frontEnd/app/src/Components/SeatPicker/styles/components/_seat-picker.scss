@@ -3,9 +3,12 @@
   flex-direction: column;
 
   text-align: center;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
   width: max-content;
+  // z-index: 2;
+  margin-left: 5px;
+  margin-right: 5px;
 
   & > *:not(:last-child){
     margin-bottom: 2px;

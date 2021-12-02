@@ -8,7 +8,9 @@ export default class Seat extends Component {
   };
 
   handleClick = () => {
-    !this.props.isReserved && this.props.selectSeat();
+    !this.props.isReserved && (this.props.cabin===this.props.selectedCabin) && this.props.selectSeat();
+
+
   };
 
   render() {
@@ -18,13 +20,18 @@ export default class Seat extends Component {
       isEnabled,
       isReserved,
       orientation,
+      cabin,
+      zero,
+      selectedCabin,
     } = this.props;
     const className =
       "seat" +
       (isSelected ? " seat--selected" : "") +
-      (!isSelected && isEnabled && !isReserved ? " seat--enabled" : "") +
+      (!isSelected && isEnabled && !isReserved && (cabin==selectedCabin)? " seat--enabled" : "") +
       (isReserved ? " seat--reserved" : "") +
-      ` seat--${!orientation ? "north" : orientation}`;
+      ` seat--${!orientation ? "north" : orientation}` +
+      (cabin==='First'?" seat--first":(cabin==="Business"?" seat--business":" seat--economy")) +
+      (cabin!==selectedCabin?" seat--wrongCabin":"");
     return (
       <div data-tip={tooltip} className={className} onClick={this.handleClick}>
         {tooltip ? <ReactTooltip {...this.props.tooltipProps} /> : null}
@@ -43,4 +50,5 @@ Seat.propTypes = {
   seatNumber: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   selectSeat: PropTypes.func.isRequired,
   tooltipProps: PropTypes.object,
+  cabin: PropTypes.string,
 };

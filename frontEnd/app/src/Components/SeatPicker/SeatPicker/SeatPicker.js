@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Row from "./Row";
 import Seat from "./Seat";
 import Blank from "./Blank";
+import RowNumber from "./RowNumber";
 
 export class SeatPicker extends Component {
   static defaultProps = {
@@ -21,6 +22,7 @@ export class SeatPicker extends Component {
     super(props);
     const { rows } = props;
     const { selectedSeats, size } = this.getAlreadySelectedSeats();
+    console.log(selectedSeats)
     this.state = {
       tooltipOverrides: {},
       selectedSeats: selectedSeats,
@@ -33,6 +35,7 @@ export class SeatPicker extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
+    console.log(state.selectedSeats)
     if (props.maxReservableSeats < state.size) {
       let sum = 0;
       const selectedSeats = {};
@@ -67,10 +70,16 @@ export class SeatPicker extends Component {
     let selectedSeats = {};
     let size = 0;
     const { maxReservableSeats, alpha, selectedByDefault } = this.props;
+    console.log(this.props.rows)
     if (selectedByDefault) {
+      let gapCounter = 0;
       this.props.rows.forEach((row, index) => {
+
+        if (row.length === 0) {
+          gapCounter++;
+        }
         const rowNumber = alpha
-          ? String.fromCharCode("A".charCodeAt(0) + index)
+          ? String.fromCharCode("A".charCodeAt(0) + index - gapCounter)
           : (index + 1).toString();
         row.forEach((seat, index) => {
           if (seat && seat.isSelected) {
@@ -146,6 +155,7 @@ export class SeatPicker extends Component {
         ),
         selectedSeats: this.addSeat(selectedSeats, row, number, id),
         size: size + 1,
+      }, () => {
       });
     }
   };
@@ -156,6 +166,7 @@ export class SeatPicker extends Component {
       tooltipOverrides: this.addTooltip(tooltipOverrides, row, number, tooltip),
       selectedSeats: this.deleteSeat(row, number),
       size: size - 1,
+    }, () => {
     });
   };
 
@@ -166,7 +177,6 @@ export class SeatPicker extends Component {
       maxReservableSeats,
       addSeatCallback,
       removeSeatCallback,
-      continuous,
     } = this.props;
     const seatAlreadySelected = this.includeSeat(selectedSeats, row, number);
 
@@ -174,20 +184,7 @@ export class SeatPicker extends Component {
       removeSeatCallback({ row, number, id }, this.acceptDeselection);
     } else {
       if (size < maxReservableSeats) {
-        addSeatCallback({ row, number, id }, this.acceptSelection);
-      } else if (continuous) {
-        const auxRow = Object.keys(selectedSeats)[0];
-        const auxNumber = Object.keys(selectedSeats[auxRow])[0];
-        addSeatCallback(
-          { row, number, id },
-          this.acceptSelection,
-          {
-            row: auxRow,
-            number: auxNumber,
-            id: selectedSeats[auxRow][auxNumber],
-          },
-          this.acceptDeselection
-        );
+        addSeatCallback({ row, number, id }, this.acceptSelection, this.acceptDeselection);
       }
     }
   };
@@ -204,10 +201,29 @@ export class SeatPicker extends Component {
   renderRows() {
     const { selectedSeats: seats } = this.state;
     const { alpha, visible } = this.props;
+    let gapCounter = 0;
+
+    let splitter = () => {
+      if (gapCounter === 1) {
+        return <h4 style={{ textAlign: 'center' }} > First </h4>
+      } else if (gapCounter === 2) {
+        return <h4 style={{ textAlign: 'center' }} > Business </h4>
+      } else if (gapCounter == 3) {
+        return <h4 style={{ textAlign: 'center' }} > Economy </h4>
+      } else {
+        return <h4 style={{ textAlign: 'center' }} >  <br></br> </h4>
+      }
+    }
+
     return this.props.rows.map((row, index) => {
-      const rowNumber = alpha
-        ? String.fromCharCode("A".charCodeAt(0) + index)
+      let rowNumber = alpha
+        ? String.fromCharCode("A".charCodeAt(0) + index - gapCounter)
         : (index + 1).toString();
+
+      if (row.length === 0) {
+        gapCounter++;
+        rowNumber = "";
+      }
       const isSelected = !!seats[rowNumber];
       const props = {
         visible,
@@ -215,30 +231,42 @@ export class SeatPicker extends Component {
         isSelected,
         selectedSeat: null,
         seats: row,
+        length: row.length
         // key: `Row${rowNumber}`,
-        selectSeat: this.selectSeat,
+        // selectSeat: this.selectSeat,
       };
 
-      return (
-        <Row key={index} {...props}>
-          {this.renderSeats(row, rowNumber, isSelected)}{" "}
-        </Row>
-      );
+
+      if (row.length !== 0) {
+        return (
+          <Row key={index} {...props}>
+            {this.renderSeats(row, rowNumber, isSelected)}{" "}
+          </Row>
+        );
+      } else {
+        return (
+          <Row key={index} {...props}>
+            {splitter()}
+          </Row>
+        )
+      }
     });
   }
 
   renderSeats(seats, rowNumber, isRowSelected) {
-    const { selectedSeats, size, rowLength, tooltipOverrides } = this.state;
-    const { maxReservableSeats, continuous } = this.props;
-    const blanks = new Array(
-      rowLength - seats.length > 0 ? rowLength - seats.length : 0
-    ).fill(0);
+    const { selectedSeats, size, tooltipOverrides } = this.state;
+    const { maxReservableSeats, continuous, selectedCabin } = this.props;
+    let rowCabin = seats[0].cabin
     const row = seats.map((seat, index) => {
-      if (seat === null) return <Blank key={index} />;
+      if (seat === null) return <Blank key={index} cabin={rowCabin} />;
+      if (seat === "number") return <RowNumber key={index} rowNumber={rowNumber} visible={true} />;
+
       const isSelected =
         isRowSelected &&
         this.includeSeat(selectedSeats, rowNumber, seat.number);
       let tooltip = seat.tooltip;
+      let cabin = seat.cabin
+      // let reservationCabin=seat[0].reservationCabin
       if (
         tooltipOverrides[rowNumber] &&
         tooltipOverrides[rowNumber][seat.number] != null
@@ -254,14 +282,13 @@ export class SeatPicker extends Component {
         selectSeat: this.selectSeat.bind(this, rowNumber, seat.number, seat.id),
         seatNumber: seat.number,
         tooltipProps: this.props.tooltipProps,
+        cabin,
+        selectedCabin,
+        zero: index,
+        // reservationCabin
       };
       return <Seat key={index} {...props} />;
     });
-    if (blanks.length > 0) {
-      blanks.forEach((blank, index) => {
-        row.push(<Blank key={row.length + index + 1} />);
-      });
-    }
     return row;
   }
 }
