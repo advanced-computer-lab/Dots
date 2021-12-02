@@ -1,24 +1,32 @@
 import React, { Component } from 'react';
-import { Card, CardContent, CardHeader, Avatar, Divider, Grid, Typography, CardActions, Button, Dialog, Stack, List, ListItem } from '@mui/material';
+import { Card, CardContent, CardHeader, Avatar, Divider, Grid, Typography, CardActions, CircularProgress, Button, Dialog, List, ListItem, Alert } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import LoadingButton from '@mui/lab/LoadingButton';
 import axios from 'axios'
 
 class ReservationCard extends Component {
     state = {
         openCancelDialog: false,
+        isLoading: false,
+        error: false
     }
     openDialog = () => {
         this.setState({ openCancelDialog: true })
     }
     closeDialog = () => {
-        this.setState({ openCancelDialog: false })
+        this.setState({ openCancelDialog: false, error: false })
     }
 
     onDeleteReservation = () => {
-        //add user and reservation id later to the path and afterwards remove reservation from front-end
-        axios.delete(`http://localhost:8000/reservations/${'61a7f10e4f6448c1e7a8cd10'}`)
+        this.setState({ isLoading: true, error: false })
+        axios.delete(`http://localhost:8000/reservations/${this.props.id ? this.props.id : ''}`)
             .then(() => {
                 this.setState({ openCancelDialog: false })
+                setTimeout(() => {
+                    this.setState({ isLoading: false })
+                }, 200);
+            }).catch(() => {
+                this.setState({ isLoading: false, error: true })
             })
     }
 
@@ -132,7 +140,7 @@ class ReservationCard extends Component {
                             <Grid container justifyContent="center">
                                 <CardActions>
                                     <Button onClick={this.openDialog}
-                                        variant="contained" size="large" color="error" sx={{ mr: 'auto' }}>Cancel My Reservation</Button>
+                                        variant="contained" size="large" color="error">Cancel My Reservation</Button>
                                 </CardActions>
                             </Grid>
                         </Grid>
@@ -140,7 +148,13 @@ class ReservationCard extends Component {
                 </CardContent>
 
                 <Dialog onClose={this.closeDialog} open={this.state.openCancelDialog}>
-                    <List justifyContent="center">
+                    {
+                        this.state.error &&
+                        <Alert variant="filled" severity="error" sx={{ borderRadius: 0 }}>
+                            Something went wrong. Please try again.
+                        </Alert>
+                    }
+                    <List>
                         <ListItem>
                             You are about to cancel your reservation. Please note that the rate for your
                             flights may have been changed and if you wish to repurchase your flights, you will
@@ -148,8 +162,8 @@ class ReservationCard extends Component {
                             Are you sure you want to delete this flight?
                         </ListItem>
                         <ListItem sx={{ justifyContent: "center" }}>
-                            <Button onClick={this.onDeleteReservation}
-                                variant="contained" size="large" color="error" sx={{ mr: 'auto' }}>Confirm Cancellation</Button>
+                            <LoadingButton onClick={this.onDeleteReservation} loadingIndicator={<CircularProgress color="inherit" size={30} />}
+                                variant="contained" size="large" color="error" loading={this.state.isLoading}>Confirm Cancellation</LoadingButton>
                         </ListItem>
                     </List>
                 </Dialog>

@@ -166,26 +166,25 @@ app.get('/flights/:flightId', async (req, res) => {
 //------------------reservations delete--------
 app.delete('/reservations/:reservationId', async (req, res) => {
   try {
+    if (!req.params.reservationId) res.status(400).send({ message: "Reservation Id invalid" })
     const reservationId = mongoose.Types.ObjectId(req.params.reservationId);
     Reservation.findByIdAndDelete(reservationId)
       .then((reservationDeleted) => {
+        if (!reservationDeleted) res.status(404).send({ message: "Couldn't find reservation" })
         User.findByIdAndUpdate(reservationDeleted.user, { $pull: { reservations: reservationId } }, { new: true })
           .then((userFound) => {
-            console.log(userFound)
-            console.log('hi')
             let mailOptions = {
               from: `'Takeoff Airways' <${process.env.MAIL_USER}>`,
               to: userFound.email,
               subject: "Refund Confirmation",
-              html: `<h2>Hello ${userFound.firstName}!</h2>
-              <p>this mail is to confirm your refund of $${reservationDeleted.price}</p>`
+              html: `<h2 style="color:#09827C;">Hello ${userFound.firstName}!</h2>
+                <p>this mail is to confirm your refund of $${reservationDeleted.totalPrice}</p>`
             }
-            transporter.sendMail(mailOptions,(err,data)=>{
+            transporter.sendMail(mailOptions, (err, data) => {
               if (err)
-              console.log('Error: ',err)
+                res.status(400).send({ message: "Error sending email" })
               else
-              res.send("Email Sent")
-              console.log('Email Sent')
+                res.send(`Email Sent: ${data}`)
             })
           })
       })
