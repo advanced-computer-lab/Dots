@@ -286,12 +286,22 @@ app.post("/flights/flightquery", async (req, res) => {
 
     }
 
-    res.status(200).send({ "out": outFlightsWithDate, "in": inFlightsWithDate });
+    res.status(200).send({ 
+      depOriginalFlights: outFlightsWithDate, depAllFlights: outFlightsWithDate, depsearchdate: new Date(outDepDate),
+      depfaded: true,
+      depchosenFlight: null,
+      returnOriginalFlights: inFlightsWithDate,
+      returnAllflights: inFlightsWithDate,
+      returnsearchdate: new Date(inDepDate),
+      returnchosenflight: null,
+      returnfaded: true,
+      numberOfpassengers: parseInt(body.kids) + parseInt(body.adults)
+     }  );
   }
   catch (error) {
-    console.log(error);
-    res.status(400).send( null);
-  }
+  console.log(error);
+  res.status(400).send(null);
+}
   
 
 })

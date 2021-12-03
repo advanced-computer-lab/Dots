@@ -51,8 +51,8 @@ class SearchModule extends Component {
 
         let airportSet = new Set();
         flights.map((flight) => {
-          airportSet.add(flight.from)
-          airportSet.add(flight.to)
+          airportSet.add(flight.departureLocation.airport)
+          airportSet.add(flight.arrivalLocation.airport)
         })
         this.setState({ airports: Array.from(airportSet) })
 
@@ -108,6 +108,7 @@ class SearchModule extends Component {
           <Stack direction="row" spacing={5}>
 
             <Button variant="outlined"
+              color = "primary"
               startIcon={<FilterAltRoundedIcon />}
               onClick={this.onFilterShow}
             >
@@ -138,7 +139,6 @@ class SearchModule extends Component {
               alignItems="center"
             >
 
-              <TextField id="outlined-basic" label="Outlined" variant="outlined" />
 
 
                <Autocomplete
@@ -227,7 +227,7 @@ class SearchModule extends Component {
                 onChange={onArrTerminalChange}
               />
 
-                <Autocomplete
+                {/* <Autocomplete
                 disablePortal
                 id="combo-box-demo"
                 options={['Economy', 'Business', 'First']}
@@ -236,7 +236,7 @@ class SearchModule extends Component {
                 renderInput={(params) =>
                   <TextField {...params} label="Cabin" onChange={onCabinChange} />}
 
-              />
+              /> */}
 
              <TextField id="outlined-basic"
                 label="Filter By Minimum Available Seats"

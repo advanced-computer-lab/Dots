@@ -38,6 +38,8 @@
 Button {
   border-radius: 10px!important;
   height: fit-content;
+  border-color: #076F72 !important;
+
 }
 
 /* .MuiOutlinedInput-root.MuiInputBase-root.MuiInputBase-colorPrimary.MuiInputBase-formControl.MuiInputBase-adornedEnd.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
@@ -49,4 +51,17 @@ display: flex;
 justify-content: center;
     padding-top: 5px;
 
+}
+
+.MuiButton-contained{
+  background-color: #076F72 !important;
+}
+
+.css-1rwt2y5-MuiButtonBase-root-MuiButton-root{
+  color: #076F72 !important;
+
+}
+
+:root{
+  --bs-primary: #076F72 !important;
 }

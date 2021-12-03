@@ -1,0 +1,16 @@
+#plane{
+    position:relative;
+    top:190px;
+    left:515px;
+    transform:rotate(120deg);
+}
+
+#background{
+    position:relative;
+    top:100%;
+    left:0%;
+}
+
+/* img {
+    max-width: 70% !important;
+} */

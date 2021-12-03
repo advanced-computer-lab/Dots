@@ -18,12 +18,30 @@ import Alert from '@mui/material/Alert';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import {withRouter} from 'react-router';
+
+
+import { Link , useNavigate , Navigate } from 'react-router-dom';
 
 import './UserSearch.css'
 
+
+// const dummy = () => {
+//     return (
+//         <div>
+//             <h1>Hello</h1>
+//         </div>
+//     )
+
+//    navigate = useNavigate();
+
+
+// }
+
+
 class UserSearch extends Component {
 
-
+  // include propse that init the state
     constructor(props) {
         super(props);
         this.state = {
@@ -40,16 +58,24 @@ class UserSearch extends Component {
         }
     }
 
+
+
+    resetState = (newState) => {
+        // set all state props to initial state
+        this.setState( {depClass:newState.depClass , arrClass: newState.arrClass , depDate: newState.depDate , arrDate:newState.arrDate,
+        from:newState.from , to:newState.to , adults:newState.adults , kids:newState.kids , openAlert:false , errorMessage:"" } )
+    }
+
     onFromChange = (event) => {
         let input = event.target.innerHTML
-        if (input.length > 4) input = ""
+        if (input.length > 15) input = ""
         this.setState({ from: input })
 
     }
 
     onToChange = (event) => {
         let input = event.target.innerHTML
-        if (input.length > 4) input = ""
+        if (input.length > 15) input = ""
         this.setState({ to: input })
 
     }
@@ -115,7 +141,25 @@ class UserSearch extends Component {
         if (this.areFieldsValid()) {
             if (this.isDateValid()) {
                 if (this.arePassengersValid()) {
-                    console.log("Search")
+                    console.log("Search");
+
+                    // <Navigate to="/flights" />
+
+                    //  let navigate = this.props.navigate();
+                    //  this.props.history.push(
+                    //      '/flights'
+            
+                    //       );
+
+                    //  navigate("/flights");
+                    
+                    // const { from, to, depDate, arrDate, depClass, arrClass, adults, kids } = this.state
+                    // let query = { "out" : { "dep": depDate, "class": depClass } , "in" :{ "dep": arrDate , "class": arrClass } ,  "from":"POLONIA",  "to":"LUQA" , "adults" : "2" , "kids" : "0" }
+
+                    // fetch('http://localhost:8000//flights/flightquery').then(res => res.json()).then(data => {
+                    //     <Link to="/flights"/>
+                    //     console.log(data)
+                    // } )
 
                 }
                 else {
@@ -269,7 +313,11 @@ class UserSearch extends Component {
 
                         </Stack>
                         <Stack direction="row">
-                            <Button variant="contained" onClick={this.onSearch} type="submit">Search Flights</Button>
+                            
+                            <Button variant="contained" class = "filled" onClick={this.onSearch} type="submit"> 
+                            Search Flights    </Button>
+
+                            <Link to="/flights"> Search   </Link>
 
 
 
@@ -293,16 +341,20 @@ class UserSearch extends Component {
 }
 
 
-const airports = ["LAX",
-    "JFK",
-    "LHR",
-    "CAI",
-    "DXB",
-    "CDG",
-    "MUC",
-    "RUH",
-    "YYZ",
-    "FRA"
+// function WithNavigate(props) {
+//     let navigate = useNavigate();
+//     return  <UserSearch navigate={navigate} />
+// }
+
+const airports = [ "POLONIA",
+"IVATO",
+"TAWAU",
+"BARAJAS",
+"LUQA",
+"LANZAROTE",
+"PAPHOS INTL",
+"VALLEE DE SEINE"
+
 ]
 
 
@@ -311,4 +363,4 @@ const vals = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 const classes = ['Economy', 'Business', 'First']
 
 
-export default UserSearch;
+export default  UserSearch ;

@@ -17,19 +17,19 @@ class userFlightList extends Component {
 
     constructor() {
         super();
-        /*this.state = {
-            depfaded: this.props.depfaded,
-            depvalue: this.props.depsearchdate,
-            depOriginalFlights: this.props.depOriginalFlights,
-            depAllflights: this.props.depAllFlights,
-            depchosenflight: this.depchosenflight,
-            returnfaded: this.props.returnfaded,
-            returnvalue: this.props.returnsearchdate,
-            returnOriginalFlights: this.props.returnOriginalFlights,
-            returnAllflights: this.props.returnAllFlights,
-            returnchosenflight: this.props.returnchosenflight,
-            numberOfpassengers: this.props.numberOfpassengers
-        }*/
+        this.state = {
+            // depfaded: this.props.depfaded,
+            // depvalue: this.props.depsearchdate,
+            // depOriginalFlights: this.props.depOriginalFlights,
+            // depAllflights: this.props.depAllFlights,
+            // depchosenflight: this.depchosenflight,
+            // returnfaded: this.props.returnfaded,
+            // returnvalue: this.props.returnsearchdate,
+            // returnOriginalFlights: this.props.returnOriginalFlights,
+            // returnAllflights: this.props.returnAllFlights,
+            // returnchosenflight: this.props.returnchosenflight,
+            // numberOfpassengers: this.props.numberOfpassengers
+        }
     }
 
     updatedepFaded = (val1) => {

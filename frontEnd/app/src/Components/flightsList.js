@@ -159,11 +159,11 @@ class FlightsList extends Component {
             .then(response => response.json())
             .then(flights => {
                 this.setState({ permanentFlights: flights, flights: flights })
-
+                console.log(flights[0])
                 let airportSet = new Set();
                 this.state.permanentFlights.map((flight) => {
-                    airportSet.add(flight.from)
-                    airportSet.add(flight.to)
+                    airportSet.add(flight.departureLocation.airport)
+                    airportSet.add(flight.arrivalLocation.airport)
                 })
                 this.setState({ airports: Array.from(airportSet) })
                 console.log(this.state.airports)
@@ -179,7 +179,7 @@ class FlightsList extends Component {
         const { permanentFlights, from, to, depDate, arrDate, depTime, arrTime, depTerminal,
             arrTerminal, cabin, seats } = this.state;
 
-        if (!depDate && from.length === 0 && to.length === 0 && depTime === null && arrTime === null && depTerminal.length === 0 &&
+        if (!depDate && !arrDate && from.length === 0 && to.length === 0 && depTime === null && arrTime === null && depTerminal.length === 0 &&
             arrTerminal.length === 0 && cabin.length === 0 && seats.length === 0) {
             this.setState({ flights: permanentFlights })
             console.log('Break')
@@ -199,12 +199,12 @@ class FlightsList extends Component {
 
 
         let filterByFrom = permanentFlights.filter(flight => {
-            return from === flight.from || from.length === 0
+            return from === flight.departureLocation.airport || from.length === 0
         })
 
 
         let filterByTo = permanentFlights.filter(flight => {
-            return to === flight.to || to.length === 0
+            return to === flight.arrivalLocation.airport || to.length === 0
         })
 
 
@@ -239,6 +239,9 @@ class FlightsList extends Component {
             }
             else return true
         })
+
+
+        console.log('Arr Date', filterByArr);
 
         aggFilter = intersectionFLights(aggFilter, filterByArr)
         // console.log(aggFilter)
@@ -280,7 +283,7 @@ class FlightsList extends Component {
         let filterByDepTerminal = permanentFlights.filter(flight => {
             // console.log('Dep Terminal : ', depTerminal)
             if (depTerminal) {
-                return flight.departureTerminal === depTerminal
+                return flight.departureLocation.terminal === depTerminal
             }
             else return true
         })
@@ -291,32 +294,32 @@ class FlightsList extends Component {
 
             // console.log('Arr Terminal : ', arrTerminal)
             if (arrTerminal) {
-                return flight.arrivalTerminal === arrTerminal
+                return flight.arrivalLocation.terminal === arrTerminal
             }
             else return true
         })
 
         aggFilter = intersectionFLights(aggFilter, filterByArrTerminal)
 
-        let filterByCabin = []
-        if (cabin) {
-            filterByCabin = permanentFlights.filter(flight => {
-                console.log(cabin)
-                console.log(flight.cabin)
-                console.log(flight.cabin === cabin)
-                return flight.cabin === cabin
-            })
+        // let filterByCabin = []
+        // if (cabin) {
+        //     filterByCabin = permanentFlights.filter(flight => {
+        //         console.log(cabin)
+        //         console.log(flight.cabin)
+        //         console.log(flight.cabin === cabin)
+        //         return flight.cabin === cabin
+        //     })
 
-        }
-        else {
-            filterByCabin = permanentFlights
-        }
+        // }
+        // else {
+        //     filterByCabin = permanentFlights
+        // }
 
-        console.log(filterByCabin)
+        // console.log(filterByCabin)
 
-        aggFilter = intersectionFLights(aggFilter, filterByCabin)
+        // aggFilter = intersectionFLights(aggFilter, filterByCabin)
 
-        console.log(aggFilter)
+        // console.log(aggFilter)
 
 
         let filterBySeats = []
@@ -325,7 +328,7 @@ class FlightsList extends Component {
                 console.log('inseats', flight.seatsAvailable)
                 console.log('search', seats)
                 // type cast string to int  and compare
-                return parseInt(flight.seatsAvailable) >= parseInt(seats)
+                return parseInt(flight.economySeatsAvailable) + parseInt(flight.businessSeatsAvailable) + parseInt(flight.firstSeatsAvailable) >= parseInt(seats)
             })
 
         }
@@ -447,86 +450,6 @@ class FlightsList extends Component {
         };
         const columns = [
             {
-                field: 'flightNumber',
-                headerName: 'Flight Number',
-                width: 200
-            },
-            {
-                field: 'departureLocation',
-                headerName: 'From',
-                width: 200,
-                renderCell: (params) => (
-                    <div>
-                        {params.value.airport}
-                    </div>
-                ),
-            },
-            {
-                field: 'arrivalLocation',
-                headerName: 'To',
-                width: 200,
-                renderCell: (params) => (
-                    <div>
-                        {params.value.airport}
-                    </div>
-                ),
-            },
-            {
-                field: 'departureTime',
-                headerName: 'Departure Time',
-                width: 200,
-            },
-            {
-                field: 'arrivalTime',
-                headerName: 'Arrival Time',
-                width: 200,
-            },
-            {
-                field: 'departureLocationTermianl',
-                headerName: 'Departure Terminal',
-                width: 200,
-                valueGetter: (params) =>
-                    `${(params.getValue(params.id, 'departureLocation')).terminal || ''}`,
-            },
-            {
-                field: 'arrivalLocationTerminal',
-                headerName: 'Arrival Terminal',
-                width: 200,
-                valueGetter: (params) =>
-                `${(params.getValue(params.id, 'arrivalLocation')).terminal || ''}`
-                
-            },
-            {
-                field: 'economySeatsAvailable',
-                headerName: 'Available Economy Seats',
-                width: 200,
-            },
-            {
-                field: 'firstSeatsAvailable',
-                headerName: 'Available First Seats',
-                width: 200,
-            },
-            {
-                field: 'businessSeatsAvailable',
-                headerName: 'Available Business Seats',
-                width: 200,
-            },
-            {
-                field: 'economyClassPrice',
-                headerName: 'Economy Seats Price',
-                width: 200,
-            },
-            {
-                field: 'firstClassPrice',
-                headerName: 'First Seats Price',
-                width: 200,
-            },
-            {
-                field: 'businessClassPrice',
-                headerName: 'Business Seats Price',
-                width: 200,
-            },
-            {
                 field: 'actions',
                 type: 'actions',
                 headerName: 'Actions',
@@ -546,6 +469,87 @@ class FlightsList extends Component {
                     ];
                 },
             },
+            {
+                field: 'flightNumber',
+                headerName: 'Flight Number',
+                width: 120
+            },
+            {
+                field: 'departureLocation',
+                headerName: 'From',
+                width: 140,
+                renderCell: (params) => (
+                    <div>
+                        {params.value.airport}
+                    </div>
+                ),
+            },
+            {
+                field: 'arrivalLocation',
+                headerName: 'To',
+                width: 140,
+                renderCell: (params) => (
+                    <div>
+                        {params.value.airport}
+                    </div>
+                ),
+            },
+            {
+                field: 'departureTime',
+                headerName: 'Departure Time',
+                width: 280,
+            },
+            {
+                field: 'arrivalTime',
+                headerName: 'Arrival Time',
+                width: 280,
+            },
+            {
+                field: 'departureLocationTerminal',
+                headerName: 'Departure Terminal',
+                width: 150,
+                valueGetter: (params) =>
+                    `${(params.getValue(params.id, 'departureLocation')).terminal || ''}`,
+            },
+            {
+                field: 'arrivalLocationTerminal',
+                headerName: 'Arrival Terminal',
+                width: 150,
+                valueGetter: (params) =>
+                `${(params.getValue(params.id, 'arrivalLocation')).terminal || ''}`
+                
+            },
+            {
+                field: 'economySeatsAvailable',
+                headerName: 'Available Economy Seats',
+                width: 195,
+            },
+            {
+                field: 'firstSeatsAvailable',
+                headerName: 'Available First Seats',
+                width: 160,
+            },
+            {
+                field: 'businessSeatsAvailable',
+                headerName: 'Available Business Seats',
+                width: 195,
+            },
+            {
+                field: 'economyClassPrice',
+                headerName: 'Economy Seats Price',
+                width: 170,
+            },
+            {
+                field: 'firstClassPrice',
+                headerName: 'First Seats Price',
+                width: 150,
+            },
+            {
+                field: 'businessClassPrice',
+                headerName: 'Business Seats Price',
+                width: 170,
+            }
+           
         ];
         return (
             <div>
@@ -580,7 +584,7 @@ class FlightsList extends Component {
                         pageSize={pageSize}
                         onPageSizeChange={(newPageSize) => this.setPageSize(newPageSize)}
                         rowsPerPageOptions={[10, 20, 50]}
-                        checkboxSelection
+                        checkboxSelection = {false}
                         disableSelectionOnClick
                     />
                 </div>
