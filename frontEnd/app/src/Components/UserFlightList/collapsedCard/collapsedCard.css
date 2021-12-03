@@ -1,0 +1,73 @@
+.zeropaddingMargin{
+    margin:0;
+    padding: 0em;
+}
+#collapseContainer{
+    margin-top: 2em;
+    margin-bottom: 2em;
+    height: 50vh ;
+    width: 50vw;
+    background-color: lightgrey;
+    padding:1em;
+    margin-left: auto;
+    margin-right: auto;
+}
+#economytext{
+    color: black;
+    margin: 1em;
+    margin-top: 0.3em;
+}
+
+.classCard{
+    margin-top: auto;
+    margin-bottom: auto;
+    height: 45vh;
+    padding-top: 0 ;
+}
+
+#economy{
+    color: #ff0000 !important;
+    font-size: 1.4rem;
+    padding-top: 0 ;
+    margin-top: 0 ;
+
+}
+
+#economyTitle{
+    background-color: cyan;
+    height: 6vh;
+    padding-top: 0.3em ;
+}
+#classButton{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0em;
+    width: 13vw;
+}
+
+#perPassengerEconomy{
+    padding:0;
+    color: #000;
+    background-color: lavenderblush;
+    margin-top: 9.5em;
+
+}
+#perPassengerFirst{
+    padding:0;
+    color: #000;
+    background-color: lavenderblush;
+    margin-top: 5em;
+
+}
+#perPassengerBusiness{
+    padding:0;
+    color: #000;
+    background-color: lavenderblush;
+    margin-top: 0.5em;
+
+}
+#perPassengerText{
+    font-size: 0.7rem;
+    margin-left:5em;
+    margin-right: auto;
+}

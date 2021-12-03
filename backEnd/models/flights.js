@@ -8,10 +8,14 @@ const flightSchema = new Schema({
         type:String,
         
     },
+<<<<<<< HEAD
     from: {
         type:String
         /*required:true*/
     },
+=======
+   
+>>>>>>> 0e6130bbea68900913f54d5d134ea320da9d7a49
     departureLocation: {
         country:{type:String /*required:true*/},
         city:{type:String /*required:true*/},
@@ -24,10 +28,14 @@ const flightSchema = new Schema({
         airport:{type:String /*required:true*/},
         terminal:{type:String /*required:true*/}
     },
+<<<<<<< HEAD
     to: {
         type:String,
         /*required:true*/
     },
+=======
+  
+>>>>>>> 0e6130bbea68900913f54d5d134ea320da9d7a49
     departureTime: {
         type:Date,
         /*required:true*/
@@ -69,7 +77,22 @@ const flightSchema = new Schema({
     reservations:
     [
             { type: Schema.Types.ObjectId, ref: 'Reservation' }
-    ]
+    ],
+    firstClassPrice:
+    {
+        type: Number,
+        default: 0
+    },
+    businessClassPrice:
+    {
+        type: Number,
+        default: 0
+    },
+    economyClassPrice:
+    {
+        type: Number,
+        default: 0
+    },
 });
 
 module.exports = mongoose.model("Flight", flightSchema);
