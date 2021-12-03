@@ -14,10 +14,23 @@ import LuggageIcon from '@mui/icons-material/Luggage';
 class FlightClassCard extends Component {
     state={
     };
-    changee=()=>{
+    changeEconomy=()=>{
         //console.log(this.props.faded);
         //this.props.update(!(this.props.faded));
-        this.props.update(true,false);
+        this.props.update(true,false,'Economy');
+        
+    }
+
+    changeFirst=()=>{
+        //console.log(this.props.faded);
+        //this.props.update(!(this.props.faded));
+        this.props.update(true,false,'First');
+        
+    }
+    changeBusiness=()=>{
+        //console.log(this.props.faded);
+        //this.props.update(!(this.props.faded));
+        this.props.update(true,false,'Business');
         
     }
     render() {
@@ -47,7 +60,7 @@ class FlightClassCard extends Component {
                                 </Typography>
                             </CardContent>
                             <CardActions className='zeropaddingMargin' >
-                                <Button variant="outlined" id="classButton" onClick={this.changee} >$500</Button>
+                                <Button variant="outlined" id="classButton" onClick={this.changeEconomy} >$500</Button>
                             </CardActions>
                         </Card>
                     </Grid>
@@ -98,7 +111,7 @@ class FlightClassCard extends Component {
                                 </Typography>
                             </CardContent>
                             <CardActions className='zeropaddingMargin' >
-                                <Button variant="outlined" id="classButton"  onClick={this.changee}  >$500</Button>
+                                <Button variant="outlined" id="classButton"  onClick={this.changeFirst}  >$500</Button>
                             </CardActions>
                         </Card>
                     </Grid>
@@ -177,7 +190,7 @@ class FlightClassCard extends Component {
                                 </Typography>
                             </CardContent>
                             <CardActions className='zeropaddingMargin' >
-                                <Button variant="outlined" id="classButton"  onClick={this.changee} >$500</Button>
+                                <Button variant="outlined" id="classButton"  onClick={this.changeBusiness} >$500</Button>
                             </CardActions>
                         </Card>
                     </Grid>
