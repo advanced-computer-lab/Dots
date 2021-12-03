@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import FlightsList from './Components/flightsList.js';
 import UserLanding from './Components/UserLanding/UserLanding.js';
-<<<<<<< HEAD
 import Summary from './Components/Summary/Summary';
-=======
 import UserFlightList from './Components/UserFlightList/userFlightList.js';
->>>>>>> 0e6130bbea68900913f54d5d134ea320da9d7a49
 
 import { Navbar } from 'react-bootstrap'
 import { Nav } from 'react-bootstrap'

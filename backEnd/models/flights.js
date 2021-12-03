@@ -8,14 +8,7 @@ const flightSchema = new Schema({
         type:String,
         
     },
-<<<<<<< HEAD
-    from: {
-        type:String
-        /*required:true*/
-    },
-=======
    
->>>>>>> 0e6130bbea68900913f54d5d134ea320da9d7a49
     departureLocation: {
         country:{type:String /*required:true*/},
         city:{type:String /*required:true*/},
@@ -28,14 +21,7 @@ const flightSchema = new Schema({
         airport:{type:String /*required:true*/},
         terminal:{type:String /*required:true*/}
     },
-<<<<<<< HEAD
-    to: {
-        type:String,
-        /*required:true*/
-    },
-=======
   
->>>>>>> 0e6130bbea68900913f54d5d134ea320da9d7a49
     departureTime: {
         type:Date,
         /*required:true*/
