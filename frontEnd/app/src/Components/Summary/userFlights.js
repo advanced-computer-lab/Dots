@@ -21,18 +21,6 @@ function UserFlights (props) {
         <div>
         <img id ="background2" src='/download.jpg'/>
         <div id= "animTitle"><LightSpeed left>Your Reserved Flights</LightSpeed></div>
-        <Fade right duartion = {2000}><List id= "list"
-      sx={{
-        width: '100%',
-        maxWidth: 800,
-        bgcolor: 'background.paper',
-        position: 'relative',
-        overflow: 'auto',
-        maxHeight: 650,
-        '& ul': { padding: 0 },
-      }}
-      subheader={<li />}
-    >  
         {
             data.map(item => (<div key= {item}><ReservationCard 
             outBound = {item.outBoundflight}
@@ -40,8 +28,6 @@ function UserFlights (props) {
             reservation = {item}
             />
            </div>))}
-           </List>
-           </Fade>
         </div>
     );
 }

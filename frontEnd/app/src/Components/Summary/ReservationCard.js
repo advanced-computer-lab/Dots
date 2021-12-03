@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, Avatar, Divider, Grid, Typography, CardA
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
+import Fade from 'react-reveal/Fade';
 import './Summary2.css';
 
 
@@ -26,7 +27,18 @@ class ReservationCard extends Component {
             borderRadius: '1vw'
         }
         return (
-            <div id= "card">
+            <Fade right duartion = {2000}><List id= "list"
+      sx={{
+        width: '100%',
+        maxWidth: 800,
+        bgcolor: 'background.paper',
+        position: 'relative',
+        overflow: 'auto',
+        maxHeight: 650,
+        '& ul': { padding: 0 },
+      }}
+      subheader={<li />}>
+      <div id= "card">
             <Accordion>
             <div id = "AccSummary">
             <AccordionSummary
@@ -185,6 +197,8 @@ class ReservationCard extends Component {
             </AccordionDetails>
             </Accordion>
             </div>
+            </List>
+           </Fade>
         );
     }
 }
