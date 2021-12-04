@@ -100,6 +100,7 @@ class SeatSelector extends Component {
       activePassenger: 0,
       outBoundCabin: outBoundCabin,
       inBoundCabin: inBoundCabin,
+      previousStage:this.props.details
     };
   }
 
@@ -625,15 +626,16 @@ class SeatSelector extends Component {
 
             </Slide>
 
+            <Link to="/payment" type="submit" state={{ result: this.state }} >
+              <Button
+                variant="contained"
+                color="success"
+                sx={{ alignSelf: "flex-end", mt: "50px" }}
+              >
+                Checkout
+              </Button>
+            </Link>
 
-
-            <Button
-              variant="contained"
-              color="success"
-              sx={{ alignSelf: "flex-end", mt: "50px" }}
-            >
-              Checkout
-            </Button>
 
           </Box>
         </Box>
