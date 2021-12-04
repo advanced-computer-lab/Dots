@@ -194,6 +194,30 @@ app.delete('/reservations/:reservationId', async (req, res) => {
 })
 //----------------
 
+//----------------get and post user data----------------
+app.get('/users/:userId', async (req, res) => {
+  const userId = mongoose.Types.ObjectId(req.params.userId)
+
+  User.findById(userId)
+    .then((data) => {
+      res.send(data)
+    })
+})
+
+app.put('users/:userId', async (req, res) => {
+  const userId = mongoose.Types.ObjectId(req.params.userId)
+  const userData = req.body
+  delete userData._id
+
+  User.findByIdAndUpdate(userId, userData, { new: true })
+    .then((data) => {
+      res.send(data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
+//--------------------------------------------------------------
 
 app.post("/flights/flightquery", async (req, res) => {
 

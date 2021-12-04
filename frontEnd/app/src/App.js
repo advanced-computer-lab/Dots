@@ -26,7 +26,7 @@ class App extends Component {
           <Route path="/flights" element={<UserFlightList/>} />
           <Route path="/admin" element={<FlightsList />} />
           <Route path="/reservations" element={<ReservationsPage/>} />
-          <Route path="/:userName/edit-info" element={<EditPage/>} />
+          <Route path="/:userId/edit-info" element={<EditPage/>} />
         </Routes>
 
       </BrowserRouter>
