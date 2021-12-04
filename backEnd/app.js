@@ -333,6 +333,7 @@ app.post("/flights/flightquery", async (req, res) => {
 
     res.status(200).send({ 
       depOriginalFlights: outFlightsWithDate, depAllFlights: outFlightsWithDate, depsearchdate: new Date(outDepDate),
+      from :body.from, to: body.to,
       depfaded: true,
       depchosenFlight: null,
       returnOriginalFlights: inFlightsWithDate,

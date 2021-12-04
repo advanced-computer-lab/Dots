@@ -272,10 +272,13 @@ function UserFlightListFunction(props) {
     const returnchosenflight = result.returnchosenflight
     const returnflightClass = result.returnflightClass
     const numberOfpassengers = result.numberOfpassengers
-    
+    const from = result.from
+    const to = result.to
 
     return <UserFlightList depfaded={depfaded} 
                            depvalue={depvalue} 
+                           from = {from}
+                           to = {to}
                            depOriginalFlights={depOriginalFlights}
                            depAllflights = {depAllflights}
                            depchosenflight = {depchosenflight}
