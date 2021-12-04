@@ -49,14 +49,14 @@
     padding:0;
     color: #000;
     background-color: lavenderblush;
-    margin-top: 9em;
+    margin-top: 8em;
 
 }
 #perPassengerFirst{
     padding:0;
     color: #000;
     background-color: lavenderblush;
-    margin-top: 4.5em;
+    margin-top: 3.5em;
 
 }
 #perPassengerBusiness{
@@ -70,4 +70,8 @@
     font-size: 0.7rem;
     margin-left:5em;
     margin-right: auto;
+}
+ 
+#bclass{
+    padding-bottom: 0;
 }

@@ -1,0 +1,37 @@
+  
+  .label {
+    margin-bottom: 0.5rem;
+  }
+  
+  .modes {
+    margin-bottom: 1rem;
+  }
+  
+  .button-container {
+    margin-bottom: 0.5rem;
+  }
+  
+  .fade-enter {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  .fade-enter-active {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+  .fade-exit {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+  .fade-exit-active {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  .fade-enter-active,
+  .fade-exit-active {
+    transition: opacity 500ms, transform 500ms;
+  }
+  .transition-control{
+    margin-top: 25px;
+  }
+  
