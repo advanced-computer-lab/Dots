@@ -29,9 +29,6 @@ class passengerForm extends Component {
     }
 
     render() {
-        console.log('sssssss')
-        console.log(this.props)
-        console.log('sssssss')
         return (
             
             <div>
