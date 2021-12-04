@@ -42,21 +42,22 @@ class UserFlightList extends Component {
             return p;
         }
         this.state = {
+            from:this.props.from,
             depfaded: this.props.depfaded ? this.props.depfaded : true,
             depvalue: this.props.depsearchdate,
             depOriginalFlights: this.props.depOriginalFlights,
             depAllflights: this.props.depAllFlights,
             depchosenflight: this.depchosenflight,
-            depflightClass: this.props.depflightClass? this.props.depflightClass : '',
-            returnfaded: this.props.returnfaded,
+            depflightClass: this.props.depflightClass ? this.props.depflightClass : '',
+            to:this.props.to,
+            returnfaded: this.props.returnfaded ? this.props.returnfaded : true,
             returnvalue: this.props.returnsearchdate,
             returnOriginalFlights: this.props.returnOriginalFlights,
             returnAllflights: this.props.returnAllFlights,
             returnchosenflight: this.props.returnchosenflight,
-            returnflightClass: this.props.returnflightClass?this.props.returnflightClass  : '',
+            returnflightClass: this.props.returnflightClass ? this.props.returnflightClass : '',
             numberOfpassengers: this.props.numberOfpassengers,
-            returnfaded: this.props.returnfaded ? this.props.returnfaded : true,
-            passengers: this.props.passengers ? this.props.passengers : buildpassengers(2)
+            passengers: this.props.passengers ? this.props.passengers : buildpassengers(this.props.numberOfpassengers)
         }
     }
 
@@ -218,17 +219,21 @@ class UserFlightList extends Component {
         return (
             <Container maxWidth="xl" id="cont">
 
-                <Typography variant="h4" component="div" id='flightText' > <FlightTakeoffIcon fontSize='large' /> {`${Allflights[0].flights[0].departureLocation.city} to ${Allflights[0].flights[0].arrivalLocation.city}`}</Typography>
+                <Typography variant="h4" component="div" id='flightText' > <FlightTakeoffIcon fontSize='large' /> {`${this.state.from} to ${this.state.to}`}</Typography>
 
-                <TabBar Allflights={Allflights} value={Allflights[1].date} return={false} updateFaded={this.updatedepFaded}
+                <TabBar Allflights={this.state.depAllflights} OriginalFlights={this.state.depOriginalFlights} chosenClass={this.state.depchosenflight}
+                    faded={this.state.depfaded} chosenflight={this.state.depchosenflight} value={this.state.depvalue}
+                    return={false} updateFaded={this.updatedepFaded}
                     updatevalue={this.updatedepvalue} updateAllflights={this.updatedepAllflights}
                     updatechosenflight={this.updatedepchosenflight} updateclass={this.updatedepClass} />
 
                 <Typography variant="h4" component="div" id='flightText' > <ThemeProvider theme={isRtl ? rtlTheme : ltrTheme}>
                     <DirectionAwareFlightTakeoffIcon fontSize='large' />
-                </ThemeProvider> {`${Allflights[0].flights[0].departureLocation.city} to ${Allflights[0].flights[0].arrivalLocation.city}`}</Typography>
+                </ThemeProvider> {`${this.state.to} to ${this.state.from}`}</Typography>
 
-                <TabBar Allflights={Allflights} value={Allflights[1].date} return={true} updateFaded={this.updatereturnFaded}
+                <TabBar Allflights={this.state.returnAllflights} OriginalFlights={this.state.returnOriginalFlights} chosenClass={this.state.returnchosenflight}
+                    faded={this.state.returnfaded} chosenflight={this.state.returnchosenflight} value={this.state.returnvalue} return={true} 
+                    updateFaded={this.updatereturnFaded}
                     updatevalue={this.updatereturnvalue}
                     updateAllflights={this.updatereturnAllflights}
                     updatechosenflight={this.updatereturnchosenflight}
@@ -258,7 +263,7 @@ class UserFlightList extends Component {
 function UserFlightListFunction(props) {
     let location = useLocation();
     const { result } = location.state
- 
+
     const depfaded = result.depfaded
     const depvalue = result.depvalue
     const depOriginalFlights = result.depOriginalFlights

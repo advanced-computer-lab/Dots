@@ -52,7 +52,7 @@ class TabPanel extends Component {
                     <div>
                         <Flight faded={this.state.faded} flight={flight} selectFlight={selectFlight} return={this.props.return} />
                         <Collapse in={this.state.collapseCard && !this.state.faded} collapsedSize={0}>
-                            <FlightClassCard update={this.update} />
+                            <FlightClassCard update={this.update} flight={flight} />
                         </Collapse>
                     </div>
                 )}
@@ -81,9 +81,9 @@ class BasicTabs extends Component {
             value: this.props.value,
             OriginalFlights: this.props.Allflights,
             Allflights: this.props.Allflights,
-            faded: true,
-            chosenflight: null,
-            chosenClass:''
+            faded: this.props.faded,
+            chosenflight: this.props.chosenflight,
+            chosenClass:this.props.chosenClass
         }
 
     }
