@@ -14,14 +14,17 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 
 class App extends Component {
-
+  state = {
+    userlandinstate:null
+  }
+  updateUserLandingState=(val)=>{
+  }
   render() {
     return (
       <BrowserRouter>
-
         <Routes>
           <Route path="/" element={<UserLanding />} />
-          <Route path="/flights" element={<UserFlightList/>} />
+          <Route path="/flights" element={<UserFlightList />} />
           <Route path="/admin" element={<FlightsList />} />
 
         </Routes>
