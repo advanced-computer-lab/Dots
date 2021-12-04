@@ -5,6 +5,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import Grid from '@mui/material/Grid';
 import './userFlightList.css'
 import './passengerForm/passengerForm'
 import Button from '@mui/material/Button';
@@ -160,10 +161,18 @@ class UserFlightList extends Component {
                                 {Array.from(Array(this.state.numberOfpassengers), (e, i) => {
                                     return <PassengerForm ind={i + 1} updatepassengerlastName={this.updatepassengerlastName} updatepassengerFirstName={this.updatepassengerFirstName} p={(this.state.passengers)[i]} updatepassengerPassportNo={this.updatepassengerPassportNo} />
                                 })}
+                                <Grid container spacing={2}>
+                                    <Grid item xs={9}>
 
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <Button variant="contained" type="submit" id='submitButton'>Next</Button>
+                                        <Link to="/summary" type="submit" state={{ result: this.state }} > </Link>
+                                    </Grid>
+
+                                </Grid>
                             </FormControl>
-                            <Button variant="contained" type="submit">Next</Button>
-                            <Link to="/summary" type="submit" state={{ result: this.state }} > </Link>
+
                         </form>
                     </div>
                     : <div></div>}
