@@ -40,7 +40,7 @@ Seat Selector
 
 
 ### Mohamed Amr:
-
+Flight Card Design - Landing Page Design - Nav Bar Component- userSearchFlights module design - Search Flights front end component - Search flight backend functionality
 
 ### Ahmed Tamer:
 
