@@ -16,22 +16,20 @@ class TabPanel extends Component {
         super(props);
         this.state = {
             collapseCard: false,
-            faded: false
+            faded: false,
         }
 
     }
-    update = (val, val1) => {
+    update = (val, val1,val2) => {
         this.setState({ faded: val, collapseCard: val1 })
         this.props.update1(this.state.faded);
-        console.log(this.state.faded);
         if (!this.state.faded) {
             let f = [];
             f.push({
                 date: this.props.flight.departureTime,
                 flights: [this.props.flight]
             });
-            console.log(f);
-            this.props.update2(f,this.props.flight);
+            this.props.update2(f,this.props.flight,val2);
         }
     }
 
@@ -54,7 +52,7 @@ class TabPanel extends Component {
                     <div>
                         <Flight faded={this.state.faded} flight={flight} selectFlight={selectFlight} return={this.props.return} />
                         <Collapse in={this.state.collapseCard && !this.state.faded} collapsedSize={0}>
-                            <FlightClassCard update={this.update} />
+                            <FlightClassCard update={this.update} flight={flight} />
                         </Collapse>
                     </div>
                 )}
@@ -83,14 +81,14 @@ class BasicTabs extends Component {
             value: this.props.value,
             OriginalFlights: this.props.Allflights,
             Allflights: this.props.Allflights,
-            faded: true,
-            chosenflight: null
+            faded: this.props.faded,
+            chosenflight: this.props.chosenflight,
+            chosenClass:this.props.chosenClass
         }
 
     }
 
     handleChange = (event, newValue) => {
-        console.log(newValue);
         this.setState({ value: newValue });
         this.props.updatevalue(newValue);
     };
@@ -98,10 +96,11 @@ class BasicTabs extends Component {
         this.setState({ faded: val })
         this.props.updateFaded(val);// or with es6 this.setState({name})
     }
-    update2 = (val,val1) => {
-        this.setState({ Allflights: val,chosenflight:val1 })
+    update2 = (val,val1,val2) => {
+        this.setState({ Allflights: val,chosenflight:val1 ,chosenClass:val2})
         this.props.updateAllflights(val);
         this.props.updatechosenflight(val1);
+        this.props.updateclass(val2);
     }
 
     reset= ()=>{
@@ -109,11 +108,12 @@ class BasicTabs extends Component {
             Allflights: this.state.OriginalFlights,
             chosenflight: null,
             faded:!this.state.faded,
-            
+            chosenClass:''
         });
         this.props.updateAllflights(this.state.Allflights);
         this.props.updatechosenflight(this.state.chosenflight);
-        this.props.updateFaded(this.state.faded);
+        this.props.updateFaded(true);
+        this.props.updateclass(this.state.chosenClass);
     
     }
 

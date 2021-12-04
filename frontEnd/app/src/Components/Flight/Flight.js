@@ -184,7 +184,7 @@ class Flight extends Component {
                                             PRICES START FROM
                                         </Typography>
                                         <Typography variant="h5" color="#09827C" id='priceValue'>
-                                            $500
+                                            ${this.props.flight.economyClassPrice}
                                         </Typography>
                                     </Stack>
 
