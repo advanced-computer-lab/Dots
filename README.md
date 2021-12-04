@@ -28,7 +28,7 @@ Set up React and UI library - Search Front End Design - Search and Filter functi
 Set Up schema - Create Flight Backend Functionality - Create Flight Frontend Functionality
 
 
-###---------------------------------------------------
+### ---------------------------------------------------
 ### Sprint 2 Tasks Per Team Member :
 
 ### Ahmed Elamory :
