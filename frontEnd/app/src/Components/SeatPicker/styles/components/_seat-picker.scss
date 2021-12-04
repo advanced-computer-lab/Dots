@@ -1,0 +1,55 @@
+.seat-picker {
+  display: flex;
+  flex-direction: column;
+
+  text-align: center;
+  justify-content: left;
+  align-items: center;
+  width: max-content;
+  // z-index: 2;
+  margin-left: 5px;
+  margin-right: 5px;
+
+  & > *:not(:last-child){
+    margin-bottom: 2px;
+  }
+
+  &__row{
+    display: flex;
+    align-items: center;
+    justify-items: center;
+
+    & > *:not(:last-child){
+      margin-right: 2px;
+    }
+
+    &__number {
+      font-weight: normal;
+      height: 28px;
+      width: 28px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: $color-row-number;
+    }
+
+    &--enabled{
+      &:hover {
+        background-color: $color-row-selection;
+      }
+    }
+    
+    &--selected{
+      background-color: $color-row-selection;
+    }
+
+    &--enabled:hover > &__number{
+      font-weight: 600;
+    }
+
+    &--selected > &__number{
+      font-weight: 600;
+    }
+  }
+}
