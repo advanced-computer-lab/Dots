@@ -18,37 +18,75 @@ import Alert from '@mui/material/Alert';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { withRouter } from 'react-router';
+
+
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 
 import './UserSearch.css'
 
+
+// const dummy = () => {
+//     return (
+//         <div>
+//             <h1>Hello</h1>
+//         </div>
+//     )
+
+//    navigate = useNavigate();
+
+
+// }
+
+
 class UserSearch extends Component {
 
-
+    // include propse that init the state
     constructor(props) {
         super(props);
         this.state = {
-            depClass: "",
-            arrClass: "",
+            depClass: 0,
+            arrClass: 0,
             depDate: new Date(),
             arrDate: new Date(),
             from: "",
             to: "",
             adults: 1,
             kids: 0,
-            openAlert: false
+            openAlert: false,
+            errorMessage: "",
+            result: {}
+
         }
+    }
+
+
+    componentDidMount() {
+        let ul = document.getElementsByTagName('a')[1];
+        console.log(ul);
+
+    }
+
+
+
+    resetState = (newState) => {
+        // set all state props to initial state
+        this.setState({
+            depClass: newState.depClass, arrClass: newState.arrClass, depDate: newState.depDate, arrDate: newState.arrDate,
+            from: newState.from, to: newState.to, adults: newState.adults, kids: newState.kids, openAlert: false, errorMessage: ""
+        })
     }
 
     onFromChange = (event) => {
         let input = event.target.innerHTML
-        if (input.length > 4) input = ""
+        if (input.length > 15) input = ""
         this.setState({ from: input })
 
     }
 
     onToChange = (event) => {
         let input = event.target.innerHTML
-        if (input.length > 4) input = ""
+        if (input.length > 15) input = ""
         this.setState({ to: input })
 
     }
@@ -84,11 +122,8 @@ class UserSearch extends Component {
 
     areFieldsValid = () => {
         const {
-            adults, kids, arrClass, from, depClass, to } = this.state
-        //    console.log(from.length > 0 &&  to.length > 0)
-        const depc = classes[depClass]
-        const arrc = classes[arrClass]
-        return (parseInt(adults) > 0 || parseInt(kids) > 0) && from.length > 0 && to.length > 0 && depc && arrc
+            from, to } = this.state
+        return from.length > 0 && to.length > 0
 
     }
 
@@ -101,13 +136,59 @@ class UserSearch extends Component {
     };
 
 
+    isDateValid = () => {
+        const { depDate, arrDate } = this.state
+        return depDate < arrDate
+    }
+
+    arePassengersValid = () => {
+        const { adults, kids } = this.state
+        return parseInt(adults) + parseInt(kids) > 0
+    }
+
+
     onSearch = () => {
 
         if (this.areFieldsValid()) {
-            console.log("Search")
+            if (this.isDateValid()) {
+                if (this.arePassengersValid()) {
+                    console.log("Search");
+
+
+                    const { from, to, depDate, arrDate, depClass, arrClass, adults, kids } = this.state
+
+                    let query = { "out": { "dep": depDate, "class": classes[depClass].toLowerCase() }, "in": { "dep": arrDate, "class": classes[arrClass].toLowerCase() }, "from": from, "to": to, "adults": adults, "kids": kids }
+
+                    const requestOptions = {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(query)
+                    };
+
+
+                    fetch('http://localhost:8000/flights/flightquery', requestOptions).then(res => res.json()).then(data => {
+                        console.log('data', data)
+                        this.setState({ result: data })
+                        console.log( 'result' , this.state.result)
+                        let link = document.getElementsByTagName('a')[1];
+                        link.click();
+                    })
+
+
+
+
+                }
+                else {
+                    this.setState({ openAlert: true, errorMessage: "Please select at least one passenger" })
+                }
+
+            } else {
+                this.setState({ openAlert: true, errorMessage: "Departure date must be before arrival date" })
+            }
+
         }
         else {
-            this.setState({ openAlert: true })
+            this.setState({ openAlert: true, errorMessage: "Please fill Departure and Return airports" })
 
         }
     }
@@ -248,7 +329,11 @@ class UserSearch extends Component {
 
                         </Stack>
                         <Stack direction="row">
-                            <Button variant="contained" onClick={this.onSearch} type="submit">Search Flights</Button>
+
+                            <Button variant="contained" onClick={this.onSearch} type="submit">
+                                Search Flights    </Button>
+
+                            <Link to="/flights" type="submit" state={{result:this.state.result}} > </Link>
 
 
 
@@ -262,7 +347,7 @@ class UserSearch extends Component {
                 </Stack>
                 <Snackbar open={this.state.openAlert} autoHideDuration={5000} onClose={this.handleCloseAlert}>
                     <Alert onClose={this.handleCloseAlert} severity="error" sx={{ width: '100%' }}>
-                        Complete all fields to searh flights
+                        {this.state.errorMessage}
                     </Alert>
                 </Snackbar>
 
@@ -272,16 +357,20 @@ class UserSearch extends Component {
 }
 
 
-const airports = ["LAX",
-    "JFK",
-    "LHR",
-    "CAI",
-    "DXB",
-    "CDG",
-    "MUC",
-    "RUH",
-    "YYZ",
-    "FRA"
+// function WithNavigate(props) {
+//     let navigate = useNavigate();
+//     return  <UserSearch navigate={navigate} />
+// }
+
+const airports = ["POLONIA",
+    "IVATO",
+    "TAWAU",
+    "BARAJAS",
+    "LUQA",
+    "LANZAROTE",
+    "PAPHOS INTL",
+    "VALLEE DE SEINE"
+
 ]
 
 
