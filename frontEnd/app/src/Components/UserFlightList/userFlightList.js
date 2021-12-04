@@ -17,26 +17,33 @@ import {
 } from "@material-ui/core/styles";
 import PassengerForm from './passengerForm/passengerForm';
 import Container from '@mui/material/Container';
+import { useLocation } from "react-router-dom"
 
-class userFlightList extends Component {
+
+class UserFlightList extends Component {
+
+
+    componentDidMount() {
+        console.log(this.state)
+    }
 
 
     constructor(props) {
         super(props);
-        const buildpassengers= (n)=>{
-            let p=[];
-            for(let i=0;i<n;i++){
-                p[i]={
-                    firstName:'',
-                    lastName:'',
-                    passportNo:''
+        const buildpassengers = (n) => {
+            let p = [];
+            for (let i = 0; i < n; i++) {
+                p[i] = {
+                    firstName: '',
+                    lastName: '',
+                    passportNo: ''
                 }
             }
             return p;
         }
         this.state = {
             depfaded: this.props.depfaded ? this.props.depfaded : true,
-            /*depvalue: this.props.depsearchdate,
+            depvalue: this.props.depsearchdate,
             depOriginalFlights: this.props.depOriginalFlights,
             depAllflights: this.props.depAllFlights,
             depchosenflight: this.depchosenflight,
@@ -47,9 +54,9 @@ class userFlightList extends Component {
             returnAllflights: this.props.returnAllFlights,
             returnchosenflight: this.props.returnchosenflight,
             returnflightClass: this.props.returnflightClass?this.props.returnflightClass  : '',
-            numberOfpassengers: this.props.numberOfpassengers*/
+            numberOfpassengers: this.props.numberOfpassengers,
             returnfaded: this.props.returnfaded ? this.props.returnfaded : true,
-            passengers:this.props.passengers?this.props.passengers:buildpassengers(2)
+            passengers: this.props.passengers ? this.props.passengers : buildpassengers(2)
         }
     }
 
@@ -87,25 +94,25 @@ class userFlightList extends Component {
         e.preventDefault()
         console.log(this.state.passengers)
     }
-    updatepassengerFirstName=(val,i )=>{
-        let p=this.state.passengers;
-        p[i].firstName=val;
+    updatepassengerFirstName = (val, i) => {
+        let p = this.state.passengers;
+        p[i].firstName = val;
         this.setState({
-            passengers:p
+            passengers: p
         });
     }
-    updatepassengerlastName=(val,i )=>{
-        let p=this.state.passengers;
-        p[i].lastName=val;
+    updatepassengerlastName = (val, i) => {
+        let p = this.state.passengers;
+        p[i].lastName = val;
         this.setState({
-            passengers:p
+            passengers: p
         });
     }
-    updatepassengerPassportNo=(val,i )=>{
-        let p=this.state.passengers;
-        p[i].passportNo=val;
+    updatepassengerPassportNo = (val, i) => {
+        let p = this.state.passengers;
+        p[i].passportNo = val;
         this.setState({
-            passengers:p
+            passengers: p
         });
     }
     render() {
@@ -234,7 +241,7 @@ class userFlightList extends Component {
                                 {Array.from(Array(2), (e, i) => {
                                     return <PassengerForm ind={i + 1} updatepassengerlastName={this.updatepassengerlastName} updatepassengerFirstName={this.updatepassengerFirstName} p={(this.state.passengers)[i]} updatepassengerPassportNo={this.updatepassengerPassportNo} />
                                 })}
-                                <Button variant = "contained" type="submit">Next</Button>
+                                <Button variant="contained" type="submit">Next</Button>
                             </FormControl>
                         </form>
                     </div>
@@ -246,4 +253,40 @@ class userFlightList extends Component {
         );
     }
 }
-export default userFlightList;
+
+
+function UserFlightListFunction(props) {
+    let location = useLocation();
+    const { result } = location.state
+ 
+    const depfaded = result.depfaded
+    const depvalue = result.depvalue
+    const depOriginalFlights = result.depOriginalFlights
+    const depAllflights = result.depAllflights
+    const depchosenflight = result.depchosenflight
+    const depflightClass = result.depflightClass
+    const returnfaded = result.returnfaded
+    const returnvalue = result.returnvalue
+    const returnOriginalFlights = result.returnOriginalFlights
+    const returnAllflights = result.returnAllflights
+    const returnchosenflight = result.returnchosenflight
+    const returnflightClass = result.returnflightClass
+    const numberOfpassengers = result.numberOfpassengers
+    
+
+    return <UserFlightList depfaded={depfaded} 
+                           depvalue={depvalue} 
+                           depOriginalFlights={depOriginalFlights}
+                           depAllflights = {depAllflights}
+                           depchosenflight = {depchosenflight}
+                           depflightClass = {depflightClass}
+                            returnfaded={returnfaded}
+                            returnvalue={returnvalue}
+                            returnOriginalFlights={returnOriginalFlights}
+                            returnchosenflight={returnchosenflight}
+                            returnflightClass={returnflightClass}
+                            numberOfpassengers={numberOfpassengers}
+                           />
+}
+
+export default UserFlightListFunction;

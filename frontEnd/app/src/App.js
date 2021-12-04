@@ -3,7 +3,9 @@ import './App.css';
 import FlightsList from './Components/flightsList.js';
 import UserLanding from './Components/UserLanding/UserLanding.js';
 import UserSearch from './Components/UserSearch/UserSearch';
-import userFlightList from './Components/UserFlightList/userFlightList';
+// import UserFlightList from './Components/UserFlightList/userFlightList';
+
+import UserFlightListFunction from './Components/UserFlightList/userFlightList';
 
 
 import { Navbar } from 'react-bootstrap'
@@ -36,7 +38,7 @@ class App extends Component {
 
         <Routes>
           <Route path="/" element={ <UserLanding />} />
-          <Route path="/flights" element={<userFlightList/>} />
+          <Route path="/flights" element={<UserFlightListFunction/>} />
           <Route path="/admin" element={  <FlightsList />} />
           <Route path="/loading" element={<Loading />} />
 

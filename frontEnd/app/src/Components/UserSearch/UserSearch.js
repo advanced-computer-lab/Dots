@@ -18,10 +18,10 @@ import Alert from '@mui/material/Alert';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import {withRouter} from 'react-router';
+import { withRouter } from 'react-router';
 
 
-import { Link , useNavigate , Navigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 
 import './UserSearch.css'
 
@@ -41,7 +41,7 @@ import './UserSearch.css'
 
 class UserSearch extends Component {
 
-  // include propse that init the state
+    // include propse that init the state
     constructor(props) {
         super(props);
         this.state = {
@@ -55,15 +55,26 @@ class UserSearch extends Component {
             kids: 0,
             openAlert: false,
             errorMessage: "",
+            result: {}
+
         }
+    }
+
+
+    componentDidMount() {
+        let ul = document.getElementsByTagName('a')[1];
+        console.log(ul);
+
     }
 
 
 
     resetState = (newState) => {
         // set all state props to initial state
-        this.setState( {depClass:newState.depClass , arrClass: newState.arrClass , depDate: newState.depDate , arrDate:newState.arrDate,
-        from:newState.from , to:newState.to , adults:newState.adults , kids:newState.kids , openAlert:false , errorMessage:"" } )
+        this.setState({
+            depClass: newState.depClass, arrClass: newState.arrClass, depDate: newState.depDate, arrDate: newState.arrDate,
+            from: newState.from, to: newState.to, adults: newState.adults, kids: newState.kids, openAlert: false, errorMessage: ""
+        })
     }
 
     onFromChange = (event) => {
@@ -143,23 +154,28 @@ class UserSearch extends Component {
                 if (this.arePassengersValid()) {
                     console.log("Search");
 
-                    // <Navigate to="/flights" />
 
-                    //  let navigate = this.props.navigate();
-                    //  this.props.history.push(
-                    //      '/flights'
-            
-                    //       );
+                    const { from, to, depDate, arrDate, depClass, arrClass, adults, kids } = this.state
 
-                    //  navigate("/flights");
-                    
-                    // const { from, to, depDate, arrDate, depClass, arrClass, adults, kids } = this.state
-                    // let query = { "out" : { "dep": depDate, "class": depClass } , "in" :{ "dep": arrDate , "class": arrClass } ,  "from":"POLONIA",  "to":"LUQA" , "adults" : "2" , "kids" : "0" }
+                    let query = { "out": { "dep": depDate, "class": classes[depClass].toLowerCase() }, "in": { "dep": arrDate, "class": classes[arrClass].toLowerCase() }, "from": from, "to": to, "adults": adults, "kids": kids }
 
-                    // fetch('http://localhost:8000//flights/flightquery').then(res => res.json()).then(data => {
-                    //     <Link to="/flights"/>
-                    //     console.log(data)
-                    // } )
+                    const requestOptions = {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(query)
+                    };
+
+
+                    fetch('http://localhost:8000/flights/flightquery', requestOptions).then(res => res.json()).then(data => {
+                        console.log('data', data)
+                        this.setState({ result: data })
+                        console.log( 'result' , this.state.result)
+                        let link = document.getElementsByTagName('a')[1];
+                        link.click();
+                    })
+
+
+
 
                 }
                 else {
@@ -313,11 +329,11 @@ class UserSearch extends Component {
 
                         </Stack>
                         <Stack direction="row">
-                            
-                            <Button variant="contained" class = "filled" onClick={this.onSearch} type="submit"> 
-                            Search Flights    </Button>
 
-                            <Link to="/flights"> Search   </Link>
+                            <Button variant="contained" onClick={this.onSearch} type="submit">
+                                Search Flights    </Button>
+
+                            <Link to="/flights" type="submit" state={{result:this.state.result}} > </Link>
 
 
 
@@ -346,14 +362,14 @@ class UserSearch extends Component {
 //     return  <UserSearch navigate={navigate} />
 // }
 
-const airports = [ "POLONIA",
-"IVATO",
-"TAWAU",
-"BARAJAS",
-"LUQA",
-"LANZAROTE",
-"PAPHOS INTL",
-"VALLEE DE SEINE"
+const airports = ["POLONIA",
+    "IVATO",
+    "TAWAU",
+    "BARAJAS",
+    "LUQA",
+    "LANZAROTE",
+    "PAPHOS INTL",
+    "VALLEE DE SEINE"
 
 ]
 
@@ -363,4 +379,4 @@ const vals = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 const classes = ['Economy', 'Business', 'First']
 
 
-export default  UserSearch ;
+export default UserSearch;
