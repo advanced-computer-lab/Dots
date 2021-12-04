@@ -19,14 +19,14 @@ import './Summary.css';
 function Content(props) {
   var departureflightprice = 0;
   var arrivalflightprice = 0;
-  for (let i = 0; i < props.reservation.passengers.length; i++){
-  if (props.reservation.depflightClass == "Economy") departureflightprice += props.departure.economyClassPrice;
-  else if (props.reservation.depflightClass == "Business") departureflightprice += props.departure.businessClassPrice;
-  else if (props.reservation.depflightClass == "First") departureflightprice += props.departure.firstClassPrice;
+  for (let i = 0; i < props.reservation.passengers.length; i++) {
+    if (props.reservation.depflightClass == "Economy") departureflightprice += props.departure.economyClassPrice;
+    else if (props.reservation.depflightClass == "Business") departureflightprice += props.departure.businessClassPrice;
+    else if (props.reservation.depflightClass == "First") departureflightprice += props.departure.firstClassPrice;
 
-  if (props.reservation.returnflightClass == "Economy") arrivalflightprice += props.arrival.economyClassPrice;
-  else if (props.reservation.returnflightClass == "Business") arrivalflightprice += props.arrival.businessClassPrice;
-  else if (props.reservation.returnflightClass == "First") arrivalflightprice += props.arrival.firstClassPrice;
+    if (props.reservation.returnflightClass == "Economy") arrivalflightprice += props.arrival.economyClassPrice;
+    else if (props.reservation.returnflightClass == "Business") arrivalflightprice += props.arrival.businessClassPrice;
+    else if (props.reservation.returnflightClass == "First") arrivalflightprice += props.arrival.firstClassPrice;
   }
   return (
     <div>
@@ -40,8 +40,8 @@ function Content(props) {
                   {props.reservation.depflightClass} Class
                 </Typography>
                 <Typography className="summary" id="destination" gutterBottom>
-                {props.departure.departureLocation.country.charAt(0).toUpperCase() + props.departure.departureLocation.country.substring(1).toLowerCase()} to 
-                {" " + props.departure.arrivalLocation.country.charAt(0).toUpperCase() + props.departure.arrivalLocation.country.substring(1).toLowerCase()}
+                  {props.departure.departureLocation.country.charAt(0).toUpperCase() + props.departure.departureLocation.country.substring(1).toLowerCase()} to
+                  {" " + props.departure.arrivalLocation.country.charAt(0).toUpperCase() + props.departure.arrivalLocation.country.substring(1).toLowerCase()}
                 </Typography>
                 <Typography className="summary" id="dateTime" component="div">
                   {new Date(props.departure.departureTime).toLocaleString()}
@@ -49,35 +49,35 @@ function Content(props) {
                 <Typography className="summary" id sx={{ mr: 1, textAlign: 'right', fontWeight: 'bolder', transform: 'translateY(21px)' }} color="text.secondary">
                   {departureflightprice}$
                 </Typography>
-                <Typography sx = {{transform: 'translateY(-10px)'}} className = "summary">{props.reservation.passengers.length} passengers</Typography>
-      
+                <Typography sx={{ transform: 'translateY(-10px)' }} className="summary">{props.reservation.passengers.length} passengers</Typography>
+
               </Grid>
               <Grid item xs={6}>
                 <FlightTakeoffIcon sx={{ transform: 'scaleX(-1)' }} />
                 <Typography sx={{ textAlign: 'center', display: 'flex', justtifyContent: 'space-between', fontSize: 'large' }} className="summary" id="destination" gutterBottom>
-                {props.reservation.returnflightClass} Class
+                  {props.reservation.returnflightClass} Class
                 </Typography>
                 <Typography className="summary" id="destination" gutterBottom>
-                {props.departure.arrivalLocation.country.charAt(0).toUpperCase() + props.departure.arrivalLocation.country.substring(1).toLowerCase()} to 
-                {" " + props.departure.departureLocation.country.charAt(0).toUpperCase() + props.departure.departureLocation.country.substring(1).toLowerCase()}
+                  {props.departure.arrivalLocation.country.charAt(0).toUpperCase() + props.departure.arrivalLocation.country.substring(1).toLowerCase()} to
+                  {" " + props.departure.departureLocation.country.charAt(0).toUpperCase() + props.departure.departureLocation.country.substring(1).toLowerCase()}
                 </Typography>
                 <Typography className="summary" id="dateTime" component="div">
-                {new Date(props.arrival.departureTime).toLocaleString()}
+                  {new Date(props.arrival.departureTime).toLocaleString()}
                 </Typography>
-                <Typography sx = {{transform: 'translateY(20px)'}} className = "summary">{props.reservation.passengers.length} passengers</Typography>
+                <Typography sx={{ transform: 'translateY(20px)' }} className="summary">{props.reservation.passengers.length} passengers</Typography>
                 <Typography className="summary" id sx={{ mr: 1, textAlign: 'right', fontWeight: 'bolder' }} color="text.secondary">
                   {arrivalflightprice}$
                 </Typography>
-                <Typography className="summary" id ="totalPrice" >
-                  Total Price: <br/>
-                  <Typography sx = {{transform: 'translateX(20px)'}}>{departureflightprice + arrivalflightprice}$</Typography>
+                <Typography className="summary" id="totalPrice" >
+                  Total Price: <br />
+                  <Typography sx={{ transform: 'translateX(20px)' }}>{departureflightprice + arrivalflightprice}$</Typography>
                 </Typography>
               </Grid>
             </Grid>
           </div>
         </CardContent>
       </Card>
-      <Link to="/seatselector" type = "submit" className="btn btn-primary" id="toSeats" elevation={7} state = {{result: props.reservation}}>Continue to Seat Reservation</Link>
+      <Link to="/seatselector" type="submit" className="btn btn-primary" id="toSeats" elevation={7} state={{ result: props.reservation }}>Continue to Seat Reservation</Link>
     </div>
   );
 }
@@ -85,13 +85,18 @@ function Content(props) {
 function Summary(props) {
   let location = useLocation();
   const { result } = location.state
-  console.log(result)
+  console.log(result);
   return (
     <div>
       <img id="background" src='/download.jpg'></img>
       <p id="top"> <Fade right>Flight Summary </Fade></p>
-      <div id="Card1"><LightSpeed left><Content departure= {result.depchosenflight}
-      reservation = {result} arrival = {result.returnchosenflight}/></LightSpeed></div>
+      <div id="Card1"><LightSpeed left><Content departure={result.depchosenflight}
+        reservation={result} arrival={result.returnchosenflight} /></LightSpeed></div>
+      <Link to="/flights" type="submit" state={{ result: result }} >
+        <Button sx={{ alignSelf: "flex-end", mb: '5px' }} variant="contained">
+          Go back
+        </Button>
+      </Link>
     </div>);
 }
 export default Summary;
