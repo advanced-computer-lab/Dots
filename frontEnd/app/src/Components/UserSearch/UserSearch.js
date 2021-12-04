@@ -55,7 +55,8 @@ class UserSearch extends Component {
             kids: 0,
             openAlert: false,
             errorMessage: "",
-            result: {}
+            result: {},
+            isChangeSearch:this.props.isChangeSearch
 
         }
     }
@@ -173,11 +174,12 @@ class UserSearch extends Component {
                         console.log('data', data)
                         this.setState({ result: data })
                         console.log('result', this.state.result)
-                        let link = document.getElementsByTagName('a')[1];
-                        if (link) link.click();
+                        let link = document.getElementById('flightLink');
+                        console.log('cond' , this.state.isChangeSearch)
+
+                        if (this.state.isChangeSearch) link.click();
                         else {
                             console.log('here');
-                            link = document.getElementsByTagName('a')[0];
                             link.click();
                             this.refreshPage();
 
@@ -346,7 +348,7 @@ class UserSearch extends Component {
                             <Button variant="contained" onClick={this.onSearch} type="submit">
                                 Search Flights    </Button>
 
-                            <Link to="/flights" type="submit" state={{ result: this.state.result }} > </Link>
+                            <Link to="/flights" id = "flightLink" type="submit" state={{ result: this.state.result }} > </Link>
 
 
 

@@ -27,6 +27,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import UserSearch from '../UserSearch/UserSearch';
+import GuestNavBar from '../GuestNavBar/GuestNavBar';
 
 class UserFlightList extends Component {
 
@@ -110,7 +111,7 @@ class UserFlightList extends Component {
     onSubmit = (e) => {
         e.preventDefault()
         console.log(this.state);
-        let link = document.getElementsByTagName('a')[0];
+        let link = document.getElementById('summaryLink');
         link.click();
     }
     updatepassengerFirstName = (val, i) => {
@@ -150,6 +151,7 @@ class UserFlightList extends Component {
 
 
             <div>
+                <GuestNavBar />
                 <Card>
 
                     <CardContent>
@@ -168,7 +170,7 @@ class UserFlightList extends Component {
                 >
                     <DialogTitle>Edit Search</DialogTitle>
                     <DialogContent>
-                        <UserSearch />
+                        <UserSearch isChangeSearch={false} />
                     </DialogContent>
                 </Dialog>
 
@@ -207,7 +209,7 @@ class UserFlightList extends Component {
                                         </Grid>
                                         <Grid item xs={3}>
                                             <Button variant="contained" type="submit" id='submitButton'>Next</Button>
-                                            <Link to="/summary" type="submit" state={{ result: this.state }} > </Link>
+                                            <Link to="/summary" id="summaryLink" type="submit" state={{ result: this.state }} > </Link>
                                         </Grid>
 
                                     </Grid>
