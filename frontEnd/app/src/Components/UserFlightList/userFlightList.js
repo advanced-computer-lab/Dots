@@ -44,16 +44,16 @@ class UserFlightList extends Component {
         this.state = {
             from:this.props.from,
             depfaded: this.props.depfaded ? this.props.depfaded : true,
-            depvalue: this.props.depsearchdate,
+            depvalue: this.props.depvalue,
             depOriginalFlights: this.props.depOriginalFlights,
-            depAllflights: this.props.depAllFlights,
-            depchosenflight: this.depchosenflight,
+            depAllflights: this.props.depAllflights,
+            depchosenflight: this.props.depchosenflight,
             depflightClass: this.props.depflightClass ? this.props.depflightClass : '',
             to:this.props.to,
             returnfaded: this.props.returnfaded ? this.props.returnfaded : true,
-            returnvalue: this.props.returnsearchdate,
+            returnvalue: this.props.returnvalue,
             returnOriginalFlights: this.props.returnOriginalFlights,
-            returnAllflights: this.props.returnAllFlights,
+            returnAllflights: this.props.returnAllflights,
             returnchosenflight: this.props.returnchosenflight,
             returnflightClass: this.props.returnflightClass ? this.props.returnflightClass : '',
             numberOfpassengers: this.props.numberOfpassengers,
@@ -214,15 +214,15 @@ class UserFlightList extends Component {
         const ltrTheme = createTheme({ direction: "ltr" });
         const rtlTheme = createTheme({ direction: "rtl" });
         const isRtl = true;
-
-
+        //console.log(this.state);
+        console.log(this.state.passengers);
         return (
             <Container maxWidth="xl" id="cont">
 
                 <Typography variant="h4" component="div" id='flightText' > <FlightTakeoffIcon fontSize='large' /> {`${this.state.from} to ${this.state.to}`}</Typography>
 
                 <TabBar Allflights={this.state.depAllflights} OriginalFlights={this.state.depOriginalFlights} chosenClass={this.state.depchosenflight}
-                    faded={this.state.depfaded} chosenflight={this.state.depchosenflight} value={this.state.depvalue}
+                    faded={this.state.depfaded} chosenflight={this.state.depchosenflight} value={new Date(this.state.depvalue)}
                     return={false} updateFaded={this.updatedepFaded}
                     updatevalue={this.updatedepvalue} updateAllflights={this.updatedepAllflights}
                     updatechosenflight={this.updatedepchosenflight} updateclass={this.updatedepClass} />
@@ -232,7 +232,7 @@ class UserFlightList extends Component {
                 </ThemeProvider> {`${this.state.to} to ${this.state.from}`}</Typography>
 
                 <TabBar Allflights={this.state.returnAllflights} OriginalFlights={this.state.returnOriginalFlights} chosenClass={this.state.returnchosenflight}
-                    faded={this.state.returnfaded} chosenflight={this.state.returnchosenflight} value={this.state.returnvalue} return={true} 
+                    faded={this.state.returnfaded} chosenflight={this.state.returnchosenflight} value={new Date(this.state.returnvalue)} return={true} 
                     updateFaded={this.updatereturnFaded}
                     updatevalue={this.updatereturnvalue}
                     updateAllflights={this.updatereturnAllflights}
@@ -243,7 +243,7 @@ class UserFlightList extends Component {
                     <div id="passengersForm">
                         <form onSubmit={this.onSubmit}>
                             <FormControl >
-                                {Array.from(Array(2), (e, i) => {
+                                {Array.from(Array(this.state.numberOfpassengers), (e, i) => {
                                     return <PassengerForm ind={i + 1} updatepassengerlastName={this.updatepassengerlastName} updatepassengerFirstName={this.updatepassengerFirstName} p={(this.state.passengers)[i]} updatepassengerPassportNo={this.updatepassengerPassportNo} />
                                 })}
                                 <Button variant="contained" type="submit">Next</Button>
@@ -265,13 +265,13 @@ function UserFlightListFunction(props) {
     const { result } = location.state
 
     const depfaded = result.depfaded
-    const depvalue = result.depvalue
+    const depvalue = result.depsearchdate
     const depOriginalFlights = result.depOriginalFlights
-    const depAllflights = result.depAllflights
+    const depAllflights = result.depAllFlights
     const depchosenflight = result.depchosenflight
     const depflightClass = result.depflightClass
     const returnfaded = result.returnfaded
-    const returnvalue = result.returnvalue
+    const returnvalue = result.returnsearchdate
     const returnOriginalFlights = result.returnOriginalFlights
     const returnAllflights = result.returnAllflights
     const returnchosenflight = result.returnchosenflight
@@ -290,6 +290,7 @@ function UserFlightListFunction(props) {
                            depflightClass = {depflightClass}
                             returnfaded={returnfaded}
                             returnvalue={returnvalue}
+                            returnAllflights={returnAllflights}
                             returnOriginalFlights={returnOriginalFlights}
                             returnchosenflight={returnchosenflight}
                             returnflightClass={returnflightClass}

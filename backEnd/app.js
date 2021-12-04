@@ -308,7 +308,7 @@ app.post("/flights/flightquery", async (req, res) => {
 
       let dateObject = {}
       dateObject[tempDateString] = tempFlights;
-      outFlightsWithDate.push({ "date": tempDateString, "flights": tempFlights });
+      outFlightsWithDate.push({ "date": tempDate, "flights": tempFlights });
 
     }
 
@@ -327,7 +327,7 @@ app.post("/flights/flightquery", async (req, res) => {
 
       let dateObject = {}
       dateObject[tempDateString] = tempFlights;
-      inFlightsWithDate.push({ "date": tempDateString, "flights": tempFlights });
+      inFlightsWithDate.push({ "date": tempDate, "flights": tempFlights });
 
     }
 

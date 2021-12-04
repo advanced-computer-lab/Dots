@@ -79,7 +79,7 @@ class BasicTabs extends Component {
         super(props);
         this.state = {
             value: this.props.value,
-            OriginalFlights: this.props.Allflights,
+            OriginalFlights: this.props.OriginalFlights,
             Allflights: this.props.Allflights,
             faded: this.props.faded,
             chosenflight: this.props.chosenflight,
@@ -118,13 +118,16 @@ class BasicTabs extends Component {
     }
 
     render() {
-        const { Allflights } = this.state;
+        const { Allflights} = this.state;
+        Allflights?.map((flight) => {
+            flight.date= new Date(flight.date)
+        })
         return (
             <Box >
                 <Collapse in={this.state.faded} collapsedSize={0}>
                     <Box sx={{ maxWidth: 900, bgcolor: 'background.paper' }} id='flightTab'>
                         <Paper elevation={3} id='papertab'>
-                            <Tabs value={this.state.value} onChange={this.handleChange} variant="scrollable"
+                            <Tabs value={(new Date(this.state.value)).setHours(0, 0, 0, 0)} onChange={this.handleChange} variant="scrollable"
                                 scrollButtons={true}
                                 sx={{
                                     [`& .${tabsClasses.scrollButtons}`]: {
@@ -133,7 +136,7 @@ class BasicTabs extends Component {
                                 }}
                                 aria-label="scrollable auto tabs example" id='tab'>
                                 {Allflights?.map((flight, i) => (
-                                    <Tab value={flight.date} label={flight.date.toDateString()} {...a11yProps({ i })} />
+                                    <Tab value={(flight.date).setHours(0, 0, 0, 0)} key={i} label={(new Date(flight.date)).toDateString()} {...a11yProps({ i })} />
                                 ))}
                             </Tabs>
                         </Paper>
@@ -143,7 +146,7 @@ class BasicTabs extends Component {
                 {Allflights?.map((flight, i) => (
                     flight.flights?.map((f, j) => (
                         this.state.faded ?
-                            <TabPanel return={this.props.return} value={flight.date} Allflights={Allflights} update2={this.update2} update1={this.update1} index={this.state.value} flight={f}></TabPanel> :
+                            <TabPanel return={this.props.return} value={(flight.date).setHours(0, 0, 0, 0)} Allflights={Allflights} update2={this.update2} update1={this.update1} index={(new Date(this.state.value)).setHours(0, 0, 0, 0)} flight={f}></TabPanel> :
                             <div id="chosendiv">
                                 <Flight id="flightCard"  return={this.props.return}  flight={f} faded={!this.state.faded} />
                                 <Button variant="text" id='diffFlighttext' onClick={this.reset}> <HighlightOffIcon/>Choose different flight</Button>
