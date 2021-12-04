@@ -4,9 +4,9 @@ import Typography from '@mui/material/Typography';
 import '@fontsource/roboto/700.css'
 class passengerForm extends Component {
     state = {
-        firstName:'',
-        lastName:'',
-        passportNo:''
+        firstName:this.props.p.firstName,
+        lastName:this.props.p.lastName,
+        passportNo:this.props.p.passportNo
     };
 
     handleChange = (e) => { 
@@ -29,14 +29,16 @@ class passengerForm extends Component {
     }
 
     render() {
-        const {p}=this.props;
+        console.log('sssssss')
+        console.log(this.props)
+        console.log('sssssss')
         return (
             
             <div>
                 <Typography variant="h6" component="div" >Passenger {this.props.ind}</Typography>
-                <TextField onChange={this.handleChange} className="formElements" value={p.firstName} label="First Name" required type="input" id="firstName" placeholder="Ex: John" name="firstName" ></TextField>
-                <TextField onChange={this.handleChange} className="formElements" value={p.lastName} label="Last Name" required type="input" id="lastName" placeholder="Ex: Doe" name="lastName" ></TextField>
-                <TextField onChange={this.handleChange} className="formElements" value={p.passportNo} label="Passport Number" required type="input" id="passportNo" placeholder="Ex: A1234" name="passportNo" ></TextField>
+                <TextField onChange={this.handleChange} className="formElements" value={this.state.firstName} label="First Name" required type="input" id="firstName" placeholder="Ex: John" name="firstName" ></TextField>
+                <TextField onChange={this.handleChange} className="formElements" value={this.state.lastName} label="Last Name" required type="input" id="lastName" placeholder="Ex: Doe" name="lastName" ></TextField>
+                <TextField onChange={this.handleChange} className="formElements" value={this.state.passportNo} label="Passport Number" required type="input" id="passportNo" placeholder="Ex: A1234" name="passportNo" ></TextField>
             </div>
 
         );
