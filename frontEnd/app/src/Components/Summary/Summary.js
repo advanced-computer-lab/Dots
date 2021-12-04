@@ -12,6 +12,7 @@ import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import LightSpeed from 'react-reveal/LightSpeed';
 import Stack from '@mui/material/Stack';
 import { useHistory } from "react-router-dom";
+//import SeatSelector from '../SeatSelector/SeatSelector.js';
 import Fade from 'react-reveal/Fade';
 import { useLocation } from "react-router-dom"
 import './Summary.css';
@@ -76,7 +77,7 @@ function Content(props) {
           </div>
         </CardContent>
       </Card>
-      <Link to="/userflights" className="btn btn-primary" id="toSeats" elevation={7}>Continue to Seat Reservation</Link>
+      <Link to="/seatselector" type = "submit" className="btn btn-primary" id="toSeats" elevation={7} state = {{result: props.reservation}}>Continue to Seat Reservation</Link>
     </div>
   );
 }

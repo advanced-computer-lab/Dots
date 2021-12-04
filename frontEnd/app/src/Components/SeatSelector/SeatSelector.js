@@ -28,13 +28,12 @@ import styled from "styled-components";
 import TransitionControl from '../SeatMapTransitionControl/SeatMapTransitionControl.js'
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { Link, useNavigate, Navigate } from 'react-router-dom';
-
+import { Link, useNavigate, Navigate, useLocation } from 'react-router-dom';
 
 class SeatSelector extends Component {
-  constructor() {
-    super();
-
+  constructor(props) {
+    super(props);
+    console.log(this.props);
     let outBoundCabin = "Business";
     let inBoundCabin = "Business";
     let passengers = [
@@ -679,9 +678,15 @@ class SeatSelector extends Component {
   }
 }
 
+function SeatSelectorFunction(props) {
+  let location = useLocation();
+  const { result } = location.state
+  console.log(result);
+
+  return(<SeatSelector/>);
+}
 
 
 
 
-
-export default SeatSelector;
+export default SeatSelectorFunction;
