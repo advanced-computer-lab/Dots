@@ -1,0 +1,152 @@
+.seat {
+  background-color: $color-primary;
+  height: 30px;
+  width: 30px;
+  color: $color-seat-number;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__number{
+    font-size: 10px
+  }
+
+  &--north{
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  &--south {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+
+  &--east {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+
+  &--west {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+
+  &--enabled {
+    cursor: pointer;
+    &:hover { background-color: $color-secondary; }
+  }
+
+  
+  &--first {
+    background-color: $color-first;
+    width: 37.5px;
+    margin-top:12px;
+  }
+  
+  &--business {
+    background-color: $color-business;
+    margin-top:5px;
+  }
+  
+  &--economy {
+    background-color: $color-economy;
+  }
+  
+  &--wrongCabin {
+    cursor: not-allowed;
+  }
+  &--selected {
+    cursor: pointer;
+    background-color: $color-tertiary;
+    background: #bada55;      
+    -webkit-animation-name: rubberBand;
+    animation-name: rubberBand;
+    animation-duration: 500ms;
+    animation-fill-mode: both;
+  }
+
+  &--reserved {
+    cursor: not-allowed;
+    background-color: $color-seat-reserved;
+  }
+
+}
+
+@-webkit-keyframes rubberBand {
+  0% {
+    -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+  }
+
+  30% {
+    -webkit-transform: scale3d(1.25, 0.75, 1);
+            transform: scale3d(1.25, 0.75, 1);
+  }
+
+  40% {
+    -webkit-transform: scale3d(0.75, 1.25, 1);
+            transform: scale3d(0.75, 1.25, 1);
+  }
+
+  50% {
+    -webkit-transform: scale3d(1.15, 0.85, 1);
+            transform: scale3d(1.15, 0.85, 1);
+  }
+
+  65% {
+    -webkit-transform: scale3d(.95, 1.05, 1);
+            transform: scale3d(.95, 1.05, 1);
+  }
+
+  75% {
+    -webkit-transform: scale3d(1.05, .95, 1);
+            transform: scale3d(1.05, .95, 1);
+  }
+
+  100% {
+    -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes rubberBand {
+  0% {
+    -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+  }
+
+  30% {
+    -webkit-transform: scale3d(1.25, 0.75, 1);
+            transform: scale3d(1.25, 0.75, 1);
+  }
+
+  40% {
+    -webkit-transform: scale3d(0.75, 1.25, 1);
+            transform: scale3d(0.75, 1.25, 1);
+  }
+
+  50% {
+    -webkit-transform: scale3d(1.15, 0.85, 1);
+            transform: scale3d(1.15, 0.85, 1);
+  }
+
+  65% {
+    -webkit-transform: scale3d(.95, 1.05, 1);
+            transform: scale3d(.95, 1.05, 1);
+  }
+
+  75% {
+    -webkit-transform: scale3d(1.05, .95, 1);
+            transform: scale3d(1.05, .95, 1);
+  }
+
+  100% {
+    -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+  }
+}
+
+.rubberBand {
+  -webkit-animation-name: rubberBand;
+          animation-name: rubberBand;
+}

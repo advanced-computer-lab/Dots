@@ -43,7 +43,7 @@ class Flight extends Component {
     render() {
         const { faded, flight } = this.props;
         const formatDate = (date) => {
-            let time = date.toLocaleTimeString('en-US');
+            let time = (new Date(date)).toLocaleTimeString('en-US');
             let timearr = time.split(':');
             let x = timearr[2];
             let y = '';
@@ -132,7 +132,7 @@ class Flight extends Component {
                                                 <DirectionAwareFlightTakeoffIcon />
                                             </ThemeProvider>}
                                             <Typography variant="overline" gutterBottom component="div" >
-                                                Duration {timediff(flight.arrivalTime, flight.departureTime)}
+                                                Duration {timediff(new Date(flight.arrivalTime), new Date(flight.departureTime))}
                                             </Typography>
                                         </Stack>
                                         <hr

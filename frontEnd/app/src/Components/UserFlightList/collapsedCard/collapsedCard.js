@@ -123,7 +123,7 @@ class FlightClassCard extends Component {
                                     Business Class
                                 </Typography>
                             </CardContent>
-                            <CardContent>
+                            <CardContent id='bclass'>
                                 <Stack>
                                     <Stack direction="row">
                                         <BackpackIcon fontSize="large" />
@@ -175,7 +175,7 @@ class FlightClassCard extends Component {
                                             }}
                                         />
                                     </Stack>
-                                    <Stack direction="row">
+                                    <Stack direction="row" >
                                         <LuggageIcon fontSize="large" />
                                         <Typography id='economytext'>
                                             32kg check-in bag
