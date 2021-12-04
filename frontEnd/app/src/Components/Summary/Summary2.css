@@ -1,0 +1,60 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
+#drawer {
+  position: relative;
+}
+.summary {
+  font-family: "Montserrat", sans-serif;
+}
+#destination {
+  font-weight: bold;
+}
+.t {
+  font-family: "Montserrat", sans-serif !important;
+  font-size: large !important;
+}
+#list {
+  background-color: rgba(255, 255, 255, 0.5);
+  margin: 0 auto;
+}
+#icon {
+  zoom: 1.5;
+}
+#backAndForth {
+  font-family: "Montserrat", sans-serif;
+  font-size: larger;
+  font-weight: bold;
+}
+#AccSummary {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
+#animTitle {
+  color: white;
+  font-size: 2.2em;
+  padding-top: 40px;
+  font-family: "Montserrat", sans-serif;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
+#card {
+  zoom: 0.7;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  width: 100%;
+}
+#title {
+  text-align: center;
+  font-family: "Montserrat", sans-serif;
+  font-size: larger;
+  margin-right: 100px;
+  margin-top: 40px;
+}
+
+#background2 {
+  position: fixed;
+}

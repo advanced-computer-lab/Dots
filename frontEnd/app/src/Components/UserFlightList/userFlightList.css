@@ -1,4 +1,14 @@
+#cont{
+    background-color: white;
+}
 #flightText{
-    margin-left: 7.5em;
+    margin-left: 4.5em;
     margin-top: 1em;
+}
+#passengersForm{
+    margin-left: 9em;
+}
+#submitButton{
+    margin-top: 2em;
+    margin-left: 4em;
 }

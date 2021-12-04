@@ -26,3 +26,21 @@ Set up React and UI library - Search Front End Design - Search and Filter functi
 
 ### Ahmed Tamer:
 Set Up schema - Create Flight Backend Functionality - Create Flight Frontend Functionality
+
+
+### ---------------------------------------------------
+### Sprint 2 Tasks Per Team Member :
+
+### Ahmed Elamory :
+Seat Selector
+
+### Ahmed Belal : 
+
+### Omar Elsawi:
+
+
+### Mohamed Amr:
+Flight Card Design - Landing Page Design - Nav Bar Component- userSearchFlights module design - Search Flights front end component - Search flight backend functionality
+
+### Ahmed Tamer:
+

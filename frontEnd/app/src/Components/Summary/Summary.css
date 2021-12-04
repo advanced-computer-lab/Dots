@@ -1,0 +1,56 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
+
+.summary {
+  font-family: "Montserrat", sans-serif !important;
+}
+#destination {
+  font-weight: bold;
+}
+#title {
+  text-align: center;
+  border-bottom: black;
+  font-family: "Montserrat", sans-serif;
+  font-size: larger;
+  margin-right: 100px;
+  margin-top: 40px;
+}
+
+#background {
+  position: fixed;
+}
+
+#Card1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+}
+
+#toSeats {
+  display: flex;
+  justify-content: center;
+}
+
+#cardInterior {
+  background-image: linear-gradient(#000, #000);
+  background-size: 1px 45%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+#top {
+  color: white;
+  font-family: "Montserrat", sans-serif;
+  font-size: 2.7em;
+  position: absolute;
+  left: 50%;
+  padding-top: 100px;
+  transform: translateX(-50%);
+}
+
+#totalPrice {
+  font-weight: bold;
+  margin-top: 20px;
+  transform: translateX(-65px);
+}

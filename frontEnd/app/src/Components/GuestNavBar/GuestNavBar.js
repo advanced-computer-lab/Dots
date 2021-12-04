@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 
 import './GuestNavBar.css';
+import logo from './logo2.jpeg';
 
 
 const pages = ['Products', 'Pricing', 'Blog'];
@@ -41,16 +42,20 @@ const GuestNavBar = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Typography
+          {/* <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
           >
             TAKE OFF 
-          </Typography>
+          </Typography> */}
 
-      
+          <a>
+          <img src={logo} alt="Logo" width = "120"/>
+          </a>
+
+
         </Toolbar>
       </Container>
     </AppBar>

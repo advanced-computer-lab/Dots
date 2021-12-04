@@ -27,7 +27,7 @@ class UserLanding extends Component {
                 backgroundPosition: 'center',
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
-                height: "540px"
+                height: "765px"
 
 
 
@@ -44,21 +44,12 @@ class UserLanding extends Component {
                     <Card id="search" sx={{ maxWidth: 900, borderRadius: 5 }}>
 
                         <CardContent>
-                            <UserSearch />
+                            <UserSearch isChangeSearch = {true} />
                         </CardContent>
 
                     </Card>
 
-                    
-
-
                 </Stack>
-
-
-
-
-
-
             </div>
 
         );

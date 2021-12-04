@@ -92,7 +92,7 @@ async function rand() {
   const rand = translator.generate().substring(0, 5);
   return rand;
 }
-app.post('/flights', async (req, res) => {
+/*app.post('/flights', async (req, res) => {
   console.log(req.body);
   try {
     Flight.create({
@@ -114,7 +114,49 @@ app.post('/flights', async (req, res) => {
     console.log(error);
   }
   res.redirect('http://localhost:3000/');
+});*/
+
+
+/*const flightOut = new Flight({
+  _id: new mongoose.Types.ObjectId(),
+  departureTime: new Date('2016-08-18T21:11:54'),
+  arrivalTime: new Date('2017-08-18T21:11:54')
 });
+const flightIn = new Flight({
+  _id: new mongoose.Types.ObjectId(),
+  departureTime: new Date('2020-08-18T21:11:54'),
+  arrivalTime: new Date('2023-08-18T21:11:54')
+});
+flightOut.save((err) => {
+});
+flightIn.save((err) => {
+});
+ Reservation.create({
+  outBoundClass: "Economy",
+  inBoundClass: "Business",
+  outBoundflight: flightOut._id,
+  inBoundflight: flightIn._id
+});
+*/
+
+
+app.get('/userflights', async (req,res) => {
+         var user = await User.find({});
+         user = await user[0].populate('reservations');
+         var reservations = user.reservations;
+         for(let i = 0; i< reservations.length; i++){
+           await reservations[i].populate('inBoundflight');
+           await reservations[i].populate('outBoundflight');
+           await reservations[i].populate('user');
+         }
+        res.json(reservations);
+      });
+
+/*app.get('/summary', async (req,res) =>{
+  var inBoundflight = await Reservation.findOne({outBoundClass: "Economy"}).populate('inBoundflight');
+  var outBoundFlight = await Reservation.findOne({outBoundClass: "Economy"}).populate('outBoundflight');
+  console.log(allData.inBoundflight.departureTime);
+});*/
 
 
 app.delete('/flight/:flightId/delete', async (req, res) => {
@@ -330,7 +372,7 @@ app.post("/flights/flightquery", async (req, res) => {
 
       let dateObject = {}
       dateObject[tempDateString] = tempFlights;
-      outFlightsWithDate.push({ "date": tempDateString, "flights": tempFlights });
+      outFlightsWithDate.push({ "date": tempDate, "flights": tempFlights });
 
     }
 
@@ -349,16 +391,27 @@ app.post("/flights/flightquery", async (req, res) => {
 
       let dateObject = {}
       dateObject[tempDateString] = tempFlights;
-      inFlightsWithDate.push({ "date": tempDateString, "flights": tempFlights });
+      inFlightsWithDate.push({ "date": tempDate, "flights": tempFlights });
 
     }
 
-    res.status(200).send({ "out": outFlightsWithDate, "in": inFlightsWithDate });
+    res.status(200).send({
+      depOriginalFlights: outFlightsWithDate, depAllFlights: outFlightsWithDate, depsearchdate: new Date(outDepDate),
+      from :body.from, to: body.to,
+      depfaded: true,
+      depchosenFlight: null,
+      returnOriginalFlights: inFlightsWithDate,
+      returnAllflights: inFlightsWithDate,
+      returnsearchdate: new Date(inDepDate),
+      returnchosenflight: null,
+      returnfaded: true,
+      numberOfpassengers: parseInt(body.kids) + parseInt(body.adults)
+     }  );
   }
   catch (error) {
-    console.log(error);
-    res.status(400).send(null);
-  }
+  console.log(error);
+  res.status(400).send(null);
+}
 
 
 })
