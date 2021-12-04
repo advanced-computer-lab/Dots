@@ -516,21 +516,11 @@ class SeatSelector extends Component {
               <CardContent>
 
                 {/* This is the right box */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    p: 1,
-                    width: "100%",
-                  }}
-                >
-                  {/* Top Box */}
                   <Box
                     sx={{
                       display: "flex",
                       flexDirection: "row",
-                      bgcolor: "#6ab7ff",
+                      bgcolor: "#098286",
                       justifyContent: "space-between",
                     }}
                   >
@@ -542,7 +532,6 @@ class SeatSelector extends Component {
                         fontSize: 26,
                       }}
                     >
-
                       Passengers:
                     </Box>
 
@@ -550,7 +539,6 @@ class SeatSelector extends Component {
                       sx={{
                         display: "flex",
                         flexDirection: "row",
-                        bgcolor: "background.paper",
                         justifyContent: "space-around",
                         width: "70%",
                       }}
@@ -657,7 +645,6 @@ class SeatSelector extends Component {
                       );
                     })}
                   </Box>
-                </Box>
               </CardContent>
             </Card>
 
@@ -677,7 +664,7 @@ class SeatSelector extends Component {
               color="success"
               sx={{ alignSelf: "flex-end", mt: "50px" }}
             >
-              Next
+              Checkout
             </Button>
 
           </Box>
