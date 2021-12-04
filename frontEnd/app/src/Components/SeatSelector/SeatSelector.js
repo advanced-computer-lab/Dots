@@ -29,56 +29,41 @@ import TransitionControl from '../SeatMapTransitionControl/SeatMapTransitionCont
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { Link, useNavigate, Navigate, useLocation } from 'react-router-dom';
+import background from '../UserLanding/travel2.jpg';
+import GuestNavBar from '../GuestNavBar/GuestNavBar';
 
 class SeatSelector extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
-    let outBoundCabin = "Business";
-    let inBoundCabin = "Business";
-    let passengers = [
-      { firstName: "Ahmed", lastName: "ElAmory", passportNumber: "A34B442" },
-      { firstName: "Ahmed", lastName: "Belal", passportNumber: "A34B442" },
-      { firstName: "Omar", lastName: "ElSawy", passportNumber: "A34B442" },
-      { firstName: "Mohamed", lastName: "Amr", passportNumber: "A34B442" },
-      { firstName: "Ahmed", lastName: "Tamer", passportNumber: "A34B442" },
-    ];
+
+    console.log(this.props.details)
+
+    let outBoundCabin = this.props.details.depflightClass;
+    let inBoundCabin = this.props.details.returnflightClass;
+    let passengers = this.props.details.passengers
 
     passengers.forEach((passenger) => {
       passenger.outBoundSeat = "N/A";
       passenger.inBoundSeat = "N/A";
     });
 
-    let outBoundtotalEconomySeats = 40;
-    let outBoundtotalBusinessSeats = 30;
-    let outBoundtotalFirstSeats = 15;
+    let outBoundtotalEconomySeats = this.props.details.depchosenflight.totalEconomySeats;
+    let outBoundtotalBusinessSeats = this.props.details.depchosenflight.totalBusinessSeats;
+    let outBoundtotalFirstSeats = this.props.details.depchosenflight.totalFirstSeats;
 
-    let inBoundtotalEconomySeats = 20;
-    let inBoundtotalBusinessSeats = 30;
-    let inBoundtotalFirstSeats = 10;
+    let inBoundtotalEconomySeats = this.props.details.returnchosenflight.totalEconomySeats;;
+    let inBoundtotalBusinessSeats = this.props.details.depchosenflight.totalBusinessSeats;;
+    let inBoundtotalFirstSeats = this.props.details.depchosenflight.totalFirstSeats;;
 
-    let departureCity = "Cairo";
-    let arrivalCity = "Berlin";
+    let departureCity = this.props.details.depchosenflight.departureLocation.city;
+    let arrivalCity = this.props.details.depchosenflight.arrivalLocation.city;
 
     let id = 1;
-    let firstRows = this.generateClassSeats(
-      outBoundtotalFirstSeats,
-      "First",
-      id
-    );
+    let firstRows = this.generateClassSeats(outBoundtotalFirstSeats, "First", id);
     id = firstRows.id;
-    let businessRows = this.generateClassSeats(
-      outBoundtotalBusinessSeats,
-      "Business",
-      id
-    );
+    let businessRows = this.generateClassSeats(outBoundtotalBusinessSeats, "Business", id);
     id = businessRows.id;
-    let economyRows = this.generateClassSeats(
-      outBoundtotalEconomySeats,
-      "Economy",
-      id
-    );
-
+    let economyRows = this.generateClassSeats(outBoundtotalEconomySeats, "Economy", id);
     let outBoundRows = [];
     outBoundRows.push([]);
     outBoundRows = outBoundRows.concat(firstRows.rows);
@@ -88,26 +73,12 @@ class SeatSelector extends Component {
     outBoundRows = outBoundRows.concat(economyRows.rows);
     outBoundRows.push([]);
 
-
     id = 1;
-    firstRows = this.generateClassSeats(
-      inBoundtotalFirstSeats,
-      "First",
-      id
-    );
+    firstRows = this.generateClassSeats(inBoundtotalFirstSeats, "First", id);
     id = firstRows.id;
-    businessRows = this.generateClassSeats(
-      inBoundtotalBusinessSeats,
-      "Business",
-      id
-    );
+    businessRows = this.generateClassSeats(inBoundtotalBusinessSeats, "Business", id);
     id = businessRows.id;
-    economyRows = this.generateClassSeats(
-      inBoundtotalEconomySeats,
-      "Economy",
-      id
-    );
-
+    economyRows = this.generateClassSeats(inBoundtotalEconomySeats, "Economy", id);
     let inBoundRows = [];
     inBoundRows.push([]);
     inBoundRows = inBoundRows.concat(firstRows.rows);
@@ -127,21 +98,10 @@ class SeatSelector extends Component {
       passengers: passengers,
       activeFlight: 0,
       activePassenger: 0,
-      flagyt: false,
       outBoundCabin: outBoundCabin,
       inBoundCabin: inBoundCabin,
     };
-
-    this.wow();
   }
-
-  wow = () => {
-    var newSelectedSeats = this.state.selectedSeats;
-
-    newSelectedSeats.push({ Name: "Ahmed", Seat: "A22" });
-
-    this.setState({ selectedSeats: newSelectedSeats });
-  };
 
   generateClassSeats = (totalSeats, cabin, currentId) => {
     let id = currentId;
@@ -478,13 +438,14 @@ class SeatSelector extends Component {
           sx={{
             display: "flex",
             flexDirection: "row",
-            bgcolor: "background.paper",
+            bgcolor: "transparent",
             justifyContent: "space-around",
             mt: "40px",
           }}
         >
-
-          <TransitionControl switch={this.currentFlightFlag()} outBoundSeatMap={outBoundSeatMap()} inBoundSeatMap={inBoundSeatMap()}></TransitionControl>
+          <div >
+            <TransitionControl switch={this.currentFlightFlag()} outBoundSeatMap={outBoundSeatMap()} inBoundSeatMap={inBoundSeatMap()}></TransitionControl>
+          </div>
 
           <Box
             sx={{
@@ -497,16 +458,21 @@ class SeatSelector extends Component {
               // bgcolor: '#005cb2',
             }}
           >
-
-            <Button sx={{ alignSelf: "flex-end", mb: '5px' }} variant="outlined">
-              Go back
-            </Button>
+            <Box
+              sx={{ alignSelf: "flex-end" }}
+            >
+              <Link to="/summary" type="submit" state={{ result: this.props.details }} >
+                <Button sx={{ alignSelf: "flex-end", mb: '5px' }} variant="contained">
+                  Go back
+                </Button>
+              </Link>
+            </Box>
 
 
             <Card sx={{ bgcolor: "#076F72" }}>
               <CardContent>
                 <Typography sx={{ font: '30px Railway ' }}>
-                  You can only select Economy Class
+                  You can only select {this.state.activeFlight === 0 ? this.state.outBoundCabin : this.state.inBoundCabin} Class
                 </Typography>
               </CardContent>
             </Card>
@@ -661,15 +627,13 @@ class SeatSelector extends Component {
 
 
 
-            <Link to="/summary" type="submit" state={{ result: this.state }} >
-              <Button
-                variant="contained"
-                color="success"
-                sx={{ alignSelf: "flex-end", mt: "50px" }}
-              >
-                Checkout
-              </Button>
-            </Link>
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ alignSelf: "flex-end", mt: "50px" }}
+            >
+              Checkout
+            </Button>
 
           </Box>
         </Box>
@@ -681,9 +645,20 @@ class SeatSelector extends Component {
 function SeatSelectorFunction(props) {
   let location = useLocation();
   const { result } = location.state
-  console.log(result);
+  return (
 
-  return(<SeatSelector/>);
+    <div style={{
+      backgroundImage: `url(${background})`,
+      backgroundPosition: 'center',
+      backgroundSize: 'cover',
+      height: "100vh"
+
+
+    }}>
+      <GuestNavBar />
+      <SeatSelector details={result} />
+    </div>
+  );
 }
 
 

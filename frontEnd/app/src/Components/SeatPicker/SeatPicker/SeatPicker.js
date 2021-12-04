@@ -22,7 +22,6 @@ export class SeatPicker extends Component {
     super(props);
     const { rows } = props;
     const { selectedSeats, size } = this.getAlreadySelectedSeats();
-    console.log(selectedSeats)
     this.state = {
       tooltipOverrides: {},
       selectedSeats: selectedSeats,
@@ -35,7 +34,6 @@ export class SeatPicker extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    console.log(state.selectedSeats)
     if (props.maxReservableSeats < state.size) {
       let sum = 0;
       const selectedSeats = {};
@@ -70,7 +68,6 @@ export class SeatPicker extends Component {
     let selectedSeats = {};
     let size = 0;
     const { maxReservableSeats, alpha, selectedByDefault } = this.props;
-    console.log(this.props.rows)
     if (selectedByDefault) {
       let gapCounter = 0;
       this.props.rows.forEach((row, index) => {
@@ -293,24 +290,24 @@ export class SeatPicker extends Component {
   }
 }
 
-SeatPicker.propTypes = {
-  addSeatCallback: PropTypes.func,
-  alpha: PropTypes.bool,
-  visible: PropTypes.bool,
-  continuous: PropTypes.bool,
-  selectedByDefault: PropTypes.bool,
-  removeSeatCallback: PropTypes.func,
-  maxReservableSeats: PropTypes.number,
-  rows: PropTypes.arrayOf(
-    PropTypes.arrayOf(
-      PropTypes.shape({
-        number: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        isReserved: PropTypes.bool,
-        tooltip: PropTypes.string,
-        isSelected: PropTypes.bool,
-      })
-    )
-  ).isRequired,
-  tooltipProps: PropTypes.object,
-  loading: PropTypes.bool,
-};
+// SeatPicker.propTypes = {
+//   addSeatCallback: PropTypes.func,
+//   alpha: PropTypes.bool,
+//   visible: PropTypes.bool,
+//   continuous: PropTypes.bool,
+//   selectedByDefault: PropTypes.bool,
+//   removeSeatCallback: PropTypes.func,
+//   maxReservableSeats: PropTypes.number,
+//   rows: PropTypes.arrayOf(
+//     PropTypes.arrayOf(
+//       PropTypes.shape({
+//         number: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+//         isReserved: PropTypes.bool,
+//         tooltip: PropTypes.string,
+//         isSelected: PropTypes.bool,
+//       })
+//     )
+//   ).isRequired,
+//   tooltipProps: PropTypes.object,
+//   loading: PropTypes.bool,
+// };
