@@ -181,8 +181,14 @@ app.delete('/reservations/:reservationId', async (req, res) => {
                 <p>this mail is to confirm your refund of $${reservationDeleted.totalPrice}</p>`
             }
             transporter.sendMail(mailOptions, (err, data) => {
-              if (err)
-                res.status(400).send({ message: "Error sending email" })
+              if (err) {
+                Reservation.create(reservationDeleted).then(() => {
+                  User.findByIdAndUpdate(reservationDeleted.user, { $push: { reservations: reservationId } })
+                    .then(() => {
+                      res.status(400).send({ message: "Error sending email" })
+                    })
+                })
+              }
               else
                 res.send(`Email Sent: ${data}`)
             })
