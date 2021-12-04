@@ -19,12 +19,26 @@ import PassengerForm from './passengerForm/passengerForm';
 import Container from '@mui/material/Container';
 import { useLocation } from "react-router-dom"
 
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import UserSearch from '../UserSearch/UserSearch';
 
 class UserFlightList extends Component {
 
 
     componentDidMount() {
         console.log(this.state)
+    }
+
+    editSearch = (e) => {
+        this.setState({ openDialog: true })
+
+    }
+    onSearchClose = () => {
+        this.setState({ openDialog: false })
     }
 
 
@@ -42,14 +56,14 @@ class UserFlightList extends Component {
             return p;
         }
         this.state = {
-            from:this.props.from,
+            from: this.props.from,
             depfaded: this.props.depfaded ? this.props.depfaded : true,
             depvalue: this.props.depsearchdate,
             depOriginalFlights: this.props.depOriginalFlights,
             depAllflights: this.props.depAllFlights,
             depchosenflight: this.depchosenflight,
             depflightClass: this.props.depflightClass ? this.props.depflightClass : '',
-            to:this.props.to,
+            to: this.props.to,
             returnfaded: this.props.returnfaded ? this.props.returnfaded : true,
             returnvalue: this.props.returnsearchdate,
             returnOriginalFlights: this.props.returnOriginalFlights,
@@ -57,7 +71,8 @@ class UserFlightList extends Component {
             returnchosenflight: this.props.returnchosenflight,
             returnflightClass: this.props.returnflightClass ? this.props.returnflightClass : '',
             numberOfpassengers: this.props.numberOfpassengers,
-            passengers: this.props.passengers ? this.props.passengers : buildpassengers(this.props.numberOfpassengers)
+            passengers: this.props.passengers ? this.props.passengers : buildpassengers(this.props.numberOfpassengers),
+            openDialog: false
         }
     }
 
@@ -217,42 +232,70 @@ class UserFlightList extends Component {
 
 
         return (
-            <Container maxWidth="xl" id="cont">
+            <div>
+                <Card>
 
-                <Typography variant="h4" component="div" id='flightText' > <FlightTakeoffIcon fontSize='large' /> {`${this.state.from} to ${this.state.to}`}</Typography>
+                    <CardContent>
 
-                <TabBar Allflights={this.state.depAllflights} OriginalFlights={this.state.depOriginalFlights} chosenClass={this.state.depchosenflight}
-                    faded={this.state.depfaded} chosenflight={this.state.depchosenflight} value={this.state.depvalue}
-                    return={false} updateFaded={this.updatedepFaded}
-                    updatevalue={this.updatedepvalue} updateAllflights={this.updatedepAllflights}
-                    updatechosenflight={this.updatedepchosenflight} updateclass={this.updatedepClass} />
+                        <Typography>
+                        
+                        </Typography>
+                        <Button variant="outlined" onClick={this.editSearch}>Edit Search</Button>
 
-                <Typography variant="h4" component="div" id='flightText' > <ThemeProvider theme={isRtl ? rtlTheme : ltrTheme}>
-                    <DirectionAwareFlightTakeoffIcon fontSize='large' />
-                </ThemeProvider> {`${this.state.to} to ${this.state.from}`}</Typography>
 
-                <TabBar Allflights={this.state.returnAllflights} OriginalFlights={this.state.returnOriginalFlights} chosenClass={this.state.returnchosenflight}
-                    faded={this.state.returnfaded} chosenflight={this.state.returnchosenflight} value={this.state.returnvalue} return={true} 
-                    updateFaded={this.updatereturnFaded}
-                    updatevalue={this.updatereturnvalue}
-                    updateAllflights={this.updatereturnAllflights}
-                    updatechosenflight={this.updatereturnchosenflight}
-                    updateclass={this.updatereturnClass} />
+                    </CardContent>
+                </Card>
 
-                {!this.state.depfaded && !this.state.returnfaded ?
-                    <div id="passengersForm">
-                        <form onSubmit={this.onSubmit}>
-                            <FormControl >
-                                {Array.from(Array(2), (e, i) => {
-                                    return <PassengerForm ind={i + 1} updatepassengerlastName={this.updatepassengerlastName} updatepassengerFirstName={this.updatepassengerFirstName} p={(this.state.passengers)[i]} updatepassengerPassportNo={this.updatepassengerPassportNo} />
-                                })}
-                                <Button variant="contained" type="submit">Next</Button>
-                            </FormControl>
-                        </form>
-                    </div>
-                    : <div></div>}
+                <Dialog
+                    fullWidth={true}
+                    maxWidth={false}
+                    open={this.state.openDialog}
+                    onClose={() => { this.onSearchClose(); this.state.openDialog = false }}
+                >
+                    <DialogTitle>Edit Search</DialogTitle>
+                    <DialogContent>
+                        <UserSearch />
+                    </DialogContent>
+                </Dialog>
 
-            </Container>
+
+                <Container maxWidth="xl" id="cont">
+
+                    <Typography variant="h4" component="div" id='flightText' > <FlightTakeoffIcon fontSize='large' /> {`${this.state.from} to ${this.state.to}`}</Typography>
+
+                    <TabBar Allflights={this.state.depAllflights} OriginalFlights={this.state.depOriginalFlights} chosenClass={this.state.depchosenflight}
+                        faded={this.state.depfaded} chosenflight={this.state.depchosenflight} value={this.state.depvalue}
+                        return={false} updateFaded={this.updatedepFaded}
+                        updatevalue={this.updatedepvalue} updateAllflights={this.updatedepAllflights}
+                        updatechosenflight={this.updatedepchosenflight} updateclass={this.updatedepClass} />
+
+                    <Typography variant="h4" component="div" id='flightText' > <ThemeProvider theme={isRtl ? rtlTheme : ltrTheme}>
+                        <DirectionAwareFlightTakeoffIcon fontSize='large' />
+                    </ThemeProvider> {`${this.state.to} to ${this.state.from}`}</Typography>
+
+                    <TabBar Allflights={this.state.returnAllflights} OriginalFlights={this.state.returnOriginalFlights} chosenClass={this.state.returnchosenflight}
+                        faded={this.state.returnfaded} chosenflight={this.state.returnchosenflight} value={this.state.returnvalue} return={true}
+                        updateFaded={this.updatereturnFaded}
+                        updatevalue={this.updatereturnvalue}
+                        updateAllflights={this.updatereturnAllflights}
+                        updatechosenflight={this.updatereturnchosenflight}
+                        updateclass={this.updatereturnClass} />
+
+                    {!this.state.depfaded && !this.state.returnfaded ?
+                        <div id="passengersForm">
+                            <form onSubmit={this.onSubmit}>
+                                <FormControl >
+                                    {Array.from(Array(2), (e, i) => {
+                                        return <PassengerForm ind={i + 1} updatepassengerlastName={this.updatepassengerlastName} updatepassengerFirstName={this.updatepassengerFirstName} p={(this.state.passengers)[i]} updatepassengerPassportNo={this.updatepassengerPassportNo} />
+                                    })}
+                                    <Button variant="contained" type="submit">Next</Button>
+                                </FormControl>
+                            </form>
+                        </div>
+                        : <div></div>}
+
+                </Container>
+            </div>
 
 
         );
@@ -280,21 +323,21 @@ function UserFlightListFunction(props) {
     const from = result.from
     const to = result.to
 
-    return <UserFlightList depfaded={depfaded} 
-                           depvalue={depvalue} 
-                           from = {from}
-                           to = {to}
-                           depOriginalFlights={depOriginalFlights}
-                           depAllflights = {depAllflights}
-                           depchosenflight = {depchosenflight}
-                           depflightClass = {depflightClass}
-                            returnfaded={returnfaded}
-                            returnvalue={returnvalue}
-                            returnOriginalFlights={returnOriginalFlights}
-                            returnchosenflight={returnchosenflight}
-                            returnflightClass={returnflightClass}
-                            numberOfpassengers={numberOfpassengers}
-                           />
+    return <UserFlightList depfaded={depfaded}
+        depvalue={depvalue}
+        from={from}
+        to={to}
+        depOriginalFlights={depOriginalFlights}
+        depAllflights={depAllflights}
+        depchosenflight={depchosenflight}
+        depflightClass={depflightClass}
+        returnfaded={returnfaded}
+        returnvalue={returnvalue}
+        returnOriginalFlights={returnOriginalFlights}
+        returnchosenflight={returnchosenflight}
+        returnflightClass={returnflightClass}
+        numberOfpassengers={numberOfpassengers}
+    />
 }
 
 export default UserFlightListFunction;
