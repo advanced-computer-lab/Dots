@@ -60,7 +60,7 @@ class FlightClassCard extends Component {
                                 </Typography>
                             </CardContent>
                             <CardActions className='zeropaddingMargin' >
-                                <Button variant="outlined" id="classButton" onClick={this.changeEconomy} >$500</Button>
+                                <Button variant="outlined" id="classButton" onClick={this.changeEconomy} >${this.props.flight.economyClassPrice}</Button>
                             </CardActions>
                         </Card>
                     </Grid>
@@ -111,7 +111,7 @@ class FlightClassCard extends Component {
                                 </Typography>
                             </CardContent>
                             <CardActions className='zeropaddingMargin' >
-                                <Button variant="outlined" id="classButton"  onClick={this.changeFirst}  >$500</Button>
+                                <Button variant="outlined" id="classButton"  onClick={this.changeFirst}  >${this.props.flight.firstClassPrice}</Button>
                             </CardActions>
                         </Card>
                     </Grid>
@@ -190,7 +190,7 @@ class FlightClassCard extends Component {
                                 </Typography>
                             </CardContent>
                             <CardActions className='zeropaddingMargin' >
-                                <Button variant="outlined" id="classButton"  onClick={this.changeBusiness} >$500</Button>
+                                <Button variant="outlined" id="classButton"  onClick={this.changeBusiness} >${this.props.flight.businessClassPrice}</Button>
                             </CardActions>
                         </Card>
                     </Grid>
