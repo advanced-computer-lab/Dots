@@ -1,8 +1,3 @@
-body {
-    padding: 2rem;
-    font-family: sans-serif;
-    text-align: center;
-  }
   
   .label {
     margin-bottom: 0.5rem;
@@ -35,5 +30,8 @@ body {
   .fade-enter-active,
   .fade-exit-active {
     transition: opacity 500ms, transform 500ms;
+  }
+  .transition-control{
+    margin-top: 25px;
   }
   

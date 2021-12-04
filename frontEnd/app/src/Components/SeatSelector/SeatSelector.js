@@ -25,9 +25,10 @@ import Slide from "@mui/material/Slide";
 import { SwitchTransition, CSSTransition, Transition } from "react-transition-group";
 import { ContactSupportOutlined } from "@material-ui/icons";
 import styled from "styled-components";
-import TransitionControl from '../SeatMapTransitionControl/App.js'
+import TransitionControl from '../SeatMapTransitionControl/SeatMapTransitionControl.js'
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 
 
 class SeatSelector extends Component {
@@ -498,7 +499,7 @@ class SeatSelector extends Component {
             }}
           >
 
-            <Button sx={{alignSelf:"flex-end" ,mb:'5px'}} variant="outlined">
+            <Button sx={{ alignSelf: "flex-end", mb: '5px' }} variant="outlined">
               Go back
             </Button>
 
@@ -516,135 +517,135 @@ class SeatSelector extends Component {
               <CardContent>
 
                 {/* This is the right box */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    bgcolor: "#098286",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: "30%",
+                      fontFamily: "Monospace",
+                      fontWeight: "bold",
+                      fontSize: 26,
+                    }}
+                  >
+                    Passengers:
+                  </Box>
+
                   <Box
                     sx={{
                       display: "flex",
                       flexDirection: "row",
-                      bgcolor: "#098286",
-                      justifyContent: "space-between",
+                      justifyContent: "space-around",
+                      width: "70%",
                     }}
                   >
                     <Box
                       sx={{
-                        width: "30%",
                         fontFamily: "Monospace",
                         fontWeight: "bold",
                         fontSize: 26,
                       }}
                     >
-                      Passengers:
+                      {this.state.departureCity}
+                      <DirectionAwareFlightTakeoffIcon />
+                      {this.state.arrivalCity}
                     </Box>
 
                     <Box
                       sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-around",
-                        width: "70%",
+                        fontFamily: "Monospace",
+                        fontWeight: "bold",
+                        fontSize: 26,
                       }}
                     >
-                      <Box
-                        sx={{
-                          fontFamily: "Monospace",
-                          fontWeight: "bold",
-                          fontSize: 26,
-                        }}
-                      >
-                        {this.state.departureCity}
+
+                      {this.state.arrivalCity}
+                      <ThemeProvider theme={isRtl ? rtlTheme : ltrTheme}>
                         <DirectionAwareFlightTakeoffIcon />
-                        {this.state.arrivalCity}
-                      </Box>
-
-                      <Box
-                        sx={{
-                          fontFamily: "Monospace",
-                          fontWeight: "bold",
-                          fontSize: 26,
-                        }}
-                      >
-
-                        {this.state.arrivalCity}
-                        <ThemeProvider theme={isRtl ? rtlTheme : ltrTheme}>
-                          <DirectionAwareFlightTakeoffIcon />
-                        </ThemeProvider>
-                        {this.state.departureCity}
-                      </Box>
+                      </ThemeProvider>
+                      {this.state.departureCity}
                     </Box>
                   </Box>
+                </Box>
 
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      bgcolor: "background.paper",
-                      justifyContent: "space-between",
-                    }}
-                  >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    bgcolor: "background.paper",
+                    justifyContent: "space-between",
+                  }}
+                >
 
-                    {this.state.passengers.map((passenger, index) => {
-                      return (
+                  {this.state.passengers.map((passenger, index) => {
+                    return (
+                      <Box
+                        key={index}
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          bgcolor: "background.paper",
+                          justifyContent: "flex-start",
+                        }}
+                      >
                         <Box
-                          key={index}
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            width: "30%",
+                            fontFamily: "Monospace",
+                            fontWeight: "bold",
+                            fontSize: 20,
+                            border: 1,
+                          }}
+                        >
+                          {passenger.firstName} {passenger.lastName}
+                        </Box>
+                        <Box
                           sx={{
                             display: "flex",
                             flexDirection: "row",
                             bgcolor: "background.paper",
-                            justifyContent: "flex-start",
+                            justifyContent: "space-around",
+                            border: 1,
+                            width: "70%",
                           }}
                         >
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyContent: "center",
-                              width: "30%",
-                              fontFamily: "Monospace",
-                              fontWeight: "bold",
-                              fontSize: 20,
-                              border: 1,
+                          <Button
+                            variant="outlined"
+                            className={buttonClasses(0, index)}
+                            onClick={() => {
+                              this.setState({
+                                activeFlight: 0,
+                                activePassenger: index,
+                              });
                             }}
                           >
-                            {passenger.firstName} {passenger.lastName}
-                          </Box>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexDirection: "row",
-                              bgcolor: "background.paper",
-                              justifyContent: "space-around",
-                              border: 1,
-                              width: "70%",
+                            {passenger.outBoundSeat}
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            className={buttonClasses(1, index)}
+                            onClick={() => {
+                              this.setState({
+                                activeFlight: 1,
+                                activePassenger: index,
+                              });
                             }}
                           >
-                            <Button
-                              variant="outlined"
-                              className={buttonClasses(0, index)}
-                              onClick={() => {
-                                this.setState({
-                                  activeFlight: 0,
-                                  activePassenger: index,
-                                });
-                              }}
-                            >
-                              {passenger.outBoundSeat}
-                            </Button>
-                            <Button
-                              variant="outlined"
-                              className={buttonClasses(1, index)}
-                              onClick={() => {
-                                this.setState({
-                                  activeFlight: 1,
-                                  activePassenger: index,
-                                });
-                              }}
-                            >
-                              {passenger.inBoundSeat}
-                            </Button>
-                          </Box>
+                            {passenger.inBoundSeat}
+                          </Button>
                         </Box>
-                      );
-                    })}
-                  </Box>
+                      </Box>
+                    );
+                  })}
+                </Box>
               </CardContent>
             </Card>
 
@@ -659,13 +660,17 @@ class SeatSelector extends Component {
 
             </Slide>
 
-            <Button
-              variant="contained"
-              color="success"
-              sx={{ alignSelf: "flex-end", mt: "50px" }}
-            >
-              Checkout
-            </Button>
+
+
+            <Link to="/summary" type="submit" state={{ result: this.state }} >
+              <Button
+                variant="contained"
+                color="success"
+                sx={{ alignSelf: "flex-end", mt: "50px" }}
+              >
+                Checkout
+              </Button>
+            </Link>
 
           </Box>
         </Box>
