@@ -6,29 +6,29 @@ const Reservation = require('./reservations');
 const flightSchema = new Schema({
     flightNumber:{
         type:String,
-        required:true
+        
     },
    
     departureLocation: {
-        country:{type:String , required:true},
-        city:{type:String , required:true},
-        airport:{type:String , required:true},
-        terminal:{type:String , required:true}
+        country:{type:String /*required:true*/},
+        city:{type:String /*required:true*/},
+        airport:{type:String /*required:true*/},
+        terminal:{type:String /*required:true*/}
     },
     arrivalLocation: {
-        country:{type:String , required:true},
-        city:{type:String , required:true},
-        airport:{type:String , required:true},
-        terminal:{type:String , required:true}
+        country:{type:String /*required:true*/},
+        city:{type:String /*required:true*/},
+        airport:{type:String /*required:true*/},
+        terminal:{type:String /*required:true*/}
     },
   
     departureTime: {
         type:Date,
-        required:true
+        /*required:true*/
     },
     arrivalTime: {
         type:Date,
-        required:true
+        /*required:true*/
     },
     economySeatsAvailable:
     {

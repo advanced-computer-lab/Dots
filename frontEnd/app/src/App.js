@@ -7,6 +7,7 @@ import UserSearch from './Components/UserSearch/UserSearch';
 
 import UserFlightListFunction from './Components/UserFlightList/userFlightList';
 
+import Summary from './Components/Summary/Summary';
 
 import { Navbar } from 'react-bootstrap'
 import { Nav } from 'react-bootstrap'
@@ -18,6 +19,8 @@ import Loading from './Components/Loading/Loading';
 
 import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import UserFlights from './Components/Summary/userFlights';
+
 
 const theme = createTheme({
   palette: {
@@ -41,6 +44,8 @@ class App extends Component {
           <Route path="/flights" element={<UserFlightListFunction/>} />
           <Route path="/admin" element={  <FlightsList />} />
           <Route path="/loading" element={<Loading />} />
+          <Route path="/summary" element={<Summary/>} />
+          <Route path="/userflights" element={<UserFlights/>} />
 
         </Routes>
 

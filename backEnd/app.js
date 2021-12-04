@@ -11,7 +11,10 @@ const session = require("express-session");
 
 
 const Flight = require('./models/flights');
-const Admin = require('./models/admins')
+const Admin = require('./models/admins');
+const Reservation = require('./models/reservations');
+const User = require('./models/users');
+
 
 const MongoURI = process.env.MONGO_URI;
 
@@ -78,7 +81,7 @@ async function rand() {
   const rand = translator.generate().substring(0, 5);
   return rand;
 }
-app.post('/flights', async (req, res) => {
+/*app.post('/flights', async (req, res) => {
   console.log(req.body);
   try {
     Flight.create({
@@ -100,7 +103,49 @@ app.post('/flights', async (req, res) => {
     console.log(error);
   }
   res.redirect('http://localhost:3000/');
+});*/
+
+
+/*const flightOut = new Flight({
+  _id: new mongoose.Types.ObjectId(),
+  departureTime: new Date('2016-08-18T21:11:54'),
+  arrivalTime: new Date('2017-08-18T21:11:54')
 });
+const flightIn = new Flight({
+  _id: new mongoose.Types.ObjectId(),
+  departureTime: new Date('2020-08-18T21:11:54'),
+  arrivalTime: new Date('2023-08-18T21:11:54')
+});
+flightOut.save((err) => {
+});
+flightIn.save((err) => {
+});
+ Reservation.create({
+  outBoundClass: "Economy",
+  inBoundClass: "Business",
+  outBoundflight: flightOut._id,
+  inBoundflight: flightIn._id
+});
+*/
+
+
+app.get('/userflights', async (req,res) => {
+         var user = await User.find({});
+         user = await user[0].populate('reservations');
+         var reservations = user.reservations;
+         for(let i = 0; i< reservations.length; i++){
+           await reservations[i].populate('inBoundflight');
+           await reservations[i].populate('outBoundflight');
+           await reservations[i].populate('user');
+         }
+        res.json(reservations);
+      });
+    
+/*app.get('/summary', async (req,res) =>{
+  var inBoundflight = await Reservation.findOne({outBoundClass: "Economy"}).populate('inBoundflight');
+  var outBoundFlight = await Reservation.findOne({outBoundClass: "Economy"}).populate('outBoundflight');
+  console.log(allData.inBoundflight.departureTime);
+});*/
 
 
 app.delete('/flight/:flightId/delete', async (req, res) => {
