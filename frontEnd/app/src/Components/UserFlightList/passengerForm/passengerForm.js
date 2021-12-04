@@ -8,11 +8,32 @@ class passengerForm extends Component {
     state = {
         firstName: this.props.p.firstName,
         lastName: this.props.p.lastName,
-        passportNo: this.props.p.passportNo
+        passportNo: this.props.p.passportNo,
+        firstNameError: '',
+        lastNameError: '',
+        passportNoError: ''
     };
 
+    componentDidMount(){
+        if (this.state.firstName===''){
+            this.setState({firstNameError:'This field is required'})
+        }
+        if (this.state.lastName===''){
+            this.setState({lastNameError:'This field is required'})
+        }
+        if (this.state.passportNo===''){
+            this.setState({passportNoError:'This field is required'})
+        }
+    }
+
     handleChange = (e) => {
+        let errorMsg = ''
+        const targetError = e.target.name + 'Error'
         this.setState({ [e.target.name]: e.target.value });
+       
+        if (e.target.value === '')
+            errorMsg = 'This field is required';
+
         if (e.target.name === 'firstName') {
             this.props.updatepassengerFirstName(e.target.value, (this.props.ind) - 1);
         } else if (e.target.name === 'lastName') {
@@ -20,12 +41,11 @@ class passengerForm extends Component {
         } else if (e.target.name === 'passportNo') {
             this.props.updatepassengerPassportNo(e.target.value, (this.props.ind) - 1);
         }
+        this.setState({ [targetError]: errorMsg })
     }
 
 
-    areFieldsValid() {
-
-    }
+    
     onSubmit = (e) => {
         e.preventDefault()
     }
@@ -37,12 +57,12 @@ class passengerForm extends Component {
                 <Typography variant="h6" component="div" id='ptext'>Passenger {this.props.ind}</Typography>
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
-                        <TextField onChange={this.handleChange} className="formElements" value={this.state.firstName} label="First Name" required type="input" id="firstName" placeholder="Ex: John" name="firstName" ></TextField>
+                        <TextField error={this.state.firstNameError !== ''} helperText={this.state.firstNameError} onChange={this.handleChange} className="formElements" value={this.state.firstName} label="First Name" required type="input" id="firstName" placeholder="Ex: John" name="firstName" ></TextField>
                     </Grid>
                     <Grid item xs={4}>
-                        <TextField onChange={this.handleChange} className="formElements" value={this.state.lastName} label="Last Name" required type="input" id="lastName" placeholder="Ex: Doe" name="lastName" ></TextField>
+                        <TextField error={this.state.lastNameError !== ''} helperText={this.state.lastNameError} onChange={this.handleChange} className="formElements" value={this.state.lastName} label="Last Name" required type="input" id="lastName" placeholder="Ex: Doe" name="lastName" ></TextField>
                     </Grid><Grid item xs={4}>
-                        <TextField onChange={this.handleChange} className="formElements" value={this.state.passportNo} label="Passport Number" required type="input" id="passportNo" placeholder="Ex: A1234" name="passportNo" ></TextField>
+                        <TextField error={this.state.passportNoError !== ''} helperText={this.state.passportNoError} onChange={this.handleChange} className="formElements" value={this.state.passportNo} label="Passport Number" required type="input" id="passportNo" placeholder="Ex: A1234" name="passportNo" ></TextField>
                     </Grid>
                 </Grid>
             </div>

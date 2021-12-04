@@ -12,6 +12,8 @@ import Button from '@mui/material/Button';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import { FormControl } from '@mui/material';
 import { Link } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import {
     ThemeProvider,
     createTheme,
@@ -75,7 +77,9 @@ class UserFlightList extends Component {
             returnflightClass: this.props.returnflightClass ? this.props.returnflightClass : '',
             numberOfpassengers: this.props.numberOfpassengers,
             passengers: this.props.passengers ? this.props.passengers : buildpassengers(this.props.numberOfpassengers),
-            openDialog: false
+            openDialog: false,
+            openAlert: false,
+            errorMessage: '' 
         }
     }
     updatedepFaded = (val1) => {
@@ -108,11 +112,22 @@ class UserFlightList extends Component {
     updatereturnClass = (val1) => {
         this.setState({ returnflightClass: val1 });
     }
+    handleCloseAlert = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openAlert: false })
+    };
     onSubmit = (e) => {
         e.preventDefault()
-        console.log(this.state);
-        let link = document.getElementById('summaryLink');
-        link.click();
+        if (this.state.depchosenflight.departureTime < this.state.returnchosenflight.departureTime) {
+            let link = document.getElementById('summaryLink');
+            link.click();
+        } else {
+            this.setState({ openAlert: true, errorMessage: "The return flight is before the departure on.Please select another flights" })
+        }
+
     }
     updatepassengerFirstName = (val, i) => {
         let p = this.state.passengers;
@@ -127,6 +142,22 @@ class UserFlightList extends Component {
         this.setState({
             passengers: p
         });
+    }
+    areFieldsVaild() {
+
+        const pa = this.state.passengers
+        for (let i = 0; i < pa.length; i++) {
+            if (pa[i].firstName === '') {
+                return true
+            }
+            if (pa[i].lastName === '') {
+                return true;
+            } if (pa[i].passportNo === '') {
+                return true;
+            }
+        }
+        return false;
+
     }
     updatepassengerPassportNo = (val, i) => {
         let p = this.state.passengers;
@@ -174,6 +205,12 @@ class UserFlightList extends Component {
                     </DialogContent>
                 </Dialog>
 
+                <Snackbar open={this.state.openAlert} autoHideDuration={5000} onClose={this.handleCloseAlert}>
+                    <Alert onClose={this.handleCloseAlert} severity="error" sx={{ width: '100%' }}>
+                        {this.state.errorMessage}
+                    </Alert>
+                </Snackbar>
+
                 <Container maxWidth="xl" id="cont">
 
                     <Typography variant="h4" component="div" id='flightText' > <FlightTakeoffIcon fontSize='large' /> {`${this.state.from} to ${this.state.to}`}</Typography>
@@ -208,7 +245,7 @@ class UserFlightList extends Component {
 
                                         </Grid>
                                         <Grid item xs={3}>
-                                            <Button variant="contained" type="submit" id='submitButton'>Next</Button>
+                                            <Button disabled={this.areFieldsVaild()} variant="contained" type="submit" id='submitButton'>Next</Button>
                                             <Link to="/summary" id="summaryLink" type="submit" state={{ result: this.state }} > </Link>
                                         </Grid>
 
