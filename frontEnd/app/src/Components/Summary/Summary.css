@@ -34,7 +34,7 @@
 
 #cardInterior {
   background-image: linear-gradient(#000, #000);
-  background-size: 1px 100%;
+  background-size: 1px 45%;
   background-repeat: no-repeat;
   background-position: center center;
 }
@@ -47,4 +47,10 @@
   left: 50%;
   padding-top: 100px;
   transform: translateX(-50%);
+}
+
+#totalPrice {
+  font-weight: bold;
+  margin-top: 20px;
+  transform: translateX(-65px);
 }
