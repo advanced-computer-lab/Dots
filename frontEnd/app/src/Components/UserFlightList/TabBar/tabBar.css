@@ -28,3 +28,8 @@
 #chosendiv{
     direction: rtl;
 }
+#noFlights{
+    margin-top: 3.5em;
+    margin-bottom: 2em;
+    text-align: center;
+}
