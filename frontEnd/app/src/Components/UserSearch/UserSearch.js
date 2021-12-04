@@ -55,7 +55,8 @@ class UserSearch extends Component {
             kids: 0,
             openAlert: false,
             errorMessage: "",
-            result: {}
+            result: {},
+            isChangeSearch:this.props.isChangeSearch
 
         }
     }
@@ -146,6 +147,9 @@ class UserSearch extends Component {
         return parseInt(adults) + parseInt(kids) > 0
     }
 
+    refreshPage = ()=>{
+        window.location.reload();
+     }
 
     onSearch = () => {
 
@@ -169,9 +173,20 @@ class UserSearch extends Component {
                     fetch('http://localhost:8000/flights/flightquery', requestOptions).then(res => res.json()).then(data => {
                         console.log('data', data)
                         this.setState({ result: data })
-                        console.log( 'result' , this.state.result)
-                        let link = document.getElementsByTagName('a')[1];
-                        link.click();
+                        console.log('result', this.state.result)
+                        let link = document.getElementById('flightLink');
+                        console.log('cond' , this.state.isChangeSearch)
+
+                        if (this.state.isChangeSearch) link.click();
+                        else {
+                            console.log('here');
+                            link.click();
+                            this.refreshPage();
+
+                        }
+
+                        console.log('Link', link)
+
                     })
 
 
@@ -333,7 +348,7 @@ class UserSearch extends Component {
                             <Button variant="contained" onClick={this.onSearch} type="submit">
                                 Search Flights    </Button>
 
-                            <Link to="/flights" type="submit" state={{result:this.state.result}} > </Link>
+                            <Link to="/flights" id = "flightLink" type="submit" state={{ result: this.state.result }} > </Link>
 
 
 
