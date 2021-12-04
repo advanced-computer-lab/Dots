@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Grid, TextField, FormControl, Button } from '@mui/material'
+import { Grid, TextField, FormControl, } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
 
@@ -18,16 +19,15 @@ class EditFormClass extends Component {
             firstNameError: '', lastNameError: '', homeAddressError: '', countryCodeError: '', phoneNumberError: '',
             emailError: '', passportNumberError: '',
         },
-        valid: false
+        loading: false
     }
     handleChange = (e) => {
-        this.areFieldsValid()
         const numReg = /^\d+$/
         const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
         let errorMsg = ''
         const targetError = e.target.name + 'Error'
 
-        this.setState({ data: { ...this.state.data, [e.target.id]: e.target.value } });
+        this.setState({ data: { ...this.state.data, [e.target.name]: e.target.value } });
 
         if (e.target.value === '')
             errorMsg = 'This field is required'
@@ -40,15 +40,18 @@ class EditFormClass extends Component {
         else if ((e.target.name === 'email')
             && !emailReg.test(e.target.value))
 
-            errorMsg = 'Input must be 3 upper case letters'
+            errorMsg = 'Invalid email format'
 
         this.setState({ errors: { ...this.state.errors, [targetError]: errorMsg } })
     }
 
     onSubmit = (e) => {
         e.preventDefault()
+        this.setState({ loading: true })
         const data = this.state.data
-        axios.put(`http://localhost:8000/users/${this.props.params.userId}`, data).catch((err) => {
+        axios.put(`http://localhost:8000/users/${this.props.params.userId}`, data).then(() => {
+            this.setState({ loading: false })
+        }).catch((err) => {
             console.log(err)
         })
     }
@@ -57,6 +60,10 @@ class EditFormClass extends Component {
         axios.get(`http://localhost:8000/users/${this.props.params.userId}`)
             .then(({ data }) => {
                 this.setState({ data })
+                const dataArr = Object.keys(this.state.data)
+                dataArr.forEach(field => {
+                    this.handleChange({ target: { value: this.state.data[field], name: field } })
+                })
 
             })
     }
@@ -70,8 +77,7 @@ class EditFormClass extends Component {
                 valid = false
             }
         });
-        console.log(this.state.valid)
-        this.setState({ valid })
+        return valid
     }
     render() {
         const { firstName, lastName, homeAddress, countryCode, phoneNumber, email, passportNumber } = this.state.data
@@ -95,9 +101,9 @@ class EditFormClass extends Component {
                             <TextField onBlur={this.handleChange} error={passportNumberError !== ''} helperText={passportNumberError} fullWidth sx={{ mb: 2 }} value={passportNumber} onChange={this.handleChange} label="Passport Number" required type="input" id="passportNumber" placeholder="Ex: A12345" name="passportNumber" ></TextField>
                         </Grid>
                         <Grid item xs={3}>
-                            <Button disabled={!this.state.valid} onClick={this.onSubmit} size="large" variant="contained">
+                            <LoadingButton loading={this.state.loading} disabled={!this.areFieldsValid()} onClick={this.onSubmit} size="large" variant="contained">
                                 Save Changes
-                            </Button>
+                            </LoadingButton>
                         </Grid>
                     </Grid>
                 </form >

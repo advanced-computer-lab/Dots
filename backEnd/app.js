@@ -204,7 +204,7 @@ app.get('/users/:userId', async (req, res) => {
     })
 })
 
-app.put('users/:userId', async (req, res) => {
+app.put('/users/:userId', async (req, res) => {
   const userId = mongoose.Types.ObjectId(req.params.userId)
   const userData = req.body
   delete userData._id
