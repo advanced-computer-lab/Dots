@@ -3,6 +3,8 @@ import { Grid, TextField, FormControl, Card, CardActions } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
+import Snackbar from '@mui/material/Snackbar';
+import Alert from "@mui/material/Alert";
 
 class EditFormClass extends Component {
     state = {
@@ -19,7 +21,8 @@ class EditFormClass extends Component {
             firstNameError: '', lastNameError: '', homeAddressError: '', countryCodeError: '', phoneNumberError: '',
             emailError: '', passportNumberError: '',
         },
-        loading: false
+        loading: false,
+        editSnackBarOpen: false,
     }
     handleChange = (e) => {
         const numReg = /^\d+$/
@@ -50,7 +53,7 @@ class EditFormClass extends Component {
         this.setState({ loading: true })
         const data = this.state.data
         axios.put(`http://localhost:8000/users/${this.props.params.userId}`, data).then(() => {
-            this.setState({ loading: false })
+            this.setState({ loading: false ,editSnackBarOpen:true})
         }).catch((err) => {
             console.log(err)
         })
@@ -79,11 +82,24 @@ class EditFormClass extends Component {
         });
         return valid
     }
+
+
+    editSnackBarHandleOpen = () => {
+        this.setState({ editSnackBarOpen: true })
+    }
+
+    editSnackBarHandleClose = () => {
+        this.setState({ editSnackBarOpen: false })
+    }
+
+
     render() {
         const { firstName, lastName, homeAddress, countryCode, phoneNumber, email, passportNumber } = this.state.data
         const { firstNameError, lastNameError, homeAddressError, countryCodeError, phoneNumberError,
             emailError, passportNumberError } = this.state.errors
         return (
+            <div>
+
             <FormControl >
                 <Card sx={{ m: 10, ml: 40,mt:10, width: '60%', height: 430 }}>
                     <form>
@@ -112,6 +128,13 @@ class EditFormClass extends Component {
                     </form >
                 </Card>
             </FormControl>
+
+            <Snackbar open={this.state.editSnackBarOpen} autoHideDuration={6000} onClose={this.editSnackBarHandleClose}>
+                    <Alert onClose={this.editSnackBarHandleClose} severity="success" sx={{ width: '100%' }}>
+                        Information Updated!
+                    </Alert>
+                </Snackbar>
+    </div>
         );
     }
 }
@@ -120,7 +143,7 @@ const EditForm = (props) => (
     <EditFormClass
         {...props}
         params={useParams()}
-    />
+        />
 );
 
 export default EditForm
