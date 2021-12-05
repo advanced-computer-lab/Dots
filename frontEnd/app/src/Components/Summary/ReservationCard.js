@@ -42,21 +42,6 @@ class ReservationCard extends Component {
       }}
       subheader={<li />}>
       <div id= "card">
-            <Accordion>
-            <div id = "AccSummary">
-            <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography id= "backAndForth">{this.props.outBound.departureLocation.city.charAt(0) +
-                                            this.props.outBound.departureLocation.city.substring(1).toLowerCase()}</Typography>
-          <CompareArrowsIcon id= "icon"></CompareArrowsIcon>
-          <Typography id= "backAndForth"> {this.props.outBound.arrivalLocation.city.charAt(0) +
-                                            this.props.outBound.arrivalLocation.city.substring(1).toLowerCase()}</Typography>
-        </AccordionSummary>
-        </div>
-        <AccordionDetails>
             <Card  style={cardStyle} elevation={7} >
                 <CardHeader className = "summary" title={"Confirmation Number: " + this.props.confirmationNumber}  sx={{ backgroundColor: '#008080', color: 'white' }} />
                 <CardContent id="cardContent">
@@ -204,8 +189,6 @@ class ReservationCard extends Component {
                     </Grid>
                 </CardContent>
             </Card>
-            </AccordionDetails>
-            </Accordion>
             </div>
             </List>
            </Fade>
