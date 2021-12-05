@@ -30,7 +30,7 @@ class ReservationCard extends Component {
             borderRadius: '1vw'
         }
         return (
-            <Fade right duartion = {2000}><List id= "list"
+            <Fade right><List id= "list2"
       sx={{
         width: '100%',
         maxWidth: 800,
@@ -42,7 +42,7 @@ class ReservationCard extends Component {
       }}
       subheader={<li />}>
       <div id= "card">
-            <Card  style={cardStyle} elevation={7} >
+            <Card style={cardStyle} elevation={7} >
                 <CardHeader className = "summary" title={"Confirmation Number: " + this.props.confirmationNumber}  sx={{ backgroundColor: '#008080', color: 'white' }} />
                 <CardContent id="cardContent">
                     <Grid container rowSpacing={3} alignItems="center">

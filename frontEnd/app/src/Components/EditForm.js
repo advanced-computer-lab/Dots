@@ -16,8 +16,9 @@ class EditForm extends Component {
             economySeatsAvailable: '',
             businessSeatsAvailable: '',
             firstSeatsAvailable: '',
-            from: '',
-            to: '',
+            firstClassPrice: '',
+            economyClassPrice: '',
+            businessClassPrice: '',
             departureLocation: {
                 country: '',
                 city: '',
@@ -34,21 +35,28 @@ class EditForm extends Component {
 
         errors: {
             flightNumberError: '', economySeatsAvailableError: '', businessSeatsAvailableError: '',
-            firstSeatsAvailableError: '', fromError: '', toError: '', dCountryError: '', dCityError: '',
+            firstSeatsAvailableError: '', dCountryError: '', dCityError: '',
             dAirportError: '', dTerminalError: '', aCountryError: '', aCityError: '', aAirportError: '',
-            aTerminalError: ''
+            aTerminalError: '', firstClassPriceError: '', economyClassPriceError: '', businessClassPriceError: '',
         }
     };
 
     handleChange = (e) => {
         const numReg = /^\d+$/
-        const airportReg = /^[A-Z]{3}$/;
         let errorMsg = ''
         const targetError = e.target.id + 'Error'
 
         if (e.target.name.includes(".")) {
             const fieldArr = e.target.name.split(".")
-            this.setState({ data: { ...this.state.data, [fieldArr[0]]: { [fieldArr[1]]: e.target.value } } });
+            this.setState({
+                data: {
+                    ...this.state.data,
+                    [fieldArr[0]]: {
+                        ...this.state.data[fieldArr[0]],
+                        [fieldArr[1]]: e.target.value,
+                    }
+                }
+            });
         }
         else
             this.setState({ data: { ...this.state.data, [e.target.id]: e.target.value } });
@@ -58,38 +66,34 @@ class EditForm extends Component {
 
         else if ((e.target.name === 'economySeatsAvailable'
             || e.target.name === 'businessSeatsAvailable'
-            || e.target.name === 'firstSeatsAvailable')
+            || e.target.name === 'firstSeatsAvailable'
+            || e.target.name === 'businessClassPrice'
+            || e.target.name === 'economyClassPrice'
+            || e.target.name === 'firstClassPrice')
             && !numReg.test(e.target.value))
 
             errorMsg = 'Input must be a number'
 
-        else if ((e.target.name === 'from'
-            || e.target.name === 'to')
-            && !airportReg.test(e.target.value))
-
-            errorMsg = 'Input must be 3 upper case letters'
-
         this.setState({ errors: { ...this.state.errors, [targetError]: errorMsg } })
     }
 
-    handleChangeArrival = (e, value) => {
-        console.log(e.target.value)
-        this.setState({ data: { arrivalTime: value } });
+    handleChangeArrival = (value) => {
+        this.setState({ data: { ...this.state.data, arrivalTime: value } });
     }
 
     handleChangeDeparture = (value) => {
-        this.setState({ data: { departureTime: value } });
+        this.setState({ data: { ...this.state.data, departureTime: value } });
     }
 
-    areFieldsValid() {
+    areFieldsValid = () => {
         const errorsArr = Object.keys(this.state.errors)
-
+        let valid = true
         errorsArr.forEach(error => {
-            if (!this.state.errors[error] === '')
-                return false
+            if (this.state.errors[error] !== '') {
+                valid = false
+            }
         });
-
-        return true
+        return valid
     }
     onSubmit = (e) => {
         e.preventDefault()
@@ -107,12 +111,13 @@ class EditForm extends Component {
     }
 
     render() {
-        const { economySeatsAvailable, businessSeatsAvailable, firstSeatsAvailable, from, to, arrivalTime,
-            departureTime, flightNumber, departureLocation, arrivalLocation } = this.state.data
+        const { economySeatsAvailable, businessSeatsAvailable, firstSeatsAvailable, arrivalTime,
+            departureTime, flightNumber, departureLocation, arrivalLocation, economyClassPrice, businessClassPrice,
+            firstClassPrice } = this.state.data
 
-        const { fromError, toError, economySeatsAvailableError, businessSeatsAvailableError, firstSeatsAvailableError,
+        const { economySeatsAvailableError, businessSeatsAvailableError, firstSeatsAvailableError,
             flightNumberError, dTerminalError, dCountryError, dCityError, dAirportError, aAirportError, aCityError,
-            aCountryError, aTerminalError } = this.state.errors
+            aCountryError, aTerminalError, economyClassPriceError, businessClassPriceError, firstClassPriceError } = this.state.errors
 
 
         return (
@@ -135,8 +140,6 @@ class EditForm extends Component {
                         <TextField error={aTerminalError !== ''} helperText={aTerminalError} value={arrivalLocation.terminal} onChange={this.handleChange} label="Terminal" required type="input" className="formElements" id="aTerminal" placeholder="Ex: 4" name="arrivalLocation.terminal" ></TextField>
                         <Divider style={{ width: '100%' }}>Other Flight Info</Divider>
 
-                        <TextField error={fromError !== ''} helperText={fromError} value={from} onChange={this.handleChange} label="From" required type="input" className="formElements" id="from" placeholder="Ex: CAI" name="from" ></TextField>
-                        <TextField error={toError !== ''} helperText={toError} value={to} onChange={this.handleChange} label="To" required type="input" className="to" id="to" placeholder="Ex: JFK" name="to" ></TextField>
                         <LocalizationProvider dateAdapter={DateAdapter}>
                             <DateTimePicker
                                 maxDateTime={new Date(arrivalTime)}
@@ -156,9 +159,13 @@ class EditForm extends Component {
                             />
                         </LocalizationProvider>
 
-                        <TextField onChange={this.handleChange} error={economySeatsAvailableError !== ''} helperText={economySeatsAvailableError} value={economySeatsAvailable} label="Available Economy Class Seats" required type="input" className="formElements" id="economySeats" placeholder="Ex: 20" name="economySeatsAvailable" ></TextField>
-                        <TextField onChange={this.handleChange} error={businessSeatsAvailableError !== ''} helperText={businessSeatsAvailableError} value={businessSeatsAvailable} label="Available Business Class Seats" required type="input" className="formElements" id="businessSeats" placeholder="Ex: 20" name="businessSeatsAvailable" ></TextField>
-                        <TextField onChange={this.handleChange} error={firstSeatsAvailableError !== ''} helperText={firstSeatsAvailableError} value={firstSeatsAvailable} label="Available First Class Seats" required type="input" className="formElements" id="firstSeats" placeholder="Ex: 20" name="firstSeatsAvailable" ></TextField>
+                        <TextField onChange={this.handleChange} error={economySeatsAvailableError !== ''} helperText={economySeatsAvailableError} value={economySeatsAvailable} label="Available Economy Class Seats" required type="input" className="formElements" id="economySeatsAvailable" placeholder="Ex: 20" name="economySeatsAvailable" ></TextField>
+                        <TextField onChange={this.handleChange} error={businessSeatsAvailableError !== ''} helperText={businessSeatsAvailableError} value={businessSeatsAvailable} label="Available Business Class Seats" required type="input" className="formElements" id="businessSeatsAvailable" placeholder="Ex: 20" name="businessSeatsAvailable" ></TextField>
+                        <TextField onChange={this.handleChange} error={firstSeatsAvailableError !== ''} helperText={firstSeatsAvailableError} value={firstSeatsAvailable} label="Available First Class Seats" required type="input" className="formElements" id="firstSeatsAvailable" placeholder="Ex: 20" name="firstSeatsAvailable" ></TextField>
+
+                        <TextField onChange={this.handleChange} error={economyClassPriceError !== ''} helperText={economyClassPriceError} value={economyClassPrice} label="Economy Class Seat Price" required type="input" className="formElements" id="economyClassPrice" placeholder="Ex: 20" name="economyClassPrice" ></TextField>
+                        <TextField onChange={this.handleChange} error={businessClassPriceError !== ''} helperText={businessClassPriceError} value={businessClassPrice} label="Business Class Seat Price" required type="input" className="formElements" id="businessClassPrice" placeholder="Ex: 20" name="businessClassPrice" ></TextField>
+                        <TextField onChange={this.handleChange} error={firstClassPriceError !== ''} helperText={firstClassPriceError} value={firstClassPrice} label="First Class Seat Price" required type="input" className="formElements" id="firstClassPrice" placeholder="Ex: 20" name="firstClassPrice" ></TextField>
                         <Button disabled={!this.areFieldsValid()} type="submit">Submit</Button>
                     </FormControl>
                 </form>

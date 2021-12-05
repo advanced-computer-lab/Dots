@@ -28,6 +28,8 @@
 }
 
 #toSeats {
+  font-family: "Montserrat", sans-serif !important;
+  color: white !important;
   display: flex;
   justify-content: center;
 }
@@ -53,4 +55,24 @@
   font-weight: bold;
   margin-top: 20px;
   transform: translateX(-65px);
+}
+
+#goBackButtonSummary {
+  overflow: hidden;
+  height: 60px;
+  position: absolute;
+  top: 80%;
+  left: 42%;
+  transform: translate(-50%, -50%);
+  font-family: "Montserrat", sans-serif;
+}
+
+#continueAsGuest {
+  height: 60px;
+  width: 200px;
+  position: absolute;
+  top: 80%;
+  left: 58%;
+  transform: translate(-50%, -50%);
+  font-family: "Montserrat", sans-serif;
 }
