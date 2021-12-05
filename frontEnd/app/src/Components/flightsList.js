@@ -8,6 +8,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from "@mui/material/Alert";
 
 import { GridActionsCellItem } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
@@ -45,6 +47,7 @@ class FlightsList extends Component {
             dialogFlight: '',
             openEditDialog: false,
             filterOpen: false,
+            deleteSnackBarOpen: false,
 
 
 
@@ -100,6 +103,8 @@ class FlightsList extends Component {
 
     onDialogCloseDelete = () => {
 
+        this.deleteSnackBarHandleOpen();
+
         fetch("http://localhost:8000/flight/" + this.state.selectedFlight + "/delete", {
             method: "DELETE",
         }).then(res => {
@@ -124,24 +129,10 @@ class FlightsList extends Component {
             .then(() => {
                 this.setState((prev) => ({
                     flights: prev.flights.map(
-                        (row) => {
-                            if (row._id === data._id)
-                                return data
-                            else if (row.flightNumber === data.oldFlightNumber)
-                                return { ...data, seatsAvailable: row.seatsAvailable, cabin: row.cabin, _id: row._id }
-                            else
-                                return row
-                        }
+                        row => row._id === data._id ? data : row
                     ),
                     permanentFlights: prev.permanentFlights.map(
-                        (row) => {
-                            if (row._id === data._id)
-                                return data
-                            else if (row.flightNumber === data.oldFlightNumber)
-                                return { ...data, seatsAvailable: row.seatsAvailable, cabin: row.cabin }
-                            else
-                                return row
-                        }
+                        row => row._id === data._id ? data : row
                     ),
                     openEditDialog: false,
                     dialogFlight: null
@@ -429,6 +420,14 @@ class FlightsList extends Component {
         this.setState({ openEditDialog: false })
     }
 
+    deleteSnackBarHandleOpen = () => {
+        this.setState({ deleteSnackBarOpen: true })
+    }
+
+    deleteSnackBarHandleClose = () => {
+        this.setState({ deleteSnackBarOpen: false })
+    }
+
 
 
     render() {
@@ -516,8 +515,8 @@ class FlightsList extends Component {
                 headerName: 'Arrival Terminal',
                 width: 150,
                 valueGetter: (params) =>
-                `${(params.getValue(params.id, 'arrivalLocation')).terminal || ''}`
-                
+                    `${(params.getValue(params.id, 'arrivalLocation')).terminal || ''}`
+
             },
             {
                 field: 'economySeatsAvailable',
@@ -549,7 +548,7 @@ class FlightsList extends Component {
                 headerName: 'Business Seats Price',
                 width: 170,
             }
-           
+
         ];
         return (
             <div>
@@ -584,7 +583,7 @@ class FlightsList extends Component {
                         pageSize={pageSize}
                         onPageSizeChange={(newPageSize) => this.setPageSize(newPageSize)}
                         rowsPerPageOptions={[10, 20, 50]}
-                        checkboxSelection = {false}
+                        checkboxSelection={false}
                         disableSelectionOnClick
                     />
                 </div>
@@ -620,6 +619,11 @@ class FlightsList extends Component {
                     <EditForm id={this.state.dialogFlight} handleSubmit={this.onSubmit} close={this.close} />
                 </Dialog>
 
+                <Snackbar open={this.state.deleteSnackBarOpen} autoHideDuration={6000} onClose={this.deleteSnackBarHandleClose}>
+                    <Alert onClose={this.deleteSnackBarHandleClose} severity="success" sx={{ width: '100%' }}>
+                        Flight Deleted!
+                    </Alert>
+                </Snackbar>
 
 
 

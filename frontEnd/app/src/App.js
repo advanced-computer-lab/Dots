@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import FlightsList from './Components/flightsList.js';
 import UserLanding from './Components/UserLanding/UserLanding.js';
+import ReservationsPage from './Components/reservations/ReservationsPage'
 import SeatSelector from './Components/SeatSelector/SeatSelector.js'
 import UserFlightList from './Components/UserFlightList/userFlightList.js';
 import FakePayment from './Components/FakePayment/FakePayment.js';
@@ -24,6 +25,7 @@ import Loading from './Components/Loading/Loading';
 
 import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import EditPage from './Components/EditUser/EditPage';
 import UserFlights from './Components/Summary/userFlights';
 
 
@@ -38,7 +40,7 @@ const theme = createTheme({
 
 
 class App extends Component {
-  
+
   render() {
     return (
       <MuiThemeProvider theme={theme}>
@@ -48,6 +50,7 @@ class App extends Component {
           <Route path="/" element={<UserLanding />} />
           <Route path="/flights" element={<UserFlightList/>} />
           <Route path="/admin" element={<FlightsList />} />
+          <Route path="/:userId/edit-info" element={<EditPage/>} />
           <Route path="/seatselector" element={<SeatSelector />} />
           <Route path="/loading" element={<Loading />} />
           <Route path="/summary" element={<Summary/>} />

@@ -9,12 +9,12 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require("express-session");
 
+const nodemailer = require("nodemailer");
 
 const Flight = require('./models/flights');
 const Admin = require('./models/admins');
 const Reservation = require('./models/reservations');
-const User = require('./models/users');
-
+const User = require('./models/users')
 
 const MongoURI = process.env.MONGO_URI;
 
@@ -36,6 +36,17 @@ mongoose.connect(MongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .catch(err => console.log(err));
 app.use(cors({ origin: true, credentials: true }));
 
+
+//------------------nodemailer transporter--------------------
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  secure: false,
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
+  },
+});
+//--------------------------
 
 // Flight.create({ from: "LAX", to: "JFK", flightDate: 2022-1-12, cabin: "Cairo"});
 
@@ -138,9 +149,10 @@ app.get('/userflights', async (req,res) => {
            await reservations[i].populate('outBoundflight');
            await reservations[i].populate('user');
          }
+         console.log(reservations);
         res.json(reservations);
       });
-    
+
 /*app.get('/summary', async (req,res) =>{
   var inBoundflight = await Reservation.findOne({outBoundClass: "Economy"}).populate('inBoundflight');
   var outBoundFlight = await Reservation.findOne({outBoundClass: "Economy"}).populate('outBoundflight');
@@ -162,45 +174,32 @@ app.delete('/flight/:flightId/delete', async (req, res) => {
 
 app.post('/reservationinsertion', async (req,res) => {
     var mongooseID = new mongoose.Types.ObjectId();
-    var temp = new Array(req.body.passengers.length); 
-    for (let i = 0; i< req.body.passengers.firstName; i++){
-    temp[i] = {
-      firstName: req.body.passengers.firstName,
-      lastName: req.body.passengers.lastName,
-      passportNumber: req.body.passengers.passportNo,
-      outBoundSeat: req.body.passengers.outBoundSeat,
-      inBoundSeat: req.body.passengers.inBoundSeat,
-    }
-  }
     Reservation.create({
       _id: mongooseID,
       user: "61a762c24c337dff67c229fe",
       outBoundflight: req.body.previousStage.depchosenflight._id,
       inBoundflight: req.body.previousStage.returnchosenflight._id,
-      outBoundClass: req.body.previousStage.outBoundCabin,
-      inBoundClass: req.body.previousStage.inBoundCabin,
-      passengers: temp,
-      confirmationNumber: req.body.confirmationNumber
+      outBoundClass: req.body.outBoundClass,
+      inBoundClass: req.body.inBoundClass,
+      passengers: req.body.passengers,
+      confirmationNumber: req.body.confirmationNumber,
+      totalPrice: req.body.totalPrice
     })
-    console.log(req.body);
-
-});
+    await User.findByIdAndUpdate(new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"), {$push: {reservations: mongooseID}},{new:true});
+    var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), {$push: {reservations: mongooseID}},{new:true});
+    var z = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), {$push: {reservations: mongooseID}},{new:true});
+    console.log(y);
+    console.log(z);
+  });
 app.put('/flights/:flightId', async (req, res) => {
   const updateData = req.body
-  const seats = { seatsAvailable: updateData.seatsAvailable }
-  const oldFN = updateData.oldFlightNumber
-
   delete updateData._id
-  delete updateData.cabin
-  delete updateData.oldFlightNumber
-  delete updateData.seatsAvailable
 
   const searchId = mongoose.Types.ObjectId(req.params.flightId);
 
   try {
-    const doc1 = await Flight.findByIdAndUpdate(searchId, seats, { new: true });
-    const doc2 = await Flight.updateMany({ flightNumber: oldFN }, updateData);
-    res.send(doc2);
+    const doc = await Flight.findByIdAndUpdate(searchId, updateData, { new: true });
+    res.send(doc);
   } catch (error) {
     console.log(error);
   }
@@ -226,7 +225,67 @@ app.get('/flights/:flightId', async (req, res) => {
   }
 })
 
+//------------------reservations delete--------
+app.delete('/reservations/:reservationId', async (req, res) => {
+  try {
+    if (!req.params.reservationId) res.status(400).send({ message: "Reservation Id invalid" })
+    const reservationId = mongoose.Types.ObjectId(req.params.reservationId);
+    Reservation.findByIdAndDelete(reservationId)
+      .then((reservationDeleted) => {
+        if (!reservationDeleted) res.status(404).send({ message: "Couldn't find reservation" })
+        User.findByIdAndUpdate(reservationDeleted.user, { $pull: { reservations: reservationId } }, { new: true })
+          .then((userFound) => {
+            let mailOptions = {
+              from: `'Takeoff Airways' <${process.env.MAIL_USER}>`,
+              to: userFound.email,
+              subject: "Refund Confirmation",
+              html: `<h2 style="color:#09827C;">Hello ${userFound.firstName}!</h2>
+                <p>this mail is to confirm your refund of $${'reservationDeleted.totalPrice'}</p>`
+            }
+            transporter.sendMail(mailOptions, (err, data) => {
+              if (err) {
+                Reservation.create(reservationDeleted).then(() => {
+                  User.findByIdAndUpdate(reservationDeleted.user, { $push: { reservations: reservationId } })
+                    .then(() => {
+                      res.status(400).send({ message: "Error sending email" })
+                    })
+                })
+              }
+              else
+                res.send(`Email Sent: ${data}`)
+            })
+          })
+      })
+  } catch (error) {
+    res.send(error)
+  }
+})
+//----------------
 
+//----------------get and post user data----------------
+app.get('/users/:userId', async (req, res) => {
+  const userId = mongoose.Types.ObjectId(req.params.userId)
+
+  User.findById(userId)
+    .then((data) => {
+      res.send(data)
+    })
+})
+
+app.put('/users/:userId', async (req, res) => {
+  const userId = mongoose.Types.ObjectId(req.params.userId)
+  const userData = req.body
+  delete userData._id
+
+  User.findByIdAndUpdate(userId, userData, { new: true })
+    .then((data) => {
+      res.send(data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
+//--------------------------------------------------------------
 
 app.post("/flights/flightquery", async (req, res) => {
 
@@ -366,7 +425,7 @@ app.post("/flights/flightquery", async (req, res) => {
 
     }
 
-    res.status(200).send({ 
+    res.status(200).send({
       depOriginalFlights: outFlightsWithDate, depAllFlights: outFlightsWithDate, depsearchdate: new Date(outDepDate),
       from :body.from, to: body.to,
       depfaded: true,
@@ -385,7 +444,7 @@ app.post("/flights/flightquery", async (req, res) => {
   console.log(error);
   res.status(400).send(null);
 }
-  
+
 
 })
 

@@ -18,13 +18,13 @@ class ReservationCard extends Component {
     var inboundClassPrice = 0;
     var outboundClassPrice = 0;
     for(let i = 0; i < this.props.reservation.passengers.length; i++){
-    if (this.props.reservation.inBoundClass == "Economy") inboundClassPrice += this.props.inBound.economyClassPrice
-    else if (this.props.reservation.inBoundClass == "Business") inboundClassPrice += this.props.inBound.businessClassPrice
-    else if (this.props.reservation.inBoundClass == "First") inboundClassPrice += this.props.inBound.firstClassPrice
+    if (this.props.top.inBoundClass == "Economy") inboundClassPrice += this.props.inBound.economyClassPrice
+    else if (this.props.top.inBoundClass == "Business") inboundClassPrice += this.props.inBound.businessClassPrice
+    else if (this.props.top.inBoundClass == "First") inboundClassPrice += this.props.inBound.firstClassPrice
 
-    if (this.props.reservation.outBoundClass == "Economy") outboundClassPrice += this.props.outBound.economyClassPrice
-    else if (this.props.reservation.outBoundClass == "Business") outboundClassPrice += this.props.outBound.businessClassPrice
-    else if (this.props.reservation.outBoundClass == "First") outboundClassPrice += this.props.outBound.firstClassPrice
+    if (this.props.top.outBoundClass == "Economy") outboundClassPrice += this.props.outBound.economyClassPrice
+    else if (this.props.top.outBoundClass == "Business") outboundClassPrice += this.props.outBound.businessClassPrice
+    else if (this.props.top.outBoundClass == "First") outboundClassPrice += this.props.outBound.firstClassPrice
     }
         var cardStyle = {
             borderRadius: '1vw'
@@ -42,21 +42,6 @@ class ReservationCard extends Component {
       }}
       subheader={<li />}>
       <div id= "card">
-            <Accordion>
-            <div id = "AccSummary">
-            <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography id= "backAndForth">{this.props.outBound.departureLocation.city.charAt(0) +
-                                            this.props.outBound.departureLocation.city.substring(1).toLowerCase()}</Typography>
-          <CompareArrowsIcon id= "icon"></CompareArrowsIcon>
-          <Typography id= "backAndForth"> {this.props.outBound.arrivalLocation.city.charAt(0) +
-                                            this.props.outBound.arrivalLocation.city.substring(1).toLowerCase()}</Typography>
-        </AccordionSummary>
-        </div>
-        <AccordionDetails>
             <Card  style={cardStyle} elevation={7} >
                 <CardHeader className = "summary" title={"Confirmation Number: " + this.props.confirmationNumber}  sx={{ backgroundColor: '#008080', color: 'white' }} />
                 <CardContent id="cardContent">
@@ -184,7 +169,7 @@ class ReservationCard extends Component {
                                         Last Name: {item.lastName+ " "}<br/> 
                                         Outbound Seat: {item.outBoundSeat + " "}  
                                         Inbound Seat: {item.inBoundSeat + " "}<br/>  
-                                        Passport Number: {item.passportNo + " "}  
+                                        Passport Number: {item.passportNumber + " "}  
                                         <br/><br/>
                                         </Typography>
                                     </div>))}
@@ -204,8 +189,6 @@ class ReservationCard extends Component {
                     </Grid>
                 </CardContent>
             </Card>
-            </AccordionDetails>
-            </Accordion>
             </div>
             </List>
            </Fade>
