@@ -240,7 +240,7 @@ app.get('/flights/:flightId', async (req, res) => {
 })
 
 //------------------reservations delete--------
-app.delete('/reservations/:reservationId', async (req, res) => {
+app.delete('/reservations/:reservationId', (req, res) => {
   try {
     if (!req.params.reservationId) res.status(400).send({ message: "Reservation Id invalid" })
     const reservationId = mongoose.Types.ObjectId(req.params.reservationId);
@@ -318,7 +318,9 @@ app.delete('/reservations/:reservationId', async (req, res) => {
               })
           })
       })
+      console.log("data deleted!");
   } catch (error) {
+    console.log("data deleted!");
     res.send(error)
   }
 })
