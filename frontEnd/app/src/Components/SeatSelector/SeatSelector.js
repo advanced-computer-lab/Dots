@@ -37,6 +37,7 @@ class SeatSelector extends Component {
   constructor(props) {
     super(props);
 
+    console.log("wowow")
     console.log(this.props.details)
 
     let outBoundClass = this.props.details.depflightClass;
@@ -69,6 +70,7 @@ class SeatSelector extends Component {
       })
     })
 
+    let outBoundRows = [];
 
     let id = 1;
     let lastRowNum = "@";
@@ -79,7 +81,6 @@ class SeatSelector extends Component {
     id = businessRows.id;
     lastRowNum = businessRows.lastRow;
     let economyRows = this.generateClassSeats(outBoundtotalEconomySeats, "Economy", id, outBoundSelectedSeats, lastRowNum);
-    let outBoundRows = [];
     outBoundRows.push([]);
     outBoundRows = outBoundRows.concat(firstRows.rows);
     outBoundRows.push([]);
@@ -90,6 +91,7 @@ class SeatSelector extends Component {
 
 
 
+    let inBoundRows = [];
 
     id = 1;
     lastRowNum = "@";
@@ -100,7 +102,6 @@ class SeatSelector extends Component {
     id = businessRows.id;
     lastRowNum = businessRows.lastRow;
     economyRows = this.generateClassSeats(inBoundtotalEconomySeats, "Economy", id, inBoundSelectedSeats, lastRowNum);
-    let inBoundRows = [];
     inBoundRows.push([]);
     inBoundRows = inBoundRows.concat(firstRows.rows);
     inBoundRows.push([]);
