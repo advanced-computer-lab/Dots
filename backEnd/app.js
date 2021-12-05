@@ -104,7 +104,7 @@ app.post('/flights', async (req, res) => {
         terminal: req.body.departureTerminal
       },
       arrivalLocation: {
-        country:  req.body.arrivalCountry,
+        country: req.body.arrivalCountry,
         city: req.body.arrivalCity,
         airport: req.body.arrivalAirport,
         terminal: req.body.arrivalTerminal
@@ -154,18 +154,18 @@ flightIn.save((err) => {
 */
 
 
-app.get('/userflights', async (req,res) => {
-         var user = await User.find({});
-         user = await user[0].populate('reservations');
-         var reservations = user.reservations;
-         for(let i = 0; i< reservations.length; i++){
-           await reservations[i].populate('inBoundflight');
-           await reservations[i].populate('outBoundflight');
-           await reservations[i].populate('user');
-         }
-         console.log(reservations);
-        res.json(reservations);
-      });
+app.get('/userflights', async (req, res) => {
+  var user = await User.find({});
+  user = await user[0].populate('reservations');
+  var reservations = user.reservations;
+  for (let i = 0; i < reservations.length; i++) {
+    await reservations[i].populate('inBoundflight');
+    await reservations[i].populate('outBoundflight');
+    await reservations[i].populate('user');
+  }
+  console.log(reservations);
+  res.json(reservations);
+});
 
 /*app.get('/summary', async (req,res) =>{
   var inBoundflight = await Reservation.findOne({outBoundClass: "Economy"}).populate('inBoundflight');
@@ -186,25 +186,25 @@ app.delete('/flight/:flightId/delete', async (req, res) => {
 
 });
 
-app.post('/reservationinsertion', async (req,res) => {
-    var mongooseID = new mongoose.Types.ObjectId();
-    Reservation.create({
-      _id: mongooseID,
-      user: "61a762c24c337dff67c229fe",
-      outBoundflight: req.body.previousStage.depchosenflight._id,
-      inBoundflight: req.body.previousStage.returnchosenflight._id,
-      outBoundClass: req.body.outBoundClass,
-      inBoundClass: req.body.inBoundClass,
-      passengers: req.body.passengers,
-      confirmationNumber: req.body.confirmationNumber,
-      totalPrice: req.body.totalPrice
-    })
-    await User.findByIdAndUpdate(new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"), {$push: {reservations: mongooseID}},{new:true});
-    var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), {$push: {reservations: mongooseID}},{new:true});
-    var z = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), {$push: {reservations: mongooseID}},{new:true});
-    console.log(y);
-    console.log(z);
-  });
+app.post('/reservationinsertion', async (req, res) => {
+  var mongooseID = new mongoose.Types.ObjectId();
+  Reservation.create({
+    _id: mongooseID,
+    user: "61a762c24c337dff67c229fe",
+    outBoundflight: req.body.previousStage.depchosenflight._id,
+    inBoundflight: req.body.previousStage.returnchosenflight._id,
+    outBoundClass: req.body.outBoundClass,
+    inBoundClass: req.body.inBoundClass,
+    passengers: req.body.passengers,
+    confirmationNumber: req.body.confirmationNumber,
+    totalPrice: req.body.totalPrice
+  })
+  await User.findByIdAndUpdate(new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"), { $push: { reservations: mongooseID } }, { new: true });
+  var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), { $push: { reservations: mongooseID } }, { new: true });
+  var z = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), { $push: { reservations: mongooseID } }, { new: true });
+  console.log(y);
+  console.log(z);
+});
 app.put('/flights/:flightId', async (req, res) => {
   const updateData = req.body
   delete updateData._id
@@ -249,9 +249,35 @@ app.delete('/reservations/:reservationId', async (req, res) => {
         if (!reservationDeleted) res.status(404).send({ message: "Couldn't find reservation" })
         User.findByIdAndUpdate(reservationDeleted.user, { $pull: { reservations: reservationId } }, { new: true })
           .then((userFound) => {
-            Flight.findByIdAndUpdate(reservationDeleted.outBoundflight._id, { $pull: { reservations: reservationId } }, { new: true })
+            let outBoundSeatsToBeDecremented = ''
+            switch (reservationDeleted.outBoundClass) {
+              case 'First':
+                outBoundSeatsToBeIncremented = 'firstSeatsAvailable'
+                break;
+              case 'Business':
+                outBoundSeatsToBeIncremented = 'businessSeatsAvailable'
+                break;
+              case 'Economy':
+                outBoundSeatsToBeIncremented = 'economySeatsAvailable'
+                break;
+              default:
+            }
+            Flight.findByIdAndUpdate(reservationDeleted.outBoundflight._id, { $pull: { reservations: reservationId }, $inc: { [outBoundSeatsToBeIncremented]: 1 } }, { new: true })
               .then((outBoundFlight) => {
-                Flight.findByIdAndUpdate(reservationDeleted.inBoundflight._id, { $pull: { reservations: reservationId } }, { new: true })
+                let inBoundSeatsToBeDecremented = ''
+                switch (reservationDeleted.inBoundClass) {
+                  case 'First':
+                    inBoundSeatsToBeDecremented = 'firstSeatsAvailable'
+                    break;
+                  case 'Business':
+                    inBoundSeatsToBeDecremented = 'businessSeatsAvailable'
+                    break;
+                  case 'Economy':
+                    inBoundSeatsToBeDecremented = 'economySeatsAvailable'
+                    break;
+                  default:
+                }
+                Flight.findByIdAndUpdate(reservationDeleted.inBoundflight._id, { $pull: { reservations: reservationId }, $inc: { [inBoundSeatsToBeDecremented]: 1 } }, { new: true })
                   .then((inBoundFlight) => {
                     let outBoundPrice = 0
                     let inBoundPrice = 0
@@ -306,7 +332,7 @@ app.delete('/reservations/:reservationId', async (req, res) => {
                         //       Flight.findByIdAndUpdate(reservationDeleted.outBoundflight, { $push: { reservations: reservationId } })
                         //         .then(() => {
                         //           Flight.findByIdAndUpdate(reservationDeleted.inBoundflight, { $push: { reservations: reservationId } })
-                                  res.status(400).send(err)
+                        res.status(400).send(err)
                         //         })
                         //     })
                         // })
@@ -441,7 +467,7 @@ app.post("/flights/flightquery", async (req, res) => {
 
     // console.log(filteredOutFlights[0]);
 
-   if(filteredOutFlights.length == 0){
+    if (filteredOutFlights.length == 0) {
       noOutFlights = true;
     }
     if (filteredInFlights.length == 0) {
@@ -500,7 +526,7 @@ app.post("/flights/flightquery", async (req, res) => {
       numberOfpassengers: parseInt(body.kids) + parseInt(body.adults),
       noOutFlights: noOutFlights,
       noInFlights: noInFlights
-     }  );
+    });
   }
   catch (error) {
     console.log(error);
