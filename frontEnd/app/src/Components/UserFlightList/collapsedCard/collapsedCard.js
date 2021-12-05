@@ -12,35 +12,35 @@ import LuggageIcon from '@mui/icons-material/Luggage';
 
 
 class FlightClassCard extends Component {
-    state={
+    state = {
     };
-    changeEconomy=()=>{
+    changeEconomy = () => {
         //console.log(this.props.faded);
         //this.props.update(!(this.props.faded));
-        this.props.update(true,false,'Economy');
-        
+        this.props.update(true, false, 'Economy');
+
     }
 
-    changeFirst=()=>{
+    changeFirst = () => {
         //console.log(this.props.faded);
         //this.props.update(!(this.props.faded));
-        this.props.update(true,false,'First');
-        
+        this.props.update(true, false, 'First');
+
     }
-    changeBusiness=()=>{
+    changeBusiness = () => {
         //console.log(this.props.faded);
         //this.props.update(!(this.props.faded));
-        this.props.update(true,false,'Business');
-        
+        this.props.update(true, false, 'Business');
+
     }
     render() {
-        
+
         return (
             <Paper elevation={3} square id='collapseContainer'>
                 <Grid container spacing={2}>
 
                     <Grid item xs={4}>
-                        <Card elevation={2}  className='classCard'>
+                        <Card elevation={2} className='classCard'>
                             <CardContent id='economyTitle'>
                                 <Typography id='economy'>
                                     Economy Class
@@ -69,7 +69,7 @@ class FlightClassCard extends Component {
                         <Card elevation={2} className='classCard'>
                             <CardContent id='firstTitle'>
                                 <Typography id='economy'>
-                                    First Class
+                                    Business Class
                                 </Typography>
                             </CardContent>
                             <CardContent>
@@ -80,30 +80,30 @@ class FlightClassCard extends Component {
                                     </Typography>
                                 </Stack>
                                 <Stack direction="row">
-                                        <hr
-                                            style={{
-                                                color: "black",
-                                                backgroundColor: "black",
-                                                height: 1,
-                                                marginTop:12
-                                            }}
-                                        />
-                                        <AddCircleOutlineIcon />
-                                        <hr
-                                            style={{
-                                                color: "black",
-                                                backgroundColor: "black",
-                                                height: 1,
-                                                marginTop:12
-                                            }}
-                                        />
-                                    </Stack>
-                                    <Stack direction="row">
-                                        <LuggageIcon fontSize="large" />
-                                        <Typography id='economytext'>
-                                            20kg check-in bag
-                                        </Typography>
-                                    </Stack>
+                                    <hr
+                                        style={{
+                                            color: "black",
+                                            backgroundColor: "black",
+                                            height: 1,
+                                            marginTop: 12
+                                        }}
+                                    />
+                                    <AddCircleOutlineIcon />
+                                    <hr
+                                        style={{
+                                            color: "black",
+                                            backgroundColor: "black",
+                                            height: 1,
+                                            marginTop: 12
+                                        }}
+                                    />
+                                </Stack>
+                                <Stack direction="row">
+                                    <LuggageIcon fontSize="large" />
+                                    <Typography id='economytext'>
+                                        20kg check-in bag
+                                    </Typography>
+                                </Stack>
                             </CardContent>
                             <CardContent id="perPassengerFirst">
                                 <Typography id='perPassengerText'>
@@ -111,7 +111,7 @@ class FlightClassCard extends Component {
                                 </Typography>
                             </CardContent>
                             <CardActions className='zeropaddingMargin' >
-                                <Button variant="outlined" id="classButton"  onClick={this.changeFirst}  >${this.props.flight.firstClassPrice}</Button>
+                                <Button variant="outlined" id="classButton"  onClick={this.changeBusiness} >${this.props.flight.businessClassPrice}</Button>
                             </CardActions>
                         </Card>
                     </Grid>
@@ -120,7 +120,7 @@ class FlightClassCard extends Component {
                         <Card elevation={2} className='classCard'>
                             <CardContent id='businessTitle'>
                                 <Typography id='economy'>
-                                    Business Class
+                                    First Class
                                 </Typography>
                             </CardContent>
                             <CardContent id='bclass'>
@@ -137,7 +137,7 @@ class FlightClassCard extends Component {
                                                 color: "black",
                                                 backgroundColor: "black",
                                                 height: 1,
-                                                marginTop:12
+                                                marginTop: 12
                                             }}
                                         />
                                         <AddCircleOutlineIcon />
@@ -146,7 +146,7 @@ class FlightClassCard extends Component {
                                                 color: "black",
                                                 backgroundColor: "black",
                                                 height: 1,
-                                                marginTop:12
+                                                marginTop: 12
                                             }}
                                         />
                                     </Stack>
@@ -162,7 +162,7 @@ class FlightClassCard extends Component {
                                                 color: "black",
                                                 backgroundColor: "black",
                                                 height: 1,
-                                                marginTop:12
+                                                marginTop: 12
                                             }}
                                         />
                                         <AddCircleOutlineIcon />
@@ -171,7 +171,7 @@ class FlightClassCard extends Component {
                                                 color: "black",
                                                 backgroundColor: "black",
                                                 height: 1,
-                                                marginTop:12
+                                                marginTop: 12
                                             }}
                                         />
                                     </Stack>
@@ -190,7 +190,7 @@ class FlightClassCard extends Component {
                                 </Typography>
                             </CardContent>
                             <CardActions className='zeropaddingMargin' >
-                                <Button variant="outlined" id="classButton"  onClick={this.changeBusiness} >${this.props.flight.businessClassPrice}</Button>
+                                <Button variant="outlined" id="classButton" onClick={this.changeFirst} >${this.props.flight.firstClassPrice}</Button>
                             </CardActions>
                         </Card>
                     </Grid>
