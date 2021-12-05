@@ -17,7 +17,6 @@ import Slide from "@mui/material/Slide";
 import TransitionControl from '../SeatMapTransitionControl/SeatMapTransitionControl.js'
 import Typography from '@mui/material/Typography';
 import { Link, useLocation } from 'react-router-dom';
-import GuestNavBar from '../GuestNavBar/GuestNavBar';
 import axios from 'axios';
 import background from '../UserLanding/travel3.jpg';
 
@@ -460,7 +459,6 @@ class SeatSelector extends Component {
             flexDirection: "row",
             bgcolor: "transparent",
             justifyContent: "space-around",
-            mt: "40px",
           }}
         >
           <div >
@@ -692,7 +690,6 @@ function SeatSelectorFunction(props) {
 
   }}>
       {/* <div> */}
-      <GuestNavBar />
       <SeatSelector details={result} />
      </div>
   );
