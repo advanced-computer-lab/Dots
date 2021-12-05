@@ -173,7 +173,7 @@ app.delete('/flight/:flightId/delete', async (req, res) => {
 
 app.post('/reservationinsertion', async (req,res) => {
     var mongooseID = new mongoose.Types.ObjectId();
-    var temp = new Array(req.body.passengers.length); 
+    var temp = new Array(req.body.passengers.length);
     for (let i = 0; i< req.body.passengers.firstName; i++){
     temp[i] = {
       firstName: req.body.passengers.firstName,
@@ -247,7 +247,7 @@ app.delete('/reservations/:reservationId', async (req, res) => {
               to: userFound.email,
               subject: "Refund Confirmation",
               html: `<h2 style="color:#09827C;">Hello ${userFound.firstName}!</h2>
-                <p>this mail is to confirm your refund of $${reservationDeleted.totalPrice}</p>`
+                <p>this mail is to confirm your refund of $${'reservationDeleted.totalPrice'}</p>`
             }
             transporter.sendMail(mailOptions, (err, data) => {
               if (err) {
