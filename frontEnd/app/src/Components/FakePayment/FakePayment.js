@@ -5,9 +5,9 @@ import ReservationCard from '../Summary/ReservationCard.js'
 import axios from 'axios';
 import './FakePayment.css'
 
+const confirmationNumber = Math.floor(Math.random() * 100000000000 + 1);
 function FakePayment(props) {
   let location = useLocation();
-  const confirmationNumber = Math.floor(Math.random() * 100000000000 + 1)
   console.log(confirmationNumber);
   const { result } = location.state
   console.log(result);
@@ -33,7 +33,7 @@ function FakePayment(props) {
   else return (<div>
   <img id="image" src="/download.jpg" />
   <ReservationCard outBound = {result.previousStage.depchosenflight} inBound = {result.previousStage.returnchosenflight}
-      reservation = {result.previousStage} confirmationNumber = {confirmationNumber}/>
+      reservation = {result.previousStage} confirmationNumber = {confirmationNumber} top = {result}/>
       </div>);
 }
 

@@ -175,14 +175,6 @@ app.post('/reservationinsertion', async (req,res) => {
     var mongooseID = new mongoose.Types.ObjectId();
     var temp = new Array(req.body.passengers.length);
     for (let i = 0; i< req.body.passengers.firstName; i++){
-    temp[i] = {
-      firstName: req.body.passengers.firstName,
-      lastName: req.body.passengers.lastName,
-      passportNumber: req.body.passengers.passportNo,
-      outBoundSeat: req.body.passengers.outBoundSeat,
-      inBoundSeat: req.body.passengers.inBoundSeat,
-    }
-  }
     Reservation.create({
       _id: mongooseID,
       user: "61a762c24c337dff67c229fe",
@@ -190,7 +182,7 @@ app.post('/reservationinsertion', async (req,res) => {
       inBoundflight: req.body.previousStage.returnchosenflight._id,
       outBoundClass: req.body.previousStage.outBoundCabin,
       inBoundClass: req.body.previousStage.inBoundCabin,
-      passengers: temp,
+      passengers: req.body.passengers,
       confirmationNumber: req.body.confirmationNumber,
       totalPrice: req.body.totalPrice
     })
