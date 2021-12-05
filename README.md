@@ -43,4 +43,6 @@ Seat Selector
 Flight Card Design - Landing Page Design - Nav Bar Component- userSearchFlights module design - Search Flights front end component - Search flight backend functionality
 
 ### Ahmed Tamer:
+User able to view all reserved flights - Itenerary and summary - Creating reservations - Payment simulation - Linking components together
+via props
 
