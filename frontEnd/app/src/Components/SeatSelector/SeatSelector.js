@@ -31,6 +31,7 @@ import Typography from '@mui/material/Typography';
 import { Link, useNavigate, Navigate, useLocation } from 'react-router-dom';
 import background from '../UserLanding/travel2.jpg';
 import GuestNavBar from '../GuestNavBar/GuestNavBar';
+import axios from 'axios';
 
 class SeatSelector extends Component {
   constructor(props) {
@@ -108,6 +109,7 @@ class SeatSelector extends Component {
     inBoundRows = inBoundRows.concat(economyRows.rows);
     inBoundRows.push([]);
 
+    const confirmationNumber = Math.floor(Math.random() * 100000000000 + 1)
 
     this.state = {
       selectedSeats: [],
@@ -120,7 +122,8 @@ class SeatSelector extends Component {
       activePassenger: 0,
       outBoundClass: outBoundClass,
       inBoundClass: inBoundClass,
-      previousStage: this.props.details
+      previousStage: this.props.details,
+      confirmationNumber:confirmationNumber,
     };
   }
 
@@ -667,6 +670,9 @@ class SeatSelector extends Component {
                       variant="contained"
                       color="success"
                       sx={{ mt: "30px" }}
+                      onClick={() => {
+                        axios.post('http://localhost:8000/reservationinsertion', this.state);
+                      }}
                     >
                       Checkout
                     </Button>
