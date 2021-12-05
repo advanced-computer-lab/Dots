@@ -62,21 +62,21 @@ class UserFlightList extends Component {
         }
         this.state = {
             from: this.props.from,
-            depfaded: this.props.depfaded ? this.props.depfaded : true,
-            depvalue: this.props.depvalue,
+            depfaded: this.props.depfaded ,
+            depsearchdate: this.props.depvalue,
             depOriginalFlights: this.props.depOriginalFlights,
-            depAllflights: this.props.depAllflights,
+            depAllFlights: this.props.depAllflights,
             depchosenflight: this.props.depchosenflight ? this.props.depchosenflight : null,
             depflightClass: this.props.depflightClass ? this.props.depflightClass : '',
             to: this.props.to,
-            returnfaded: this.props.returnfaded ? this.props.returnfaded : true,
-            returnvalue: this.props.returnvalue,
+            returnfaded: this.props.returnfaded,
+            returnsearchdate: this.props.returnvalue,
             returnOriginalFlights: this.props.returnOriginalFlights,
             returnAllflights: this.props.returnAllflights,
             returnchosenflight: this.props.returnchosenflight ? this.props.returnchosenflight : null,
             returnflightClass: this.props.returnflightClass ? this.props.returnflightClass : '',
             numberOfpassengers: this.props.numberOfpassengers,
-            passengers: this.props.passengers ? this.props.passengers : buildpassengers(this.props.numberOfpassengers),
+            passengers: this.props.passengers!=='' ? this.props.passengers : buildpassengers(this.props.numberOfpassengers),
             openDialog: false,
             openAlert: false,
             errorMessage: '' 
@@ -86,10 +86,10 @@ class UserFlightList extends Component {
         this.setState({ depfaded: val1 });
     }
     updatedepvalue = (val1) => {
-        this.setState({ depvalue: val1 });
+        this.setState({ depsearchdate: val1 });
     }
     updatedepAllflights = (val1) => {
-        this.setState({ depAllflights: val1 });
+        this.setState({ depAllFlights: val1 });
     }
     updatedepchosenflight = (val1) => {
         this.setState({ depchosenflight: val1 });
@@ -101,7 +101,7 @@ class UserFlightList extends Component {
         this.setState({ returnfaded: val1 });
     }
     updatereturnvalue = (val1) => {
-        this.setState({ returnvalue: val1 });
+        this.setState({ returnsearchdate: val1 });
     }
     updatereturnAllflights = (val1) => {
         this.setState({ returnAllflights: val1 });
@@ -215,8 +215,8 @@ class UserFlightList extends Component {
 
                     <Typography variant="h4" component="div" id='flightText' > <FlightTakeoffIcon fontSize='large' /> {`${this.state.from} to ${this.state.to}`}</Typography>
 
-                    <TabBar Allflights={this.state.depAllflights} OriginalFlights={this.state.depOriginalFlights} chosenClass={this.state.depchosenflight}
-                        faded={this.state.depfaded} chosenflight={this.state.depchosenflight} value={new Date(this.state.depvalue)}
+                    <TabBar Allflights={this.state.depAllFlights} OriginalFlights={this.state.depOriginalFlights} chosenClass={this.state.depchosenflight}
+                        faded={this.state.depfaded} chosenflight={this.state.depchosenflight} value={new Date(this.state.depsearchdate)}
                         return={false} updateFaded={this.updatedepFaded}
                         updatevalue={this.updatedepvalue} updateAllflights={this.updatedepAllflights}
                         updatechosenflight={this.updatedepchosenflight} updateclass={this.updatedepClass} />
@@ -226,7 +226,7 @@ class UserFlightList extends Component {
                     </ThemeProvider> {`${this.state.to} to ${this.state.from}`}</Typography>
 
                     <TabBar Allflights={this.state.returnAllflights} OriginalFlights={this.state.returnOriginalFlights} chosenClass={this.state.returnchosenflight}
-                        faded={this.state.returnfaded} chosenflight={this.state.returnchosenflight} value={new Date(this.state.returnvalue)} return={true}
+                        faded={this.state.returnfaded} chosenflight={this.state.returnchosenflight} value={new Date(this.state.returnsearchdate)} return={true}
                         updateFaded={this.updatereturnFaded}
                         updatevalue={this.updatereturnvalue}
                         updateAllflights={this.updatereturnAllflights}
@@ -284,6 +284,7 @@ function UserFlightListFunction(props) {
     const numberOfpassengers = result.numberOfpassengers
     const from = result.from
     const to = result.to
+    const passengers=result.passengers?result.passengers:'';
 
     return <UserFlightList depfaded={depfaded}
         depvalue={depvalue}
@@ -300,6 +301,7 @@ function UserFlightListFunction(props) {
         returnchosenflight={returnchosenflight}
         returnflightClass={returnflightClass}
         numberOfpassengers={numberOfpassengers}
+        passengers={passengers}
     />
 }
 

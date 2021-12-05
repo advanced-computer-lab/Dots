@@ -38,8 +38,8 @@ class SeatSelector extends Component {
 
     console.log(this.props.details)
 
-    let outBoundCabin = this.props.details.depflightClass;
-    let inBoundCabin = this.props.details.returnflightClass;
+    let outBoundClass = this.props.details.depflightClass;
+    let inBoundClass = this.props.details.returnflightClass;
     let passengers = this.props.details.passengers
 
     passengers.forEach((passenger) => {
@@ -58,12 +58,26 @@ class SeatSelector extends Component {
     let departureCity = this.props.details.depchosenflight.departureLocation.city;
     let arrivalCity = this.props.details.depchosenflight.arrivalLocation.city;
 
+    let outBoundSelectedSeats = [];
+    let inBoundSelectedSeats = [];
+    
+    this.props.details.depchosenflight.reservations.forEach((reservation) => {
+      reservation.passengers.forEach((passenger)=>{
+        outBoundSelectedSeats.push(passenger.outBoundSeat)
+        inBoundSelectedSeats.push(passenger.inBoundSeat)
+      })
+    })
+
+
     let id = 1;
-    let firstRows = this.generateClassSeats(outBoundtotalFirstSeats, "First", id);
+    let lastRowNum="@";
+    let firstRows = this.generateClassSeats(outBoundtotalFirstSeats, "First", id, outBoundSelectedSeats,lastRowNum);
     id = firstRows.id;
-    let businessRows = this.generateClassSeats(outBoundtotalBusinessSeats, "Business", id);
+    lastRowNum=firstRows.lastRow;
+    let businessRows = this.generateClassSeats(outBoundtotalBusinessSeats, "Business", id, outBoundSelectedSeats,lastRowNum);
     id = businessRows.id;
-    let economyRows = this.generateClassSeats(outBoundtotalEconomySeats, "Economy", id);
+    lastRowNum=businessRows.lastRow;
+    let economyRows = this.generateClassSeats(outBoundtotalEconomySeats, "Economy", id, outBoundSelectedSeats,lastRowNum);
     let outBoundRows = [];
     outBoundRows.push([]);
     outBoundRows = outBoundRows.concat(firstRows.rows);
@@ -73,12 +87,18 @@ class SeatSelector extends Component {
     outBoundRows = outBoundRows.concat(economyRows.rows);
     outBoundRows.push([]);
 
+
+
+
     id = 1;
-    firstRows = this.generateClassSeats(inBoundtotalFirstSeats, "First", id);
+    lastRowNum="@";
+    firstRows = this.generateClassSeats(inBoundtotalFirstSeats, "First", id, inBoundSelectedSeats,lastRowNum);
     id = firstRows.id;
-    businessRows = this.generateClassSeats(inBoundtotalBusinessSeats, "Business", id);
+    lastRowNum=firstRows.lastRow;
+    businessRows = this.generateClassSeats(inBoundtotalBusinessSeats, "Business", id, inBoundSelectedSeats,lastRowNum);
     id = businessRows.id;
-    economyRows = this.generateClassSeats(inBoundtotalEconomySeats, "Economy", id);
+    lastRowNum=businessRows.lastRow;
+    economyRows = this.generateClassSeats(inBoundtotalEconomySeats, "Economy", id, inBoundSelectedSeats,lastRowNum);
     let inBoundRows = [];
     inBoundRows.push([]);
     inBoundRows = inBoundRows.concat(firstRows.rows);
@@ -98,15 +118,18 @@ class SeatSelector extends Component {
       passengers: passengers,
       activeFlight: 0,
       activePassenger: 0,
-      outBoundCabin: outBoundCabin,
-      inBoundCabin: inBoundCabin,
-      previousStage:this.props.details
+      outBoundClass: outBoundClass,
+      inBoundClass: inBoundClass,
+      previousStage: this.props.details
     };
   }
 
-  generateClassSeats = (totalSeats, cabin, currentId) => {
+  generateClassSeats = (totalSeats, cabin, currentId,selectedSeats,lastRowNum) => {
     let id = currentId;
     let m = 0;
+    //Get already selected seats
+
+
     if (cabin === "Economy") {
       m = 6;
     } else {
@@ -117,8 +140,12 @@ class SeatSelector extends Component {
     if (totalSeats % m !== 0) {
       totalRows++;
     }
+    let rowNum='A'
     for (let i = 0; i < totalRows; i++) {
-      if (i === totalRows - 1) {
+      const rowNumber = String.fromCharCode((lastRowNum+1).charCodeAt(0) + i+1);
+      rowNum=rowNumber
+
+      if (i === totalRows - 1 && (totalSeats % m)!==0) {
         let arr = [];
         for (let k = 0; k < m; k++) {
           if (k >= totalSeats % m) {
@@ -128,8 +155,9 @@ class SeatSelector extends Component {
               isReserved: true,
               cabin: cabin,
             });
+            console.log(rowNum+k)
           } else {
-            arr.push({ id: id++, number: k + 1, cabin: cabin });
+            arr.push({ id: id++, number: k + 1,isReserved:selectedSeats.includes(rowNumber+""+k)?true:false, cabin: cabin });
           }
           if (cabin === "Economy" && (k === 2)) arr.push("number");
           if (cabin !== "Economy" && (k === 0 | k === 2)) arr.push(null);
@@ -138,13 +166,12 @@ class SeatSelector extends Component {
         rows.push(arr);
       } else {
         if (m === 4)
-          rows.push([{ id: id++, number: 1, cabin: cabin }, null, { id: id++, number: 2, cabin: cabin }, "number", { id: id++, number: 3, cabin: cabin }, null, { id: id++, number: 4, cabin: cabin },]);
+          rows.push([{ id: id++, number: 1,isReserved:selectedSeats.includes(rowNumber+""+1)?true:false, cabin: cabin }, null, { id: id++, number: 2,isReserved:selectedSeats.includes(rowNumber+""+2)?true:false, cabin: cabin }, "number", { id: id++, number: 3,isReserved:selectedSeats.includes(rowNumber+""+3)?true:false, cabin: cabin }, null, { id: id++, number: 4,isReserved:selectedSeats.includes(rowNumber+""+4)?true:false, cabin: cabin },]);
         else
-          rows.push([{ id: id++, number: 1, cabin: cabin }, { id: id++, number: 2, cabin: cabin }, { id: id++, number: 3, cabin: cabin }, "number", { id: id++, number: 4, cabin: cabin }, { id: id++, number: 5, cabin: cabin }, { id: id++, number: 6, cabin: cabin },]);
+          rows.push([{ id: id++, number: 1,isReserved:selectedSeats.includes(rowNumber+""+1)?true:false, cabin: cabin }, { id: id++, number: 2,isReserved:selectedSeats.includes(rowNumber+""+2)?true:false, cabin: cabin }, { id: id++, number: 3,isReserved:selectedSeats.includes(rowNumber+""+3)?true:false, cabin: cabin }, "number", { id: id++, number: 4,isReserved:selectedSeats.includes(rowNumber+""+4)?true:false, cabin: cabin }, { id: id++, number: 5,isReserved:selectedSeats.includes(rowNumber+""+5)?true:false, cabin: cabin }, { id: id++, number: 6,isReserved:selectedSeats.includes(rowNumber+""+6)?true:false, cabin: cabin },]);
       }
     }
-
-    return { rows: rows, id: id };
+    return { rows: rows, id: id,lastRow:rowNum };
   };
 
   addFunctionality = (row, number) => {
@@ -389,7 +416,7 @@ class SeatSelector extends Component {
               addSeatCallback={this.outBoundAddSeatCallback}
               removeSeatCallback={this.outBoundRemoveSeatCallback}
               rows={this.state.outBoundRows}
-              selectedCabin={this.state.outBoundCabin}
+              selectedCabin={this.state.outBoundClass}
               maxReservableSeats={this.state.passengers.length * 2 + 1}
               alpha
               visible
@@ -416,7 +443,7 @@ class SeatSelector extends Component {
                 addSeatCallback={this.inBoundAddSeatCallback}
                 removeSeatCallback={this.inBoundRemoveSeatCallback}
                 rows={this.state.inBoundRows}
-                selectedCabin={this.state.inBoundCabin}
+                selectedCabin={this.state.inBoundClass}
                 maxReservableSeats={this.state.passengers.length * 2 + 1}
                 alpha
                 visible
@@ -473,7 +500,7 @@ class SeatSelector extends Component {
             <Card sx={{ bgcolor: "#076F72" }}>
               <CardContent>
                 <Typography sx={{ font: '30px Railway ' }}>
-                  You can only select {this.state.activeFlight === 0 ? this.state.outBoundCabin : this.state.inBoundCabin} Class
+                  You can only select {this.state.activeFlight === 0 ? this.state.outBoundClass : this.state.inBoundClass} Class
                 </Typography>
               </CardContent>
             </Card>
