@@ -235,25 +235,73 @@ app.delete('/reservations/:reservationId', async (req, res) => {
         if (!reservationDeleted) res.status(404).send({ message: "Couldn't find reservation" })
         User.findByIdAndUpdate(reservationDeleted.user, { $pull: { reservations: reservationId } }, { new: true })
           .then((userFound) => {
-            let mailOptions = {
-              from: `'Takeoff Airways' <${process.env.MAIL_USER}>`,
-              to: userFound.email,
-              subject: "Refund Confirmation",
-              html: `<h2 style="color:#09827C;">Hello ${userFound.firstName}!</h2>
-                <p>this mail is to confirm your refund of $${'reservationDeleted.totalPrice'}</p>`
-            }
-            transporter.sendMail(mailOptions, (err, data) => {
-              if (err) {
-                Reservation.create(reservationDeleted).then(() => {
-                  User.findByIdAndUpdate(reservationDeleted.user, { $push: { reservations: reservationId } })
-                    .then(() => {
-                      res.status(400).send({ message: "Error sending email" })
+            Flight.findByIdAndUpdate(reservationDeleted.outBoundflight._id, { $pull: { reservations: reservationId } }, { new: true })
+              .then((outBoundFlight) => {
+                Flight.findByIdAndUpdate(reservationDeleted.inBoundflight._id, { $pull: { reservations: reservationId } }, { new: true })
+                  .then((inBoundFlight) => {
+                    let outBoundPrice = 0
+                    let inBoundPrice = 0
+                    switch (reservationDeleted.outBoundClass) {
+                      case 'First':
+                        outBoundPrice = outBoundFlight.firstClassPrice
+                        break;
+                      case 'Business':
+                        outBoundPrice = outBoundFlight.businessClassPrice
+                        break;
+                      case 'Economy':
+                        outBoundPrice = outBoundFlight.economyClassPrice
+                        break;
+                      default:
+                    }
+
+                    switch (reservationDeleted.inBoundClass) {
+                      case 'First':
+                        inBoundPrice = inBoundFlight.firstClassPrice
+                        break;
+                      case 'Business':
+                        inBoundPrice = inBoundFlight.businessClassPrice
+                        break;
+                      case 'Economy':
+                        inBoundPrice = inBoundFlight.economyClassPrice
+                        break;
+                      default:
+                    }
+                    console.log(outBoundPrice)
+                    console.log(inBoundFlight)
+                    console.log(inBoundPrice)
+                    outBoundPrice *= reservationDeleted.passengers.length
+                    inBoundPrice *= reservationDeleted.passengers.length
+
+                    let mailOptions = {
+                      from: `'Takeoff Airways' <${process.env.MAIL_USER}>`,
+                      to: userFound.email,
+                      subject: "Refund Confirmation",
+                      html: `<h2 style="color:#09827C;">Hello ${userFound.firstName}!</h2>
+                    <h4>This mail is to confirm your refund</h4>
+                    <p>Outbound flight total price: <b>$${outBoundPrice}</b></p>
+                    <p>Inbound flight total price: <b>$${inBoundPrice}</b></p>
+                    <h3>Total Price: $${outBoundPrice + inBoundPrice}</h3>
+                    <p>Have a nice day!</p>`
+                    }
+
+                    transporter.sendMail(mailOptions, (err, data) => {
+                      if (err) {
+                        Reservation.create(reservationDeleted).then(() => {
+                          User.findByIdAndUpdate(reservationDeleted.user, { $push: { reservations: reservationId } })
+                            .then(() => {
+                              Flight.findByIdAndUpdate(reservationDeleted.outBoundflight, { $push: { reservations: reservationId } })
+                                .then(() => {
+                                  Flight.findByIdAndUpdate(reservationDeleted.inBoundflight, { $push: { reservations: reservationId } })
+                                  res.status(400).send({ message: "Error sending email" })
+                                })
+                            })
+                        })
+                      }
+                      else
+                        res.send(`Email Sent: ${data}`)
                     })
-                })
-              }
-              else
-                res.send(`Email Sent: ${data}`)
-            })
+                  })
+              })
           })
       })
   } catch (error) {
@@ -377,7 +425,7 @@ app.post("/flights/flightquery", async (req, res) => {
 
     // for every date in outDates, check if there is a flight with the same date in filteredOutFlights
 
-   // console.log(filteredOutFlights[0]);
+    // console.log(filteredOutFlights[0]);
 
    if(filteredOutFlights.length == 0){
       noOutFlights = true;
@@ -427,7 +475,7 @@ app.post("/flights/flightquery", async (req, res) => {
 
     res.status(200).send({
       depOriginalFlights: outFlightsWithDate, depAllFlights: outFlightsWithDate, depsearchdate: new Date(outDepDate),
-      from :body.from, to: body.to,
+      from: body.from, to: body.to,
       depfaded: true,
       depchosenFlight: null,
       returnOriginalFlights: inFlightsWithDate,
@@ -441,9 +489,9 @@ app.post("/flights/flightquery", async (req, res) => {
      }  );
   }
   catch (error) {
-  console.log(error);
-  res.status(400).send(null);
-}
+    console.log(error);
+    res.status(400).send(null);
+  }
 
 
 })
