@@ -99,6 +99,12 @@ class EditForm extends Component {
     onSubmit = (e) => {
         e.preventDefault()
         const data = this.state.data
+        if (this.state.seatsEditingValid) {
+            data.totalFirstSeats = data.firstSeatsAvailable
+            data.totalEconomySeats = data.economySeatsAvailable
+            data.totalBusinessSeats = data.businessSeatsAvailable
+        }
+        console.log(data)
         this.props.handleSubmit(data)
     }
 
