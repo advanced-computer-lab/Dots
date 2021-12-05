@@ -56,16 +56,28 @@ class UserSearch extends Component {
             openAlert: false,
             errorMessage: "",
             result: {},
-            isChangeSearch:this.props.isChangeSearch
+            isChangeSearch:this.props.isChangeSearch,
+            airports: [],
 
         }
     }
 
 
     componentDidMount() {
-        let ul = document.getElementsByTagName('a')[1];
-        console.log(ul);
-
+        // let ul = document.getElementsByTagName('a')[1];
+        // console.log(ul);
+        fetch('http://localhost:8000/flights')
+        .then(response => response.json())
+        .then(flights => {
+  
+          let airportSet = new Set();
+          flights.map((flight) => {
+            airportSet.add(flight.departureLocation.airport)
+            airportSet.add(flight.arrivalLocation.airport)
+          })
+          this.setState({ airports: Array.from(airportSet) })
+  
+        });
     }
 
 
@@ -214,7 +226,7 @@ class UserSearch extends Component {
                 <Stack spacing={5} >
                     <Stack direction="row" spacing={5} alignItems="center" alignContent="Center">
                         <Autocomplete
-                            options={airports}
+                            options={this.state.airports}
                             sx={{ width: 200 }}
                             renderInput={(params) => <TextField {...params} label="From" />}
                             onChange={this.onFromChange}
@@ -255,7 +267,7 @@ class UserSearch extends Component {
 
                     <Stack direction="row" spacing={5}>
                         <Autocomplete
-                            options={airports}
+                            options={this.state.airports}
                             sx={{ width: 200 }}
                             renderInput={(params) => <TextField {...params} label="To" />}
                             onChange={this.onToChange}

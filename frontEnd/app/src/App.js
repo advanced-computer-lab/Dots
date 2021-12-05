@@ -27,7 +27,7 @@ import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import EditPage from './Components/EditUser/EditPage';
 import UserFlights from './Components/Summary/userFlights';
-
+import GuestNavBar from './Components/GuestNavBar/GuestNavBar';
 
 const theme = createTheme({
   palette: {
@@ -44,6 +44,7 @@ class App extends Component {
   render() {
     return (
       <MuiThemeProvider theme={theme}>
+        <GuestNavBar />
       <BrowserRouter>
 
         <Routes>

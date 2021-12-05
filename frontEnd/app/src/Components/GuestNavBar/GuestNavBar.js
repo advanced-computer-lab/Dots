@@ -53,7 +53,7 @@ const GuestNavBar = () => {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
 
-          <Stack direction="row" spacing={160} alignItems="center">
+          <Stack direction="row" spacing={165} alignItems="center">
             <a href="/">
               <img src={logo} alt="Logo" width="120" />
             </a>
@@ -66,7 +66,7 @@ const GuestNavBar = () => {
               onClick={handleMenu}
               color="inherit"
             >
-              <AccountCircle fontSize="medium" />
+              <AccountCircle fontSize="medium" color = "white"/>
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -84,14 +84,14 @@ const GuestNavBar = () => {
               onClose={handleClose}
             >
               <MenuItem onClick={handleClose}>
-                <a href="/:61a762c24c337dff67c229fe/edit-info">
+                <a class = "menuItem" href="/:61a762c24c337dff67c229fe/edit-info">
                   <Typography variant="overline" display="block" gutterBottom>
                     Profile
                   </Typography>
                 </a>
               </MenuItem>
               <MenuItem onClick={handleClose}>
-                <a href="/userflights">
+                <a class = "menuItem"  href="/userflights">
                   <Typography variant="overline" display="block" gutterBottom>
                     My Flights
                   </Typography>

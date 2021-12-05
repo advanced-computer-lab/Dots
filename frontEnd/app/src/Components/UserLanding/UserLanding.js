@@ -32,7 +32,7 @@ class UserLanding extends Component {
 
             }}>
 
-                <GuestNavBar />
+                {/* <GuestNavBar /> */}
                 <Stack spacing = {30} alignItems = "center">
                     <Stack id = "alignTitle" direction = "row" justifyContent="flex-start" > 
                     <Typography id="titleLanding" variant="h2" gutterBottom component="div">

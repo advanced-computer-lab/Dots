@@ -13,3 +13,11 @@
     margin-top: 2em;
     margin-left: 4em;
 }
+
+.css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected{
+    color:#076F72 !important;
+}
+
+.css-1aquho2-MuiTabs-indicator{
+    background-color:#076F72 !important;
+}

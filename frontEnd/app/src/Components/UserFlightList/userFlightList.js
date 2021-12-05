@@ -197,11 +197,11 @@ class UserFlightList extends Component {
 
 
             <div>
-                <GuestNavBar />
+                {/* <GuestNavBar /> */}
                 <Card>
                     <CardContent>
-                        <Stack direction="row" spacing={10} alignContent="center">
-                            <Typography variant="h6" gutterBottom component="div">
+                        <Stack direction="row" spacing={10} alignContent="center" alignItems = "center">
+                            <Typography id = "flightText" variant="h6" gutterBottom component="div">
                                {from} - {to}
                             </Typography>
                             <Button variant="contained" onClick={this.editSearch}>Edit Search</Button>
@@ -221,7 +221,7 @@ class UserFlightList extends Component {
                     </DialogContent>
                 </Dialog>
 
-                <Snackbar open={this.state.openAlert} autoHideDuration={5000} onClose={this.handleCloseAlert}>
+                <Snackbar open={this.state.openAlert} autoHideDuration={10000} onClose={this.handleCloseAlert}>
                     <Alert onClose={this.handleCloseAlert} severity="error" sx={{ width: '100%' }}>
                         {this.state.errorMessage}
                     </Alert>
