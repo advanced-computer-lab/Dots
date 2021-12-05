@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { Card, CardContent, CardHeader, Dialog, Divider, Grid, CardActions, Button, Typography, CircularProgress, ListItem, Alert, Stack, Accordion, AccordionDetails, AccordionSummary, List } from '@mui/material';
+import { Card, CardContent, CardHeader, Dialog, Divider, Grid, CardActions, Button, DialogTitle, Typography, CircularProgress, ListItem, Alert, Stack, Accordion, AccordionDetails, AccordionSummary, List } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -41,14 +41,14 @@ class ReservationCardFinal extends Component {
     render() {
         var inboundClassPrice = 0;
         var outboundClassPrice = 0;
-        for(let i = 0; i < this.props.reservation.passengers.length; i++){
-        if (this.props.reservation.inBoundClass == "Economy") inboundClassPrice += this.props.inBound.economyClassPrice
-        else if (this.props.reservation.inBoundClass == "Business") inboundClassPrice += this.props.inBound.businessClassPrice
-        else if (this.props.reservation.inBoundClass == "First") inboundClassPrice += this.props.inBound.firstClassPrice
-    
-        if (this.props.reservation.outBoundClass == "Economy") outboundClassPrice += this.props.outBound.economyClassPrice
-        else if (this.props.reservation.outBoundClass == "Business") outboundClassPrice += this.props.outBound.businessClassPrice
-        else if (this.props.reservation.outBoundClass == "First") outboundClassPrice += this.props.outBound.firstClassPrice
+        for (let i = 0; i < this.props.reservation.passengers.length; i++) {
+            if (this.props.reservation.inBoundClass == "Economy") inboundClassPrice += this.props.inBound.economyClassPrice
+            else if (this.props.reservation.inBoundClass == "Business") inboundClassPrice += this.props.inBound.businessClassPrice
+            else if (this.props.reservation.inBoundClass == "First") inboundClassPrice += this.props.inBound.firstClassPrice
+
+            if (this.props.reservation.outBoundClass == "Economy") outboundClassPrice += this.props.outBound.economyClassPrice
+            else if (this.props.reservation.outBoundClass == "Business") outboundClassPrice += this.props.outBound.businessClassPrice
+            else if (this.props.reservation.outBoundClass == "First") outboundClassPrice += this.props.outBound.firstClassPrice
         }
         var cardStyle = {
             borderRadius: '1vw'
@@ -232,6 +232,9 @@ class ReservationCardFinal extends Component {
                                     </Grid>
                                 </CardContent>
                                 <Dialog onClose={this.closeDialog} open={this.state.openCancelDialog}>
+                                    <DialogTitle>
+                                        Are you sure you want to do this?
+                                    </DialogTitle>
                                     {
                                         this.state.error &&
                                         <Alert variant="filled" severity="error" sx={{ borderRadius: 0 }}>
@@ -240,10 +243,9 @@ class ReservationCardFinal extends Component {
                                     }
                                     <List>
                                         <ListItem>
-                                            You are about to cancel your reservation. Please note that the rate for your
-                                            flights may have been changed and if you wish to repurchase your flights, you will
-                                            be charged the new rate. You will be fully refunded and sent an email to confirm the amount.
-                                            Are you sure you want to delete this flight?
+                                            You are about to cancel your reservation. Please note this action is irreversible, and that rates might
+                                            change if you decide to rebook your flights in the future. You will be fully refunded and sent an email
+                                            to confirm the amount upon confirmation of cancellation.
                                         </ListItem>
                                         <ListItem sx={{ justifyContent: "center" }}>
                                             <LoadingButton onClick={this.onDeleteReservation} loadingIndicator={<CircularProgress color="inherit" size={30} />}

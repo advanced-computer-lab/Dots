@@ -17,7 +17,7 @@ const Reservation = require('./models/reservations');
 const User = require('./models/users')
 
 const MongoURI = process.env.MONGO_URI;
-let alert = require('alert'); 
+let alert = require('alert');
 const short = require('short-uuid');
 const translator = short();
 

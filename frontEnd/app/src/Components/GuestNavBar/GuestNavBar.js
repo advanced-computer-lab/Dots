@@ -84,7 +84,7 @@ const GuestNavBar = () => {
               onClose={handleClose}
             >
               <MenuItem onClick={handleClose}>
-                <a class = "menuItem" href="/:61a762c24c337dff67c229fe/edit-info">
+                <a class = "menuItem" href="/61a762c24c337dff67c229fe/edit-info">
                   <Typography variant="overline" display="block" gutterBottom>
                     Profile
                   </Typography>
