@@ -31,6 +31,7 @@ import Typography from '@mui/material/Typography';
 import { Link, useNavigate, Navigate, useLocation } from 'react-router-dom';
 import background from '../UserLanding/travel2.jpg';
 import GuestNavBar from '../GuestNavBar/GuestNavBar';
+import axios from 'axios';
 
 class SeatSelector extends Component {
   constructor(props) {
@@ -60,9 +61,9 @@ class SeatSelector extends Component {
 
     let outBoundSelectedSeats = [];
     let inBoundSelectedSeats = [];
-    
+
     this.props.details.depchosenflight.reservations.forEach((reservation) => {
-      reservation.passengers.forEach((passenger)=>{
+      reservation.passengers.forEach((passenger) => {
         outBoundSelectedSeats.push(passenger.outBoundSeat)
         inBoundSelectedSeats.push(passenger.inBoundSeat)
       })
@@ -70,14 +71,14 @@ class SeatSelector extends Component {
 
 
     let id = 1;
-    let lastRowNum="@";
-    let firstRows = this.generateClassSeats(outBoundtotalFirstSeats, "First", id, outBoundSelectedSeats,lastRowNum);
+    let lastRowNum = "@";
+    let firstRows = this.generateClassSeats(outBoundtotalFirstSeats, "First", id, outBoundSelectedSeats, lastRowNum);
     id = firstRows.id;
-    lastRowNum=firstRows.lastRow;
-    let businessRows = this.generateClassSeats(outBoundtotalBusinessSeats, "Business", id, outBoundSelectedSeats,lastRowNum);
+    lastRowNum = firstRows.lastRow;
+    let businessRows = this.generateClassSeats(outBoundtotalBusinessSeats, "Business", id, outBoundSelectedSeats, lastRowNum);
     id = businessRows.id;
-    lastRowNum=businessRows.lastRow;
-    let economyRows = this.generateClassSeats(outBoundtotalEconomySeats, "Economy", id, outBoundSelectedSeats,lastRowNum);
+    lastRowNum = businessRows.lastRow;
+    let economyRows = this.generateClassSeats(outBoundtotalEconomySeats, "Economy", id, outBoundSelectedSeats, lastRowNum);
     let outBoundRows = [];
     outBoundRows.push([]);
     outBoundRows = outBoundRows.concat(firstRows.rows);
@@ -91,14 +92,14 @@ class SeatSelector extends Component {
 
 
     id = 1;
-    lastRowNum="@";
-    firstRows = this.generateClassSeats(inBoundtotalFirstSeats, "First", id, inBoundSelectedSeats,lastRowNum);
+    lastRowNum = "@";
+    firstRows = this.generateClassSeats(inBoundtotalFirstSeats, "First", id, inBoundSelectedSeats, lastRowNum);
     id = firstRows.id;
-    lastRowNum=firstRows.lastRow;
-    businessRows = this.generateClassSeats(inBoundtotalBusinessSeats, "Business", id, inBoundSelectedSeats,lastRowNum);
+    lastRowNum = firstRows.lastRow;
+    businessRows = this.generateClassSeats(inBoundtotalBusinessSeats, "Business", id, inBoundSelectedSeats, lastRowNum);
     id = businessRows.id;
-    lastRowNum=businessRows.lastRow;
-    economyRows = this.generateClassSeats(inBoundtotalEconomySeats, "Economy", id, inBoundSelectedSeats,lastRowNum);
+    lastRowNum = businessRows.lastRow;
+    economyRows = this.generateClassSeats(inBoundtotalEconomySeats, "Economy", id, inBoundSelectedSeats, lastRowNum);
     let inBoundRows = [];
     inBoundRows.push([]);
     inBoundRows = inBoundRows.concat(firstRows.rows);
@@ -108,6 +109,7 @@ class SeatSelector extends Component {
     inBoundRows = inBoundRows.concat(economyRows.rows);
     inBoundRows.push([]);
 
+    const confirmationNumber = Math.floor(Math.random() * 100000000000 + 1)
 
     this.state = {
       selectedSeats: [],
@@ -120,11 +122,12 @@ class SeatSelector extends Component {
       activePassenger: 0,
       outBoundClass: outBoundClass,
       inBoundClass: inBoundClass,
-      previousStage: this.props.details
+      previousStage: this.props.details,
+      confirmationNumber:confirmationNumber,
     };
   }
 
-  generateClassSeats = (totalSeats, cabin, currentId,selectedSeats,lastRowNum) => {
+  generateClassSeats = (totalSeats, cabin, currentId, selectedSeats, lastRowNum) => {
     let id = currentId;
     let m = 0;
     //Get already selected seats
@@ -140,12 +143,12 @@ class SeatSelector extends Component {
     if (totalSeats % m !== 0) {
       totalRows++;
     }
-    let rowNum='A'
+    let rowNum = 'A'
     for (let i = 0; i < totalRows; i++) {
-      const rowNumber = String.fromCharCode((lastRowNum+1).charCodeAt(0) + i+1);
-      rowNum=rowNumber
+      const rowNumber = String.fromCharCode((lastRowNum + 1).charCodeAt(0) + i + 1);
+      rowNum = rowNumber
 
-      if (i === totalRows - 1 && (totalSeats % m)!==0) {
+      if (i === totalRows - 1 && (totalSeats % m) !== 0) {
         let arr = [];
         for (let k = 0; k < m; k++) {
           if (k >= totalSeats % m) {
@@ -155,9 +158,9 @@ class SeatSelector extends Component {
               isReserved: true,
               cabin: cabin,
             });
-            console.log(rowNum+k)
+            console.log(rowNum + k)
           } else {
-            arr.push({ id: id++, number: k + 1,isReserved:selectedSeats.includes(rowNumber+""+k)?true:false, cabin: cabin });
+            arr.push({ id: id++, number: k + 1, isReserved: selectedSeats.includes(rowNumber + "" + k) ? true : false, cabin: cabin });
           }
           if (cabin === "Economy" && (k === 2)) arr.push("number");
           if (cabin !== "Economy" && (k === 0 | k === 2)) arr.push(null);
@@ -166,12 +169,12 @@ class SeatSelector extends Component {
         rows.push(arr);
       } else {
         if (m === 4)
-          rows.push([{ id: id++, number: 1,isReserved:selectedSeats.includes(rowNumber+""+1)?true:false, cabin: cabin }, null, { id: id++, number: 2,isReserved:selectedSeats.includes(rowNumber+""+2)?true:false, cabin: cabin }, "number", { id: id++, number: 3,isReserved:selectedSeats.includes(rowNumber+""+3)?true:false, cabin: cabin }, null, { id: id++, number: 4,isReserved:selectedSeats.includes(rowNumber+""+4)?true:false, cabin: cabin },]);
+          rows.push([{ id: id++, number: 1, isReserved: selectedSeats.includes(rowNumber + "" + 1) ? true : false, cabin: cabin }, null, { id: id++, number: 2, isReserved: selectedSeats.includes(rowNumber + "" + 2) ? true : false, cabin: cabin }, "number", { id: id++, number: 3, isReserved: selectedSeats.includes(rowNumber + "" + 3) ? true : false, cabin: cabin }, null, { id: id++, number: 4, isReserved: selectedSeats.includes(rowNumber + "" + 4) ? true : false, cabin: cabin },]);
         else
-          rows.push([{ id: id++, number: 1,isReserved:selectedSeats.includes(rowNumber+""+1)?true:false, cabin: cabin }, { id: id++, number: 2,isReserved:selectedSeats.includes(rowNumber+""+2)?true:false, cabin: cabin }, { id: id++, number: 3,isReserved:selectedSeats.includes(rowNumber+""+3)?true:false, cabin: cabin }, "number", { id: id++, number: 4,isReserved:selectedSeats.includes(rowNumber+""+4)?true:false, cabin: cabin }, { id: id++, number: 5,isReserved:selectedSeats.includes(rowNumber+""+5)?true:false, cabin: cabin }, { id: id++, number: 6,isReserved:selectedSeats.includes(rowNumber+""+6)?true:false, cabin: cabin },]);
+          rows.push([{ id: id++, number: 1, isReserved: selectedSeats.includes(rowNumber + "" + 1) ? true : false, cabin: cabin }, { id: id++, number: 2, isReserved: selectedSeats.includes(rowNumber + "" + 2) ? true : false, cabin: cabin }, { id: id++, number: 3, isReserved: selectedSeats.includes(rowNumber + "" + 3) ? true : false, cabin: cabin }, "number", { id: id++, number: 4, isReserved: selectedSeats.includes(rowNumber + "" + 4) ? true : false, cabin: cabin }, { id: id++, number: 5, isReserved: selectedSeats.includes(rowNumber + "" + 5) ? true : false, cabin: cabin }, { id: id++, number: 6, isReserved: selectedSeats.includes(rowNumber + "" + 6) ? true : false, cabin: cabin },]);
       }
     }
-    return { rows: rows, id: id,lastRow:rowNum };
+    return { rows: rows, id: id, lastRow: rowNum };
   };
 
   addFunctionality = (row, number) => {
@@ -643,25 +646,41 @@ class SeatSelector extends Component {
             </Card>
 
             <Slide direction="up" in={this.successFlag()} mountOnEnter unmountOnExit>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignContent: "center" }}>
-                <Alert variant="filled" severity="success" sx={{ mt: "10px" }}>
-                  You have selected all seats! Click next to proceed to payment!
-                </Alert>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  // justifyContent: "space-around",
+                }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignContent: "center" }}>
+                  <Alert variant="filled" severity="success" sx={{ mt: "10px" }}>
+                    You have selected all seats! Click Checkout to proceed to payment!
+                  </Alert>
 
+                </Box>
+
+                <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: 'row',
+                  justifyContent: "flex-end",
+                }}>
+                  <Link to="/payment" type="submit" state={{ result: this.state }} >
+                    <Button
+                      variant="contained"
+                      color="success"
+                      sx={{ mt: "30px" }}
+                      onClick={() => {
+                        axios.post('http://localhost:8000/reservationinsertion', this.state);
+                      }}
+                    >
+                      Checkout
+                    </Button>
+                  </Link>
+                </Box>
               </Box>
-
-
             </Slide>
 
-            <Link to="/payment" type="submit" state={{ result: this.state }} >
-              <Button
-                variant="contained"
-                color="success"
-                sx={{ alignSelf: "flex-end", mt: "50px" }}
-              >
-                Checkout
-              </Button>
-            </Link>
 
 
           </Box>
