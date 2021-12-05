@@ -249,7 +249,7 @@ app.delete('/reservations/:reservationId', async (req, res) => {
         if (!reservationDeleted) res.status(404).send({ message: "Couldn't find reservation" })
         User.findByIdAndUpdate(reservationDeleted.user, { $pull: { reservations: reservationId } }, { new: true })
           .then((userFound) => {
-            let outBoundSeatsToBeDecremented = ''
+            let outBoundSeatsToInDecremented = ''
             switch (reservationDeleted.outBoundClass) {
               case 'First':
                 outBoundSeatsToBeIncremented = 'firstSeatsAvailable'
@@ -264,20 +264,20 @@ app.delete('/reservations/:reservationId', async (req, res) => {
             }
             Flight.findByIdAndUpdate(reservationDeleted.outBoundflight._id, { $pull: { reservations: reservationId }, $inc: { [outBoundSeatsToBeIncremented]: reservationDeleted.passengers.length } }, { new: true })
               .then((outBoundFlight) => {
-                let inBoundSeatsToBeDecremented = ''
+                let inBoundSeatsToBeIncremented = ''
                 switch (reservationDeleted.inBoundClass) {
                   case 'First':
-                    inBoundSeatsToBeDecremented = 'firstSeatsAvailable'
+                    inBoundSeatsToBeIncremented = 'firstSeatsAvailable'
                     break;
                   case 'Business':
-                    inBoundSeatsToBeDecremented = 'businessSeatsAvailable'
+                    inBoundSeatsToBeIncremented = 'businessSeatsAvailable'
                     break;
                   case 'Economy':
-                    inBoundSeatsToBeDecremented = 'economySeatsAvailable'
+                    inBoundSeatsToBeIncremented = 'economySeatsAvailable'
                     break;
                   default:
                 }
-                Flight.findByIdAndUpdate(reservationDeleted.inBoundflight._id, { $pull: { reservations: reservationId }, $inc: { [inBoundSeatsToBeDecremented]: reservationDeleted.passengers.length } }, { new: true })
+                Flight.findByIdAndUpdate(reservationDeleted.inBoundflight._id, { $pull: { reservations: reservationId }, $inc: { [inBoundSeatsToBeIncremented]: reservationDeleted.passengers.length } }, { new: true })
                   .then((inBoundFlight) => {
                     let outBoundPrice = 0
                     let inBoundPrice = 0
