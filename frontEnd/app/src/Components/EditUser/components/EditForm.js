@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, TextField, FormControl, } from '@mui/material'
+import { Grid, TextField, FormControl, Card, CardActions } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
@@ -84,31 +84,34 @@ class EditFormClass extends Component {
         const { firstNameError, lastNameError, homeAddressError, countryCodeError, phoneNumberError,
             emailError, passportNumberError } = this.state.errors
         return (
-            <FormControl margin="normal">
-                <form>
-                    <Grid container sx={{ m: 10, width: '50%' }} rowSpacing={1} spacing={5}>
-                        <Grid item xs={6}>
-                            <TextField onBlur={this.handleChange} error={firstNameError !== ''} helperText={firstNameError} fullWidth sx={{ mb: 2 }} value={firstName} onChange={this.handleChange} label="First Name" required type="input" id="firstName" placeholder="Ex: John" name="firstName" ></TextField>
-                            <TextField onBlur={this.handleChange} error={homeAddressError !== ''} helperText={homeAddressError} fullWidth sx={{ mb: 2 }} value={homeAddress} onChange={this.handleChange} label="Home Address" required type="input" id="homeAddress" placeholder="Ex: 15 Lorem Street, Building 12" name="homeAddress" ></TextField>
-                            <TextField onBlur={this.handleChange} error={phoneNumberError !== ''} helperText={phoneNumberError} fullWidth sx={{ mb: 2 }} value={phoneNumber} onChange={this.handleChange} label="Phone Number" required type="input" id="phoneNumber" placeholder="Ex: 01111080444" name="phoneNumber" ></TextField>
+            <FormControl >
+                <Card sx={{ m: 10, ml: 40,mt:10, width: '60%', height: 430 }}>
+                    <form>
+                        <Grid container sx={{ mr: 6, mt: 5, mb: 4, ml: 2, width: 'auto' }} rowSpacing={1} spacing={5}>
+                            <Grid item xs={6}>
+                                <TextField onBlur={this.handleChange} error={firstNameError !== ''} helperText={firstNameError} fullWidth sx={{ mb: 2 }} value={firstName} onChange={this.handleChange} label="First Name" required type="input" id="firstName" placeholder="Ex: John" name="firstName" ></TextField>
+                                <TextField onBlur={this.handleChange} error={homeAddressError !== ''} helperText={homeAddressError} fullWidth sx={{ mb: 2 }} value={homeAddress} onChange={this.handleChange} label="Home Address" required type="input" id="homeAddress" placeholder="Ex: 15 Lorem Street, Building 12" name="homeAddress" ></TextField>
+                                <TextField onBlur={this.handleChange} error={phoneNumberError !== ''} helperText={phoneNumberError} fullWidth sx={{ mb: 2 }} value={phoneNumber} onChange={this.handleChange} label="Phone Number" required type="input" id="phoneNumber" placeholder="Ex: 01111080444" name="phoneNumber" ></TextField>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField onBlur={this.handleChange} error={lastNameError !== ''} helperText={lastNameError} fullWidth sx={{ mb: 2 }} value={lastName} onChange={this.handleChange} label="Last Name" required type="input" id="lastName" placeholder="Ex: Doe" name="lastName" ></TextField>
+                                <TextField onBlur={this.handleChange} error={countryCodeError !== ''} helperText={countryCodeError} fullWidth sx={{ mb: 2 }} value={countryCode} onChange={this.handleChange} label="Country Code" required type="input" id="countryCode" placeholder="Ex: +20" name="countryCode" ></TextField>
+                                <TextField onBlur={this.handleChange} error={emailError !== ''} helperText={emailError} fullWidth sx={{ mb: 2 }} value={email} onChange={this.handleChange} label="Email" required type="input" id="email" placeholder="Ex: o@a.com" name="email" ></TextField>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField onBlur={this.handleChange} error={passportNumberError !== ''} helperText={passportNumberError} fullWidth sx={{ mb: 2 }} value={passportNumber} onChange={this.handleChange} label="Passport Number" required type="input" id="passportNumber" placeholder="Ex: A12345" name="passportNumber" ></TextField>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <CardActions>
+                                    <LoadingButton loading={this.state.loading} disabled={!this.areFieldsValid()} onClick={this.onSubmit} size="large" variant="contained">
+                                        Save Changes
+                                    </LoadingButton>
+                                </CardActions>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={6}>
-                            <TextField onBlur={this.handleChange} error={lastNameError !== ''} helperText={lastNameError} fullWidth sx={{ mb: 2 }} value={lastName} onChange={this.handleChange} label="Last Name" required type="input" id="lastName" placeholder="Ex: Doe" name="lastName" ></TextField>
-                            <TextField onBlur={this.handleChange} error={countryCodeError !== ''} helperText={countryCodeError} fullWidth sx={{ mb: 2 }} value={countryCode} onChange={this.handleChange} label="Country Code" required type="input" id="countryCode" placeholder="Ex: +20" name="countryCode" ></TextField>
-                            <TextField onBlur={this.handleChange} error={emailError !== ''} helperText={emailError} fullWidth sx={{ mb: 2 }} value={email} onChange={this.handleChange} label="Email" required type="input" id="email" placeholder="Ex: o@a.com" name="email" ></TextField>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField onBlur={this.handleChange} error={passportNumberError !== ''} helperText={passportNumberError} fullWidth sx={{ mb: 2 }} value={passportNumber} onChange={this.handleChange} label="Passport Number" required type="input" id="passportNumber" placeholder="Ex: A12345" name="passportNumber" ></TextField>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <LoadingButton loading={this.state.loading} disabled={!this.areFieldsValid()} onClick={this.onSubmit} size="large" variant="contained">
-                                Save Changes
-                            </LoadingButton>
-                        </Grid>
-                    </Grid>
-                </form >
+                    </form >
+                </Card>
             </FormControl>
-
         );
     }
 }
