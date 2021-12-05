@@ -41,14 +41,14 @@ class ReservationCardFinal extends Component {
     render() {
         var inboundClassPrice = 0;
         var outboundClassPrice = 0;
-        for (let i = 0; i < this.props.reservation.passengers.length; i++) {
-            if (this.props.reservation.inBoundClass == "Economy") inboundClassPrice += this.props.inBound.economyClassPrice
-            else if (this.props.reservation.inBoundClass == "Business") inboundClassPrice += this.props.inBound.businessClassPrice
-            else if (this.props.reservation.inBoundClass == "First") inboundClassPrice += this.props.inBound.firstClassPrice
-
-            if (this.props.reservation.outBoundClass == "Economy") outboundClassPrice += this.props.outBound.economyClassPrice
-            else if (this.props.reservation.outBoundClass == "Business") outboundClassPrice += this.props.outBound.businessClassPrice
-            else if (this.props.reservation.outBoundClass == "First") outboundClassPrice += this.props.outBound.firstClassPrice
+        for(let i = 0; i < this.props.reservation.passengers.length; i++){
+        if (this.props.reservation.inBoundClass == "Economy") inboundClassPrice += this.props.inBound.economyClassPrice
+        else if (this.props.reservation.inBoundClass == "Business") inboundClassPrice += this.props.inBound.businessClassPrice
+        else if (this.props.reservation.inBoundClass == "First") inboundClassPrice += this.props.inBound.firstClassPrice
+    
+        if (this.props.reservation.outBoundClass == "Economy") outboundClassPrice += this.props.outBound.economyClassPrice
+        else if (this.props.reservation.outBoundClass == "Business") outboundClassPrice += this.props.outBound.businessClassPrice
+        else if (this.props.reservation.outBoundClass == "First") outboundClassPrice += this.props.outBound.firstClassPrice
         }
         var cardStyle = {
             borderRadius: '1vw'
@@ -82,7 +82,7 @@ class ReservationCardFinal extends Component {
                         </div>
                         <AccordionDetails>
                             <Card style={cardStyle} elevation={7} >
-                                <CardHeader className="summary" title={"Confirmation Number: " + this.props.confirmationNumber} sx={{ backgroundColor: '#008080', color: 'white' }} />
+                                <CardHeader className="summary" title={"Confirmation Number: " + this.props.reservation.confirmationNumber} sx={{ backgroundColor: '#008080', color: 'white' }} />
                                 <CardContent id="cardContent">
                                     <Grid container rowSpacing={3} alignItems="center">
                                         <Grid item xs={2}>
@@ -208,7 +208,7 @@ class ReservationCardFinal extends Component {
                                                     Last Name: {item.lastName + " "}<br />
                                                     Outbound Seat: {item.outBoundSeat + " "}
                                                     Inbound Seat: {item.inBoundSeat + " "}<br />
-                                                    Passport Number: {item.passportNo + " "}
+                                                    Passport Number: {item.passportNumber + " "}
                                                     <br /><br />
                                                 </Typography>
                                             </div>))}

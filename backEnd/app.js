@@ -149,6 +149,7 @@ app.get('/userflights', async (req,res) => {
            await reservations[i].populate('outBoundflight');
            await reservations[i].populate('user');
          }
+         console.log(reservations);
         res.json(reservations);
       });
 
@@ -173,23 +174,23 @@ app.delete('/flight/:flightId/delete', async (req, res) => {
 
 app.post('/reservationinsertion', async (req,res) => {
     var mongooseID = new mongoose.Types.ObjectId();
-    var temp = new Array(req.body.passengers.length);
-    for (let i = 0; i< req.body.passengers.firstName; i++){
     Reservation.create({
       _id: mongooseID,
       user: "61a762c24c337dff67c229fe",
       outBoundflight: req.body.previousStage.depchosenflight._id,
       inBoundflight: req.body.previousStage.returnchosenflight._id,
-      outBoundClass: req.body.previousStage.outBoundCabin,
-      inBoundClass: req.body.previousStage.inBoundCabin,
+      outBoundClass: req.body.outBoundClass,
+      inBoundClass: req.body.inBoundClass,
       passengers: req.body.passengers,
       confirmationNumber: req.body.confirmationNumber,
       totalPrice: req.body.totalPrice
     })
-    var x = await User.findByIdAndUpdate(new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"), {$push: {reservations: mongooseID}},{new:true});
-    console.log(x);
-
-});
+    await User.findByIdAndUpdate(new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"), {$push: {reservations: mongooseID}},{new:true});
+    var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), {$push: {reservations: mongooseID}},{new:true});
+    var z = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), {$push: {reservations: mongooseID}},{new:true});
+    console.log(y);
+    console.log(z);
+  });
 app.put('/flights/:flightId', async (req, res) => {
   const updateData = req.body
   delete updateData._id

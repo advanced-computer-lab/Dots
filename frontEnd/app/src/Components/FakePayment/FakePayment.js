@@ -34,7 +34,7 @@ function FakePayment(props) {
   else return (<div>
   <img id="image" src="/download.jpg" />
   <ReservationCard outBound = {result.previousStage.depchosenflight} inBound = {result.previousStage.returnchosenflight}
-      reservation = {result.previousStage} confirmationNumber = {result.confirmationNumber}/>
+      reservation = {result.previousStage} confirmationNumber = {result.confirmationNumber} top = {result}/>
       </div>);
 }
 
