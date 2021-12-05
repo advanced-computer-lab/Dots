@@ -36,8 +36,14 @@ function SimpleDialog(props) {
           <FormControl>
           <div className="formElements">
             <TextField label="Flight Number" required type="input" className="formElements" id="flightNo" placeholder="Flight Number" name="flightNo" ></TextField>
-            <TextField label="From" required type="input" className="formElements" id="from" placeholder="From" name="from" ></TextField>
-            <TextField label="To" required type="input" className="formElements" id="to" placeholder="To" name="to" ></TextField>
+            <TextField label="Departure Country" required type="input" className="formElements" id="from" placeholder="Country" name="departureCountry" ></TextField>
+            <TextField label="Departure City" required type="input" className="formElements" id="from" placeholder="City" name="departureCity" ></TextField>
+            <TextField label="Departure Terminal" required type="input" className="formElements" id="terminal" placeholder="Terminal" name="departureTerminal" ></TextField>
+            <TextField label="Departure Airport" required type="input" className="formElements" id="from" placeholder="Airport" name="departureAirport" ></TextField>
+            <TextField label="Arrival Country" required type="input" className="formElements" id="terminal" placeholder="Country" name="arrivalCountry" ></TextField>
+            <TextField label="Arrival City" required type="input" className="formElements" id="terminal" placeholder="City" name="arrivalCity" ></TextField>
+            <TextField label="Arrival Terminal" required type="input" className="formElements" id="terminal" placeholder="Terminal" name="arrivalTerminal" ></TextField>
+            <TextField label="Arrival Airport" required type="input" className="formElements" id="terminal" placeholder="Airport" name="arrivalAirport" ></TextField>
             <LocalizationProvider dateAdapter={DateAdapter}>
               <DateTimePicker id= "dt"
                 label="Arrival Date and Time"
@@ -53,9 +59,7 @@ function SimpleDialog(props) {
                 onChange={handleChange2}
                 renderInput={(params) => <TextField {...params} />}
               />
-            </LocalizationProvider>
-           <TextField label="Arrival Terminal" required type="input" className="formElements" id="terminal" placeholder="Cairo" name="arrival" ></TextField>
-            <TextField label="Departure Terminal" required type="input" className="formElements" id="terminal" placeholder="Cairo" name="departure" ></TextField>
+            </LocalizationProvider> 
             <div className = "invisible">
             <Input name="datearrive" value={value1 ? new Date(value1) : null} ></Input>
             <Input name="datedepart" value={value2 ? new Date(value2) : null} ></Input>
@@ -66,7 +70,9 @@ function SimpleDialog(props) {
             <TextField label="Business Available Seats" required type="input" className="formElements" id="seats" placeholder="Seats" name="businessseats" ></TextField>
             {/*<FormControlLabel type = "input" name = "first" control={<Checkbox />} label="First Class" />*/}
             <TextField label="First Class Available Seats" required type="input" className="formElements" id="seats" placeholder="Seats" name="firstseats" ></TextField>
-            <TextField label="Number of Bags Allowed" required type="input" className="formElements" id="seats" placeholder="e.g, 2 bags" name="bags" ></TextField>
+            <TextField label="First Class Price" required type="input" className="formElements" id="seats" placeholder="Price" name="firstprice" ></TextField>
+            <TextField label="Business Class Price" required type="input" className="formElements" id="seats" placeholder="Price" name="businessprice" ></TextField>
+            <TextField label="Economy Class Price" required type="input" className="formElements" id="seats" placeholder="Price" name="economyprice" ></TextField>
             <Button variant = "contained" type="submit" id = "submitButton">Create Flight</Button></div>
           </FormControl>
         </form>

@@ -17,7 +17,7 @@ const Reservation = require('./models/reservations');
 const User = require('./models/users')
 
 const MongoURI = process.env.MONGO_URI;
-
+let alert = require('alert'); 
 const short = require('short-uuid');
 const translator = short();
 
@@ -92,15 +92,25 @@ async function rand() {
   const rand = translator.generate().substring(0, 5);
   return rand;
 }
-/*app.post('/flights', async (req, res) => {
+app.post('/flights', async (req, res) => {
   console.log(req.body);
   try {
     Flight.create({
       flightNumber: req.body.flightNo,
-      from: req.body.from,
+      departureLocation: {
+        country: req.body.departureCountry,
+        city: req.body.departureCity,
+        airport: req.body.departureAirport,
+        terminal: req.body.departureTerminal
+      },
+      arrivalLocation: {
+        country:  req.body.arrivalCountry,
+        city: req.body.arrivalCity,
+        airport: req.body.arrivalAirport,
+        terminal: req.body.arrivalTerminal
+      },
       departureTerminal: req.body.departure,
       arrivalTerminal: req.body.arrival,
-      to: req.body.to,
       departureTime: req.body.datedepart,
       arrivalTime: req.body.datearrive,
       economySeatsAvailable: (req.body.economyseats === null) ? 0 : req.body.economyseats,
@@ -109,12 +119,16 @@ async function rand() {
       totalEconomySeats: (req.body.economyseats === null) ? 0 : req.body.economyseats,
       totalBusinessSeats: (req.body.businessseats === null) ? 0 : req.body.businessseats,
       totalFirstSeats: (req.body.firstseats === null) ? 0 : req.body.firstseats,
+      firstClassPrice: req.body.firstprice,
+      businessClassPrice: req.body.businessprice,
+      economyClassPrice: req.body.economyprice,
     });
+    alert('Flight Successfully Created!');
   } catch (error) {
     console.log(error);
   }
-  res.redirect('http://localhost:3000/');
-});*/
+  res.redirect('http://localhost:3000/admin');
+});
 
 
 /*const flightOut = new Flight({
