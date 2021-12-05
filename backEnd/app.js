@@ -262,7 +262,7 @@ app.delete('/reservations/:reservationId', async (req, res) => {
                 break;
               default:
             }
-            Flight.findByIdAndUpdate(reservationDeleted.outBoundflight._id, { $pull: { reservations: reservationId }, $inc: { [outBoundSeatsToBeIncremented]: 1 } }, { new: true })
+            Flight.findByIdAndUpdate(reservationDeleted.outBoundflight._id, { $pull: { reservations: reservationId }, $inc: { [outBoundSeatsToBeIncremented]: reservationDeleted.passengers.length } }, { new: true })
               .then((outBoundFlight) => {
                 let inBoundSeatsToBeDecremented = ''
                 switch (reservationDeleted.inBoundClass) {
@@ -277,7 +277,7 @@ app.delete('/reservations/:reservationId', async (req, res) => {
                     break;
                   default:
                 }
-                Flight.findByIdAndUpdate(reservationDeleted.inBoundflight._id, { $pull: { reservations: reservationId }, $inc: { [inBoundSeatsToBeDecremented]: 1 } }, { new: true })
+                Flight.findByIdAndUpdate(reservationDeleted.inBoundflight._id, { $pull: { reservations: reservationId }, $inc: { [inBoundSeatsToBeDecremented]: reservationDeleted.passengers.length } }, { new: true })
                   .then((inBoundFlight) => {
                     let outBoundPrice = 0
                     let inBoundPrice = 0
