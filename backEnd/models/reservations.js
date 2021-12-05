@@ -23,16 +23,20 @@ const reservationSchema = new Schema({
         type: String, enum: ["Economy", "First", "Business"]
     },
     passengers: [{
-        firstName: { type: String },
-        lastName: { type: String },
-        passportNumber: { type: String },
-        outBoundSeat: { type: String },
-        inBoundSeat: { type: String }
+        firstName:{type: String} ,
+        lastName: {type: String},
+        passportNumber:{type: String},
+        outBoundSeat:{type: String},
+        inBoundSeat:{type: String}
     }],
+    confirmationNumber: {
+        type: Number
+    },
     totalPrice: {
-        type: Number,
-        default: 0
+        type:Number
     }
+
+
 });
 
 

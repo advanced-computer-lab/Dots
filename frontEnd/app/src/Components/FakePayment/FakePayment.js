@@ -2,14 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import CircularProgress from '@mui/material/CircularProgress';
 import ReservationCard from '../Summary/ReservationCard.js'
+import axios from 'axios';
 import './FakePayment.css'
 
 function FakePayment(props) {
   let location = useLocation();
+  const confirmationNumber = Math.floor(Math.random() * 100000000000 + 1)
+  console.log(confirmationNumber);
   const { result } = location.state
   console.log(result);
+  result.confirmationNumber = confirmationNumber;
   const [count, setCount] = useState(false);
   useEffect(() => {
+    axios.post('http://localhost:8000/reservationinsertion', result);
     const timer = setTimeout(() => {
       setCount(true);
     }, 5000);
@@ -17,7 +22,6 @@ function FakePayment(props) {
   }, [])
   if (!count) {
     return (
-
       <div id="parent">
         <img id="image" src="/download.jpg" />
         <div id="circle">
@@ -26,7 +30,11 @@ function FakePayment(props) {
       </div>
     );
   }
-  else return (<ReservationCard />);
+  else return (<div>
+  <img id="image" src="/download.jpg" />
+  <ReservationCard outBound = {result.previousStage.depchosenflight} inBound = {result.previousStage.returnchosenflight}
+      reservation = {result.previousStage} confirmationNumber = {confirmationNumber}/>
+      </div>);
 }
 
 export default FakePayment;

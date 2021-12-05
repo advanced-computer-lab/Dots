@@ -55,7 +55,7 @@ class UserFlightList extends Component {
                 p[i] = {
                     firstName: '',
                     lastName: '',
-                    passportNo: ''
+                    passportNumber: ''
                 }
             }
             return p;
@@ -152,7 +152,7 @@ class UserFlightList extends Component {
             }
             if (pa[i].lastName === '') {
                 return true;
-            } if (pa[i].passportNo === '') {
+            } if (pa[i].passportNumber === '') {
                 return true;
             }
         }
@@ -161,7 +161,7 @@ class UserFlightList extends Component {
     }
     updatepassengerPassportNo = (val, i) => {
         let p = this.state.passengers;
-        p[i].passportNo = val;
+        p[i].passportNumber = val;
         this.setState({
             passengers: p
         });
