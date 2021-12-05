@@ -696,14 +696,13 @@ function SeatSelectorFunction(props) {
   const { result } = location.state
   return (
 
-    <div style={{
+    <div id = "back" style={{
       backgroundImage: `url(${background})`,
       backgroundPosition: 'center',
       backgroundSize: 'cover',
-      height: "100vh"
+      backgroundRepeat: 'no-repeat'
 
-
-    }}>
+  }}>
       <GuestNavBar />
       <SeatSelector details={result} />
     </div>
