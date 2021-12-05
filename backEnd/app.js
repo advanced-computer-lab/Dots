@@ -140,17 +140,17 @@ flightIn.save((err) => {
 */
 
 
-app.get('/userflights', async (req,res) => {
-         var user = await User.find({});
-         user = await user[0].populate('reservations');
-         var reservations = user.reservations;
-         for(let i = 0; i< reservations.length; i++){
-           await reservations[i].populate('inBoundflight');
-           await reservations[i].populate('outBoundflight');
-           await reservations[i].populate('user');
-         }
-        res.json(reservations);
-      });
+app.get('/userflights', async (req, res) => {
+  var user = await User.find({});
+  user = await user[0].populate('reservations');
+  var reservations = user.reservations;
+  for (let i = 0; i < reservations.length; i++) {
+    await reservations[i].populate('inBoundflight');
+    await reservations[i].populate('outBoundflight');
+    await reservations[i].populate('user');
+  }
+  res.json(reservations);
+});
 
 /*app.get('/summary', async (req,res) =>{
   var inBoundflight = await Reservation.findOne({outBoundClass: "Economy"}).populate('inBoundflight');
@@ -171,10 +171,10 @@ app.delete('/flight/:flightId/delete', async (req, res) => {
 
 });
 
-app.post('/reservationinsertion', async (req,res) => {
-    var mongooseID = new mongoose.Types.ObjectId();
-    var temp = new Array(req.body.passengers.length);
-    for (let i = 0; i< req.body.passengers.firstName; i++){
+app.post('/reservationinsertion', async (req, res) => {
+  var mongooseID = new mongoose.Types.ObjectId();
+  var temp = new Array(req.body.passengers.length);
+  for (let i = 0; i < req.body.passengers.firstName; i++) {
     temp[i] = {
       firstName: req.body.passengers.firstName,
       lastName: req.body.passengers.lastName,
@@ -183,19 +183,19 @@ app.post('/reservationinsertion', async (req,res) => {
       inBoundSeat: req.body.passengers.inBoundSeat,
     }
   }
-    Reservation.create({
-      _id: mongooseID,
-      user: "61a762c24c337dff67c229fe",
-      outBoundflight: req.body.previousStage.depchosenflight._id,
-      inBoundflight: req.body.previousStage.returnchosenflight._id,
-      outBoundClass: req.body.previousStage.outBoundCabin,
-      inBoundClass: req.body.previousStage.inBoundCabin,
-      passengers: temp,
-      confirmationNumber: req.body.confirmationNumber,
-      totalPrice: req.body.totalPrice
-    })
-    var x = await User.findByIdAndUpdate(new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"), {$push: {reservations: mongooseID}},{new:true});
-    console.log(x);
+  Reservation.create({
+    _id: mongooseID,
+    user: "61a762c24c337dff67c229fe",
+    outBoundflight: req.body.previousStage.depchosenflight._id,
+    inBoundflight: req.body.previousStage.returnchosenflight._id,
+    outBoundClass: req.body.previousStage.outBoundCabin,
+    inBoundClass: req.body.previousStage.inBoundCabin,
+    passengers: temp,
+    confirmationNumber: req.body.confirmationNumber,
+    totalPrice: req.body.totalPrice
+  })
+  var x = await User.findByIdAndUpdate(new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"), { $push: { reservations: mongooseID } }, { new: true });
+  console.log(x);
 
 });
 app.put('/flights/:flightId', async (req, res) => {
@@ -240,27 +240,74 @@ app.delete('/reservations/:reservationId', async (req, res) => {
     Reservation.findByIdAndDelete(reservationId)
       .then((reservationDeleted) => {
         if (!reservationDeleted) res.status(404).send({ message: "Couldn't find reservation" })
+        console.log(reservationDeleted)
         User.findByIdAndUpdate(reservationDeleted.user, { $pull: { reservations: reservationId } }, { new: true })
           .then((userFound) => {
-            let mailOptions = {
-              from: `'Takeoff Airways' <${process.env.MAIL_USER}>`,
-              to: userFound.email,
-              subject: "Refund Confirmation",
-              html: `<h2 style="color:#09827C;">Hello ${userFound.firstName}!</h2>
-                <p>this mail is to confirm your refund of $${'reservationDeleted.totalPrice'}</p>`
-            }
-            transporter.sendMail(mailOptions, (err, data) => {
-              if (err) {
-                Reservation.create(reservationDeleted).then(() => {
-                  User.findByIdAndUpdate(reservationDeleted.user, { $push: { reservations: reservationId } })
-                    .then(() => {
-                      res.status(400).send({ message: "Error sending email" })
+            Flight.findByIdAndUpdate(reservationDeleted.outBoundflight._id, { $pull: { reservations: reservationId } }, { new: true })
+              .then((outBoundFlight) => {
+                Flight.findByIdAndUpdate(reservationDeleted.inBoundflight._id, { $pull: { reservations: reservationId } }, { new: true })
+                  .then((inBoundFlight) => {
+                    console.log(outBoundFlight, inBoundFlight)
+                    let outBoundPrice = 0
+                    let inBoundPrice = 0
+                    switch (outBoundFlight.outBoundClass) {
+                      case 'First':
+                        outBoundPrice = outBoundFlight.firstClassPrice
+                        break;
+                      case 'Business':
+                        outBoundPrice = outBoundFlight.businessClassPrice
+                        break;
+                      case 'Economy':
+                        outBoundPrice = outBoundFlight.economyClassPrice
+                        break;
+                      default:
+                    }
+
+                    switch (inBoundFlight.inBoundClass) {
+                      case 'First':
+                        inBoundPrice = inBoundFlight.firstClassPrice
+                        break;
+                      case 'Business':
+                        inBoundPrice = inBoundFlight.businessClassPrice
+                        break;
+                      case 'Economy':
+                        inBoundPrice = inBoundFlight.economyClassPrice
+                        break;
+                      default:
+                    }
+                    outBoundPrice *= reservationDeleted.passengers.length
+                    inBoundPrice *= reservationDeleted.passengers.length
+
+                    let mailOptions = {
+                      from: `'Takeoff Airways' <${process.env.MAIL_USER}>`,
+                      to: userFound.email,
+                      subject: "Refund Confirmation",
+                      html: `<h2 style="color:#09827C;">Hello ${userFound.firstName}!</h2>
+                    <h4>This mail is to confirm your refund</h4>
+                    <p>Outbound flight total price: <b>${outBoundPrice}</b></p>
+                    <p>Inbound flight total price: <b>${inBoundPrice}</b></p>
+                    <h3>Total Price: ${outBoundPrice + inBoundPrice}</h3>
+                    <p>Have a nice day!</p>`
+                    }
+
+                    transporter.sendMail(mailOptions, (err, data) => {
+                      if (err) {
+                        Reservation.create(reservationDeleted).then(() => {
+                          User.findByIdAndUpdate(reservationDeleted.user, { $push: { reservations: reservationId } })
+                            .then(() => {
+                              Flight.findByIdAndUpdate(reservationDeleted.outBoundflight, { $push: { reservations: reservationId } })
+                                .then(() => {
+                                  Flight.findByIdAndUpdate(reservationDeleted.inBoundflight, { $push: { reservations: reservationId } })
+                                  res.status(400).send({ message: "Error sending email" })
+                                })
+                            })
+                        })
+                      }
+                      else
+                        res.send(`Email Sent: ${data}`)
                     })
-                })
-              }
-              else
-                res.send(`Email Sent: ${data}`)
-            })
+                  })
+              })
           })
       })
   } catch (error) {
@@ -381,7 +428,7 @@ app.post("/flights/flightquery", async (req, res) => {
 
     // for every date in outDates, check if there is a flight with the same date in filteredOutFlights
 
-   // console.log(filteredOutFlights[0]);
+    // console.log(filteredOutFlights[0]);
 
 
 
@@ -424,7 +471,7 @@ app.post("/flights/flightquery", async (req, res) => {
 
     res.status(200).send({
       depOriginalFlights: outFlightsWithDate, depAllFlights: outFlightsWithDate, depsearchdate: new Date(outDepDate),
-      from :body.from, to: body.to,
+      from: body.from, to: body.to,
       depfaded: true,
       depchosenFlight: null,
       returnOriginalFlights: inFlightsWithDate,
@@ -433,12 +480,12 @@ app.post("/flights/flightquery", async (req, res) => {
       returnchosenflight: null,
       returnfaded: true,
       numberOfpassengers: parseInt(body.kids) + parseInt(body.adults)
-     }  );
+    });
   }
   catch (error) {
-  console.log(error);
-  res.status(400).send(null);
-}
+    console.log(error);
+    res.status(400).send(null);
+  }
 
 
 })
