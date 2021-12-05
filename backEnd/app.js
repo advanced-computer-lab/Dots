@@ -249,7 +249,7 @@ app.delete('/reservations/:reservationId', async (req, res) => {
         if (!reservationDeleted) res.status(404).send({ message: "Couldn't find reservation" })
         User.findByIdAndUpdate(reservationDeleted.user, { $pull: { reservations: reservationId } }, { new: true })
           .then((userFound) => {
-            let outBoundSeatsToInDecremented = ''
+            let outBoundSeatsToBeIncremented = ''
             switch (reservationDeleted.outBoundClass) {
               case 'First':
                 outBoundSeatsToBeIncremented = 'firstSeatsAvailable'
