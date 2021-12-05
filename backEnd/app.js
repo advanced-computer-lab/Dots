@@ -140,31 +140,6 @@ flightIn.save((err) => {
 */
 
 
-<<<<<<< HEAD
-app.get('/userflights', async (req, res) => {
-  var user = await User.find({});
-  user = await user[0].populate('reservations');
-  var reservations = user.reservations;
-  for (let i = 0; i < reservations.length; i++) {
-    await reservations[i].populate('inBoundflight');
-    await reservations[i].populate('outBoundflight');
-    await reservations[i].populate('user');
-  }
-  res.json(reservations);
-});
-||||||| 0fb6586
-app.get('/userflights', async (req,res) => {
-         var user = await User.find({});
-         user = await user[0].populate('reservations');
-         var reservations = user.reservations;
-         for(let i = 0; i< reservations.length; i++){
-           await reservations[i].populate('inBoundflight');
-           await reservations[i].populate('outBoundflight');
-           await reservations[i].populate('user');
-         }
-        res.json(reservations);
-      });
-=======
 app.get('/userflights', async (req,res) => {
          var user = await User.find({});
          user = await user[0].populate('reservations');
@@ -177,7 +152,6 @@ app.get('/userflights', async (req,res) => {
          console.log(reservations);
         res.json(reservations);
       });
->>>>>>> 3271df484021da22dfffc32c07fc300060a4c214
 
 /*app.get('/summary', async (req,res) =>{
   var inBoundflight = await Reservation.findOne({outBoundClass: "Economy"}).populate('inBoundflight');
@@ -508,18 +482,10 @@ app.post("/flights/flightquery", async (req, res) => {
       returnsearchdate: new Date(inDepDate),
       returnchosenflight: null,
       returnfaded: true,
-<<<<<<< HEAD
-      numberOfpassengers: parseInt(body.kids) + parseInt(body.adults)
-    });
-||||||| 0fb6586
-      numberOfpassengers: parseInt(body.kids) + parseInt(body.adults)
-     }  );
-=======
       numberOfpassengers: parseInt(body.kids) + parseInt(body.adults),
       noOutFlights: noOutFlights,
       noInFlights: noInFlights
      }  );
->>>>>>> 3271df484021da22dfffc32c07fc300060a4c214
   }
   catch (error) {
     console.log(error);
