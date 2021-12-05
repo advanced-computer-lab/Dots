@@ -300,16 +300,16 @@ app.delete('/reservations/:reservationId', async (req, res) => {
 
                     transporter.sendMail(mailOptions, (err, data) => {
                       if (err) {
-                        Reservation.create(reservationDeleted).then(() => {
-                          User.findByIdAndUpdate(reservationDeleted.user, { $push: { reservations: reservationId } })
-                            .then(() => {
-                              Flight.findByIdAndUpdate(reservationDeleted.outBoundflight, { $push: { reservations: reservationId } })
-                                .then(() => {
-                                  Flight.findByIdAndUpdate(reservationDeleted.inBoundflight, { $push: { reservations: reservationId } })
-                                  res.status(400).send({ message: "Error sending email" })
-                                })
-                            })
-                        })
+                        // Reservation.create(reservationDeleted).then(() => {
+                        //   User.findByIdAndUpdate(reservationDeleted.user, { $push: { reservations: reservationId } })
+                        //     .then(() => {
+                        //       Flight.findByIdAndUpdate(reservationDeleted.outBoundflight, { $push: { reservations: reservationId } })
+                        //         .then(() => {
+                        //           Flight.findByIdAndUpdate(reservationDeleted.inBoundflight, { $push: { reservations: reservationId } })
+                                  res.status(400).send(err)
+                        //         })
+                        //     })
+                        // })
                       }
                       else
                         res.send(`Email Sent: ${data}`)
