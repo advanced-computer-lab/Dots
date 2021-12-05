@@ -53,39 +53,51 @@ const GuestNavBar = () => {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
 
-         <Stack direction = "row" spacing = {160} alignItems ="center"> 
-          <a href="/">
-            <img src={logo} alt="Logo" width="120" />
-          </a>
+          <Stack direction="row" spacing={160} alignItems="center">
+            <a href="/">
+              <img src={logo} alt="Logo" width="120" />
+            </a>
 
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleMenu}
-            color="inherit"
-          >
-            <AccountCircle fontSize="medium" />
-          </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
-            <MenuItem onClick={handleClose}>My account</MenuItem>
-          </Menu>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              <AccountCircle fontSize="medium" />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleClose}>
+                <a href="/:61a762c24c337dff67c229fe/edit-info">
+                  <Typography variant="overline" display="block" gutterBottom>
+                    Profile
+                  </Typography>
+                </a>
+              </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <a href="/userflights">
+                  <Typography variant="overline" display="block" gutterBottom>
+                    My Flights
+                  </Typography>
+                </a>
+              </MenuItem>
+            </Menu>
           </Stack>
 
 
