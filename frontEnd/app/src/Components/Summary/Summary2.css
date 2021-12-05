@@ -16,6 +16,11 @@
   background-color: rgba(255, 255, 255, 0.5);
   margin: 0 auto;
 }
+
+#list2 {
+  background-color: rgba(255, 255, 255, 0.5);
+  margin: 0 auto;
+}
 #icon {
   zoom: 1.5;
 }
@@ -57,4 +62,13 @@
 
 #background2 {
   position: fixed;
+}
+
+#card5 {
+  padding-top: 20px;
+  zoom: 0.7;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  width: 100%;
 }

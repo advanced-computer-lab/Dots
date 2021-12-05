@@ -8,6 +8,8 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
+import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from '@mui/material/Dialog';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import LightSpeed from 'react-reveal/LightSpeed';
 import Stack from '@mui/material/Stack';
@@ -82,7 +84,36 @@ function Content(props) {
   );
 }
 
+
+function SimpleDialog(props) {
+  const { onClose, selectedValue, open } = props;
+
+  const handleClose = () => {
+    onClose(selectedValue);
+  };
+
+  const handleListItemClick = (value) => {
+    onClose(value);
+  };
+
+  return (
+    <Dialog onClose={handleClose} open={open}>
+      <DialogTitle className = "summary" sx ={{fontWeight: 'bold'}}>Please login to proceed further.</DialogTitle>
+
+  
+    </Dialog>
+  );
+}
+
 function Summary(props) {
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (value) => {
+    setOpen(false);
+  };
   let location = useLocation();
   const { result } = location.state
   console.log(result);
@@ -93,10 +124,17 @@ function Summary(props) {
       <div id="Card1"><LightSpeed left><Content departure={result.depchosenflight}
         reservation={result} arrival={result.returnchosenflight} /></LightSpeed></div>
       <Link to="/flights" type="submit" state={{ result: result }} >
-        <Button sx={{ alignSelf: "flex-end", mb: '5px' }} variant="contained">
-          Go back
+      <Button id ="goBackButtonSummary" sx={{ mb: '5px' }} variant="contained" color = "error">
+          Back to picking flights
         </Button>
       </Link>
+      <Button id = "continueAsGuest" variant="contained" onClick={handleClickOpen} color = "error">
+        Continue as guest
+      </Button>
+      <SimpleDialog
+        open={open}
+        onClose={handleClose}
+      />
     </div>);
 }
 export default Summary;
