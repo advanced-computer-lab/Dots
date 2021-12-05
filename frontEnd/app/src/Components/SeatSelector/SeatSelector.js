@@ -3,35 +3,23 @@ import SeatPicker from "../SeatPicker/index";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import PropTypes from "prop-types";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import { create } from "jss";
-import rtl from "jss-rtl";
 import Button from "@mui/material/Button";
-import Seat from "../SeatPicker/SeatPicker/Seat";
 import {
   ThemeProvider,
   createTheme,
   withStyles,
 } from "@material-ui/core/styles";
-import { typography } from "@mui/system";
-import { Container } from "@mui/material";
 import "./SeatSelectorCSS.scss";
 import classNames from "classnames";
 import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
-import Zoom from "@mui/material/Zoom";
 import Slide from "@mui/material/Slide";
-import { SwitchTransition, CSSTransition, Transition } from "react-transition-group";
-import { ContactSupportOutlined } from "@material-ui/icons";
-import styled from "styled-components";
 import TransitionControl from '../SeatMapTransitionControl/SeatMapTransitionControl.js'
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { Link, useNavigate, Navigate, useLocation } from 'react-router-dom';
-import background from '../UserLanding/travel2.jpg';
+import { Link, useLocation } from 'react-router-dom';
 import GuestNavBar from '../GuestNavBar/GuestNavBar';
 import axios from 'axios';
+import background from '../UserLanding/travel3.jpg';
 
 class SeatSelector extends Component {
   constructor(props) {
@@ -696,16 +684,17 @@ function SeatSelectorFunction(props) {
   const { result } = location.state
   return (
 
-    <div id = "back" style={{
+    <div style={{
       backgroundImage: `url(${background})`,
       backgroundPosition: 'center',
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat'
 
   }}>
+      {/* <div> */}
       <GuestNavBar />
       <SeatSelector details={result} />
-    </div>
+     </div>
   );
 }
 
