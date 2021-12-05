@@ -28,15 +28,15 @@ body {
 
 @import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@1,600;1,900&display=swap");
 
-#title {
-  color: #ffffff;
-  font-family: "Raleway", sans-serif;
-  font-weight: 400;
+#titleLanding {
+  color: #ffffff !important;
+  font-family: "Raleway", sans-serif !important;
+  font-weight: 400 !important;
 }
 
 #alignTitle {
   position: relative;
-  right: 350px;
+  right: 250px;
   top: 80px;
 }
 

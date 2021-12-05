@@ -140,6 +140,7 @@ flightIn.save((err) => {
 */
 
 
+<<<<<<< HEAD
 app.get('/userflights', async (req, res) => {
   var user = await User.find({});
   user = await user[0].populate('reservations');
@@ -151,6 +152,32 @@ app.get('/userflights', async (req, res) => {
   }
   res.json(reservations);
 });
+||||||| 0fb6586
+app.get('/userflights', async (req,res) => {
+         var user = await User.find({});
+         user = await user[0].populate('reservations');
+         var reservations = user.reservations;
+         for(let i = 0; i< reservations.length; i++){
+           await reservations[i].populate('inBoundflight');
+           await reservations[i].populate('outBoundflight');
+           await reservations[i].populate('user');
+         }
+        res.json(reservations);
+      });
+=======
+app.get('/userflights', async (req,res) => {
+         var user = await User.find({});
+         user = await user[0].populate('reservations');
+         var reservations = user.reservations;
+         for(let i = 0; i< reservations.length; i++){
+           await reservations[i].populate('inBoundflight');
+           await reservations[i].populate('outBoundflight');
+           await reservations[i].populate('user');
+         }
+         console.log(reservations);
+        res.json(reservations);
+      });
+>>>>>>> 3271df484021da22dfffc32c07fc300060a4c214
 
 /*app.get('/summary', async (req,res) =>{
   var inBoundflight = await Reservation.findOne({outBoundClass: "Economy"}).populate('inBoundflight');
@@ -171,33 +198,25 @@ app.delete('/flight/:flightId/delete', async (req, res) => {
 
 });
 
-app.post('/reservationinsertion', async (req, res) => {
-  var mongooseID = new mongoose.Types.ObjectId();
-  var temp = new Array(req.body.passengers.length);
-  for (let i = 0; i < req.body.passengers.firstName; i++) {
-    temp[i] = {
-      firstName: req.body.passengers.firstName,
-      lastName: req.body.passengers.lastName,
-      passportNumber: req.body.passengers.passportNo,
-      outBoundSeat: req.body.passengers.outBoundSeat,
-      inBoundSeat: req.body.passengers.inBoundSeat,
-    }
-  }
-  Reservation.create({
-    _id: mongooseID,
-    user: "61a762c24c337dff67c229fe",
-    outBoundflight: req.body.previousStage.depchosenflight._id,
-    inBoundflight: req.body.previousStage.returnchosenflight._id,
-    outBoundClass: req.body.previousStage.outBoundCabin,
-    inBoundClass: req.body.previousStage.inBoundCabin,
-    passengers: temp,
-    confirmationNumber: req.body.confirmationNumber,
-    totalPrice: req.body.totalPrice
-  })
-  var x = await User.findByIdAndUpdate(new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"), { $push: { reservations: mongooseID } }, { new: true });
-  console.log(x);
-
-});
+app.post('/reservationinsertion', async (req,res) => {
+    var mongooseID = new mongoose.Types.ObjectId();
+    Reservation.create({
+      _id: mongooseID,
+      user: "61a762c24c337dff67c229fe",
+      outBoundflight: req.body.previousStage.depchosenflight._id,
+      inBoundflight: req.body.previousStage.returnchosenflight._id,
+      outBoundClass: req.body.outBoundClass,
+      inBoundClass: req.body.inBoundClass,
+      passengers: req.body.passengers,
+      confirmationNumber: req.body.confirmationNumber,
+      totalPrice: req.body.totalPrice
+    })
+    await User.findByIdAndUpdate(new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"), {$push: {reservations: mongooseID}},{new:true});
+    var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), {$push: {reservations: mongooseID}},{new:true});
+    var z = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), {$push: {reservations: mongooseID}},{new:true});
+    console.log(y);
+    console.log(z);
+  });
 app.put('/flights/:flightId', async (req, res) => {
   const updateData = req.body
   delete updateData._id
@@ -358,11 +377,14 @@ app.post("/flights/flightquery", async (req, res) => {
     let rawOutData = { "departureLocation.airport": body.from, "arrivalLocation.airport": body.to }
     let rawInData = { "departureLocation.airport": body.to, "arrivalLocation.airport": body.from }
 
-    let outFlights = await Flight.find(rawOutData).exec();
-    let inFlights = await Flight.find(rawInData).exec();
+    let outFlights = await Flight.find(rawOutData).populate('reservations');
+    let inFlights = await Flight.find(rawInData).populate('reservations');
 
     let queryOutDate = new Date(outDepDate);
     let queryInDate = new Date(inDepDate);
+
+    let noOutFlights = false;
+    let noInFlights = false;
 
     queryOutDate.setTime(queryOutDate.getTime() + (2 * 60 * 60 * 1000));
     queryInDate.setTime(queryInDate.getTime() + (2 * 60 * 60 * 1000));
@@ -430,6 +452,13 @@ app.post("/flights/flightquery", async (req, res) => {
 
     // console.log(filteredOutFlights[0]);
 
+   if(filteredOutFlights.length == 0){
+      noOutFlights = true;
+    }
+    if (filteredInFlights.length == 0) {
+      noInFlights = true;
+    }
+
 
 
     let outFlightsWithDate = []
@@ -479,8 +508,18 @@ app.post("/flights/flightquery", async (req, res) => {
       returnsearchdate: new Date(inDepDate),
       returnchosenflight: null,
       returnfaded: true,
+<<<<<<< HEAD
       numberOfpassengers: parseInt(body.kids) + parseInt(body.adults)
     });
+||||||| 0fb6586
+      numberOfpassengers: parseInt(body.kids) + parseInt(body.adults)
+     }  );
+=======
+      numberOfpassengers: parseInt(body.kids) + parseInt(body.adults),
+      noOutFlights: noOutFlights,
+      noInFlights: noInFlights
+     }  );
+>>>>>>> 3271df484021da22dfffc32c07fc300060a4c214
   }
   catch (error) {
     console.log(error);

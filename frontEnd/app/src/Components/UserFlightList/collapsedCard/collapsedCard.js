@@ -40,7 +40,7 @@ class FlightClassCard extends Component {
                 <Grid container spacing={2}>
 
                     <Grid item xs={4}>
-                        <Card elevation={2} className='classCard'>
+                        <Card elevation={2}  className='classCard'>
                             <CardContent id='economyTitle'>
                                 <Typography id='economy'>
                                     Economy Class
@@ -67,7 +67,7 @@ class FlightClassCard extends Component {
 
                     <Grid item xs={4}>
                         <Card elevation={2} className='classCard'>
-                            <CardContent id='economyTitle'>
+                            <CardContent id='firstTitle'>
                                 <Typography id='economy'>
                                     First Class
                                 </Typography>
@@ -118,7 +118,7 @@ class FlightClassCard extends Component {
 
                     <Grid item xs={4}>
                         <Card elevation={2} className='classCard'>
-                            <CardContent id='economyTitle'>
+                            <CardContent id='businessTitle'>
                                 <Typography id='economy'>
                                     Business Class
                                 </Typography>

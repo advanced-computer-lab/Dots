@@ -95,7 +95,7 @@ class Flight extends Component {
         const isRtl = true;
         return (
 
-            <Card sx={{ maxWidth: 1200 }} id='flightCard'>
+            <Card sx={{ maxWidth: 1200 }} id='flightCard' elevation = {8}>
                 <CardActionArea
                     onClick={this.click}
                 >

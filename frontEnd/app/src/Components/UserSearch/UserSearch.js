@@ -124,7 +124,8 @@ class UserSearch extends Component {
     areFieldsValid = () => {
         const {
             from, to } = this.state
-        return from.length > 0 && to.length > 0
+            console.log(from === to)
+        return ( from.length > 0 && to.length > 0 ) && (from !== to)
 
     }
 
@@ -188,10 +189,6 @@ class UserSearch extends Component {
                         console.log('Link', link)
 
                     })
-
-
-
-
                 }
                 else {
                     this.setState({ openAlert: true, errorMessage: "Please select at least one passenger" })
@@ -203,7 +200,7 @@ class UserSearch extends Component {
 
         }
         else {
-            this.setState({ openAlert: true, errorMessage: "Please fill Departure and Return airports" })
+            this.setState({ openAlert: true, errorMessage: "Please fill 2 different Departure and Return airports" })
 
         }
     }
@@ -219,13 +216,13 @@ class UserSearch extends Component {
                         <Autocomplete
                             options={airports}
                             sx={{ width: 200 }}
-                            renderInput={(params) => <TextField {...params} label="Departure Airport" />}
+                            renderInput={(params) => <TextField {...params} label="From" />}
                             onChange={this.onFromChange}
                         />
 
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
-                                label="Departure Date"
+                                label="Outward Date"
                                 value={this.state.depDate}
                                 sx={{ width: 100 }}
                                 onChange={this.onDepChange}
@@ -260,13 +257,13 @@ class UserSearch extends Component {
                         <Autocomplete
                             options={airports}
                             sx={{ width: 200 }}
-                            renderInput={(params) => <TextField {...params} label="Arrival Airport" />}
+                            renderInput={(params) => <TextField {...params} label="To" />}
                             onChange={this.onToChange}
                         />
 
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
-                                label="Arrival Date"
+                                label="Inward Date"
                                 value={this.state.arrDate}
                                 sx={{ width: 100 }}
                                 onChange={this.onArrChange}
