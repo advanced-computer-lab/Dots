@@ -180,9 +180,11 @@ app.post('/reservationinsertion', async (req,res) => {
       outBoundClass: req.body.previousStage.outBoundCabin,
       inBoundClass: req.body.previousStage.inBoundCabin,
       passengers: temp,
-      confirmationNumber: req.body.confirmationNumber
+      confirmationNumber: req.body.confirmationNumber,
+      totalPrice: req.body.totalPrice
     })
-    console.log(req.body);
+    var x = await User.findByIdAndUpdate(new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"), {$push: {reservations: mongooseID}},{new:true});
+    console.log(x);
 
 });
 app.put('/flights/:flightId', async (req, res) => {
