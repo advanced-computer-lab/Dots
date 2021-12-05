@@ -13,7 +13,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import './UserLanding.css';
 
-import background from './travel2.jpg';
+import background from './travel3.jpg';
 import { borderRadius } from '@mui/system';
 class UserLanding extends Component {
 
@@ -22,12 +22,11 @@ class UserLanding extends Component {
         return (
 
 
-            <div style={{
+            <div id = "back" style={{
                 backgroundImage: `url(${background})`,
                 backgroundPosition: 'center',
                 backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                height: "765px"
+                backgroundRepeat: 'no-repeat'
 
 
 

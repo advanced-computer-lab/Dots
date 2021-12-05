@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
 #image {
-  position: absolute;
-  height: 100vh;
+  position: fixed;
 }
 #paymentText {
   font-family: "Montserrat", sans-serif;

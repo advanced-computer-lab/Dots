@@ -28,7 +28,14 @@ const reservationSchema = new Schema({
         passportNumber:{type: String},
         outBoundSeat:{type: String},
         inBoundSeat:{type: String}
-    }]
+    }],
+    confirmationNumber: {
+        type: Number
+    },
+    totalPrice: {
+        type:Number
+    }
+
 
 });
 

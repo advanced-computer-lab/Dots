@@ -40,8 +40,8 @@ function Content(props) {
                   {props.reservation.depflightClass} Class
                 </Typography>
                 <Typography className="summary" id="destination" gutterBottom>
-                {props.departure.departureLocation.country.charAt(0).toUpperCase() + props.departure.departureLocation.country.substring(1).toLowerCase()} to 
-                {" " + props.departure.arrivalLocation.country.charAt(0).toUpperCase() + props.departure.arrivalLocation.country.substring(1).toLowerCase()}
+                {props.departure.departureLocation.city.charAt(0).toUpperCase() + props.departure.departureLocation.city.substring(1).toLowerCase()} to 
+                {" " + props.departure.arrivalLocation.city.charAt(0).toUpperCase() + props.departure.arrivalLocation.city.substring(1).toLowerCase()}
                 </Typography>
                 <Typography className="summary" id="dateTime" component="div">
                   {new Date(props.departure.departureTime).toLocaleString()}
@@ -58,8 +58,8 @@ function Content(props) {
                 {props.reservation.returnflightClass} Class
                 </Typography>
                 <Typography className="summary" id="destination" gutterBottom>
-                {props.departure.arrivalLocation.country.charAt(0).toUpperCase() + props.departure.arrivalLocation.country.substring(1).toLowerCase()} to 
-                {" " + props.departure.departureLocation.country.charAt(0).toUpperCase() + props.departure.departureLocation.country.substring(1).toLowerCase()}
+                {props.departure.arrivalLocation.city.charAt(0).toUpperCase() + props.departure.arrivalLocation.city.substring(1).toLowerCase()} to 
+                {" " + props.departure.departureLocation.city.charAt(0).toUpperCase() + props.departure.departureLocation.city.substring(1).toLowerCase()}
                 </Typography>
                 <Typography className="summary" id="dateTime" component="div">
                 {new Date(props.arrival.departureTime).toLocaleString()}
@@ -88,7 +88,7 @@ function Summary(props) {
   console.log(result)
   return (
     <div>
-      <img id="background" src='/download.jpg'></img>
+      <img id="backgroundImage" src='/download.jpg'></img>
       <p id="top"> <Fade right>Flight Summary </Fade></p>
       <div id="Card1"><LightSpeed left><Content departure= {result.depchosenflight}
       reservation = {result} arrival = {result.returnchosenflight}/></LightSpeed></div>
