@@ -35,8 +35,8 @@ class UserLanding extends Component {
                 <GuestNavBar />
                 <Stack spacing = {30} alignItems = "center">
                     <Stack id = "alignTitle" direction = "row" justifyContent="flex-start" > 
-                    <Typography id="title" variant="h2" gutterBottom component="div">
-                        Explore the world with Takeoff
+                    <Typography id="titleLanding" variant="h2" gutterBottom component="div">
+                        Explore the world  with Takeoff
                     </Typography>
                     </Stack>
 

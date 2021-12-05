@@ -245,11 +245,14 @@ app.post("/flights/flightquery", async (req, res) => {
     let rawOutData = { "departureLocation.airport": body.from, "arrivalLocation.airport": body.to }
     let rawInData = { "departureLocation.airport": body.to, "arrivalLocation.airport": body.from }
 
-    let outFlights = await Flight.find(rawOutData).exec();
-    let inFlights = await Flight.find(rawInData).exec();
+    let outFlights = await Flight.find(rawOutData).populate('reservations');
+    let inFlights = await Flight.find(rawInData).populate('reservations');
 
     let queryOutDate = new Date(outDepDate);
     let queryInDate = new Date(inDepDate);
+
+    let noOutFlights = false;
+    let noInFlights = false;
 
     queryOutDate.setTime(queryOutDate.getTime() + (2 * 60 * 60 * 1000));
     queryInDate.setTime(queryInDate.getTime() + (2 * 60 * 60 * 1000));
@@ -317,6 +320,13 @@ app.post("/flights/flightquery", async (req, res) => {
 
    // console.log(filteredOutFlights[0]);
 
+   if(filteredOutFlights.length == 0){
+      noOutFlights = true;
+    }
+    if (filteredInFlights.length == 0) {
+      noInFlights = true;
+    }
+
 
 
     let outFlightsWithDate = []
@@ -366,7 +376,9 @@ app.post("/flights/flightquery", async (req, res) => {
       returnsearchdate: new Date(inDepDate),
       returnchosenflight: null,
       returnfaded: true,
-      numberOfpassengers: parseInt(body.kids) + parseInt(body.adults)
+      numberOfpassengers: parseInt(body.kids) + parseInt(body.adults),
+      noOutFlights: noOutFlights,
+      noInFlights: noInFlights
      }  );
   }
   catch (error) {

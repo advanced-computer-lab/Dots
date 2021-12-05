@@ -30,12 +30,24 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import UserSearch from '../UserSearch/UserSearch';
 import GuestNavBar from '../GuestNavBar/GuestNavBar';
-
+import Stack from '@mui/material/Stack';
 class UserFlightList extends Component {
 
 
     componentDidMount() {
         console.log(this.state)
+
+        if (this.state.noInFlights && this.state.noOutFlights) {
+            this.setState({ openAlert: true, errorMessage: 'Sorry. There are no flights matching your query. Try searching with other parameters' })
+        }
+
+        else if (this.state.noInFlights) {
+            this.setState({ openAlert: true, errorMessage: 'Sorry. There are no inward flights matching your query. Try searching with other parameters' })
+        }
+        else if (this.state.noOutFlights) {
+            this.setState({ openAlert: true, errorMessage: 'Sorry. There are no outward flights matching your query. Try searching with other parameters' })
+        }
+
     }
 
     editSearch = (e) => {
@@ -62,7 +74,7 @@ class UserFlightList extends Component {
         }
         this.state = {
             from: this.props.from,
-            depfaded: this.props.depfaded ,
+            depfaded: this.props.depfaded,
             depsearchdate: this.props.depvalue,
             depOriginalFlights: this.props.depOriginalFlights,
             depAllFlights: this.props.depAllflights,
@@ -76,10 +88,12 @@ class UserFlightList extends Component {
             returnchosenflight: this.props.returnchosenflight ? this.props.returnchosenflight : null,
             returnflightClass: this.props.returnflightClass ? this.props.returnflightClass : '',
             numberOfpassengers: this.props.numberOfpassengers,
-            passengers: this.props.passengers!=='' ? this.props.passengers : buildpassengers(this.props.numberOfpassengers),
+            passengers: this.props.passengers !== '' ? this.props.passengers : buildpassengers(this.props.numberOfpassengers),
             openDialog: false,
             openAlert: false,
-            errorMessage: '' 
+            errorMessage: '',
+            noOutFlights: this.props.noOutFlights,
+            noInFlights: this.props.noInFlights,
         }
     }
     updatedepFaded = (val1) => {
@@ -178,18 +192,20 @@ class UserFlightList extends Component {
         const isRtl = true;
         //console.log(this.state);
         //console.log(this.state.passengers);
+        const {from , to} = this.state;
         return (
 
 
             <div>
                 <GuestNavBar />
                 <Card>
-
                     <CardContent>
-                        <Typography>
-
-                        </Typography>
-                        <Button variant="outlined" onClick={this.editSearch}>Edit Search</Button>
+                        <Stack direction="row" spacing={10} alignContent="center">
+                            <Typography variant="h6" gutterBottom component="div">
+                               {from} - {to}
+                            </Typography>
+                            <Button variant="contained" onClick={this.editSearch}>Edit Search</Button>
+                        </Stack>
                     </CardContent>
                 </Card>
 
@@ -284,7 +300,9 @@ function UserFlightListFunction(props) {
     const numberOfpassengers = result.numberOfpassengers
     const from = result.from
     const to = result.to
-    const passengers=result.passengers?result.passengers:'';
+    const passengers = result.passengers ? result.passengers : '';
+    const noOutFlights = result.noOutFlights;
+    const noInFlights = result.noInFlights;
 
     return <UserFlightList depfaded={depfaded}
         depvalue={depvalue}
@@ -302,6 +320,8 @@ function UserFlightListFunction(props) {
         returnflightClass={returnflightClass}
         numberOfpassengers={numberOfpassengers}
         passengers={passengers}
+        noOutFlights={noOutFlights}
+        noInFlights={noInFlights}
     />
 }
 

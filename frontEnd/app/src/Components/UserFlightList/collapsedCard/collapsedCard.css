@@ -7,10 +7,12 @@
     margin-bottom: 2em;
     height: 50vh ;
     width: 50vw;
-    background-color: lightgrey;
+    background-color: white;
     padding:1em;
     margin-left: auto;
     margin-right: auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px 0 rgb(31 38 135 / 80%);
 }
 #economytext{
     color: black;
@@ -26,18 +28,37 @@
 }
 
 #economy{
-    color: #ff0000 !important;
+    color: white !important;
     font-size: 1.4rem;
     padding-top: 0 ;
     margin-top: 0 ;
 
 }
+/* #economyCard{
+    background: rgb(243,211,11);
+background: linear-gradient(180deg, rgba(243,211,11,0.65507699661896) 17%, rgba(216,238,72,0.5878501058626575) 81%);
+
+} */
 
 #economyTitle{
-    background-color: cyan;
+    /* background-color: cyan; */
+    background: linear-gradient(90deg, rgba(183, 152, 145, 0.49) 0%, rgba(148, 113, 107, 0.83) 100%);
+        height: 6vh;
+    padding-top: 0.3em ;
+}
+#firstTitle{
+    /* background-color: cyan; */
+    background: linear-gradient(90deg, rgba(189, 187, 190, 0.58) 0%, rgba(157, 158, 163, 0.52) 100%);
     height: 6vh;
     padding-top: 0.3em ;
 }
+#businessTitle{
+    /* background-color: cyan; */
+    background: linear-gradient(90deg, #FFB347 0%, #FFCC33 100%);
+            height: 6vh;
+    padding-top: 0.3em ;
+}
+
 #classButton{
     margin-left: auto;
     margin-right: auto;
