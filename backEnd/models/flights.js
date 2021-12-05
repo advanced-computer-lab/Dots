@@ -81,4 +81,14 @@ const flightSchema = new Schema({
     },
 });
 
+flightSchema.post('findOneAndDelete', async function (doc) {
+    if (doc) {
+        await Reservation.deleteMany({
+            _id: {
+                $in: doc.reservations
+            }
+        })
+    }
+})
+
 module.exports = mongoose.model("Flight", flightSchema);
