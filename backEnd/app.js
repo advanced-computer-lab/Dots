@@ -233,17 +233,15 @@ app.delete('/reservations/:reservationId', async (req, res) => {
     Reservation.findByIdAndDelete(reservationId)
       .then((reservationDeleted) => {
         if (!reservationDeleted) res.status(404).send({ message: "Couldn't find reservation" })
-        console.log(reservationDeleted)
         User.findByIdAndUpdate(reservationDeleted.user, { $pull: { reservations: reservationId } }, { new: true })
           .then((userFound) => {
             Flight.findByIdAndUpdate(reservationDeleted.outBoundflight._id, { $pull: { reservations: reservationId } }, { new: true })
               .then((outBoundFlight) => {
                 Flight.findByIdAndUpdate(reservationDeleted.inBoundflight._id, { $pull: { reservations: reservationId } }, { new: true })
                   .then((inBoundFlight) => {
-                    console.log(outBoundFlight, inBoundFlight)
                     let outBoundPrice = 0
                     let inBoundPrice = 0
-                    switch (outBoundFlight.outBoundClass) {
+                    switch (reservationDeleted.outBoundClass) {
                       case 'First':
                         outBoundPrice = outBoundFlight.firstClassPrice
                         break;
@@ -256,7 +254,7 @@ app.delete('/reservations/:reservationId', async (req, res) => {
                       default:
                     }
 
-                    switch (inBoundFlight.inBoundClass) {
+                    switch (reservationDeleted.inBoundClass) {
                       case 'First':
                         inBoundPrice = inBoundFlight.firstClassPrice
                         break;
@@ -268,6 +266,9 @@ app.delete('/reservations/:reservationId', async (req, res) => {
                         break;
                       default:
                     }
+                    console.log(outBoundPrice)
+                    console.log(inBoundFlight)
+                    console.log(inBoundPrice)
                     outBoundPrice *= reservationDeleted.passengers.length
                     inBoundPrice *= reservationDeleted.passengers.length
 
@@ -277,9 +278,9 @@ app.delete('/reservations/:reservationId', async (req, res) => {
                       subject: "Refund Confirmation",
                       html: `<h2 style="color:#09827C;">Hello ${userFound.firstName}!</h2>
                     <h4>This mail is to confirm your refund</h4>
-                    <p>Outbound flight total price: <b>${outBoundPrice}</b></p>
-                    <p>Inbound flight total price: <b>${inBoundPrice}</b></p>
-                    <h3>Total Price: ${outBoundPrice + inBoundPrice}</h3>
+                    <p>Outbound flight total price: <b>$${outBoundPrice}</b></p>
+                    <p>Inbound flight total price: <b>$${inBoundPrice}</b></p>
+                    <h3>Total Price: $${outBoundPrice + inBoundPrice}</h3>
                     <p>Have a nice day!</p>`
                     }
 
