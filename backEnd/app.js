@@ -186,25 +186,36 @@ app.delete('/flight/:flightId/delete', async (req, res) => {
 
 });
 
-app.post('/reservationinsertion', async (req, res) => {
-  var mongooseID = new mongoose.Types.ObjectId();
-  Reservation.create({
-    _id: mongooseID,
-    user: "61a762c24c337dff67c229fe",
-    outBoundflight: req.body.previousStage.depchosenflight._id,
-    inBoundflight: req.body.previousStage.returnchosenflight._id,
-    outBoundClass: req.body.outBoundClass,
-    inBoundClass: req.body.inBoundClass,
-    passengers: req.body.passengers,
-    confirmationNumber: req.body.confirmationNumber,
-    totalPrice: req.body.totalPrice
-  })
-  await User.findByIdAndUpdate(new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"), { $push: { reservations: mongooseID } }, { new: true });
-  var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), { $push: { reservations: mongooseID } }, { new: true });
-  var z = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), { $push: { reservations: mongooseID } }, { new: true });
-  console.log(y);
-  console.log(z);
-});
+app.post('/reservationinsertion', async (req,res) => {
+    var mongooseID = new mongoose.Types.ObjectId();
+    Reservation.create({
+      _id: mongooseID,
+      user: "61a762c24c337dff67c229fe",
+      outBoundflight: req.body.previousStage.depchosenflight._id,
+      inBoundflight: req.body.previousStage.returnchosenflight._id,
+      outBoundClass: req.body.outBoundClass,
+      inBoundClass: req.body.inBoundClass,
+      passengers: req.body.passengers,
+      confirmationNumber: req.body.confirmationNumber,
+      totalPrice: req.body.totalPrice
+    })
+    await User.findByIdAndUpdate(new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"), {$push: {reservations: mongooseID}},{new:true});
+    if(req.body.outBoundClass === "Economy")
+    var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), {$push: {reservations: mongooseID}, 
+  economySeatsAvailable: (req.body.previousStage.depchosenflight.economySeatsAvailable - req.body.passengers.length)},{new:true});
+  else if(req.body.outBoundClass === "First") var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), {$push: {reservations: mongooseID}, 
+  firstSeatsAvailable: (req.body.previousStage.depchosenflight.firstSeatsAvailable - req.body.passengers.length)},{new:true});
+  else if(req.body.outBoundClass === "Business") var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), {$push: {reservations: mongooseID}, 
+  businessSeatsAvailable: (req.body.previousStage.depchosenflight.businessSeatsAvailable - req.body.passengers.length)},{new:true});
+
+  if(req.body.inBoundClass === "Economy")
+  var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), {$push: {reservations: mongooseID}, 
+economySeatsAvailable: (req.body.previousStage.returnchosenflight.economySeatsAvailable - req.body.passengers.length)},{new:true});
+else if(req.body.inBoundClass === "First") var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), {$push: {reservations: mongooseID}, 
+firstSeatsAvailable: (req.body.previousStage.returnchosenflight.firstSeatsAvailable - req.body.passengers.length)},{new:true});
+else if(req.body.inBoundClass === "Business") var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), {$push: {reservations: mongooseID}, 
+businessSeatsAvailable: (req.body.previousStage.returnchosenflight.businessSeatsAvailable - req.body.passengers.length)},{new:true});
+  });
 app.put('/flights/:flightId', async (req, res) => {
   const updateData = req.body
   delete updateData._id
@@ -240,7 +251,7 @@ app.get('/flights/:flightId', async (req, res) => {
 })
 
 //------------------reservations delete--------
-app.delete('/reservations/:reservationId', async (req, res) => {
+app.delete('/reservations/:reservationId', (req, res) => {
   try {
     if (!req.params.reservationId) res.status(400).send({ message: "Reservation Id invalid" })
     const reservationId = mongoose.Types.ObjectId(req.params.reservationId);
@@ -344,7 +355,9 @@ app.delete('/reservations/:reservationId', async (req, res) => {
               })
           })
       })
+      console.log("data deleted!");
   } catch (error) {
+    console.log("data deleted!");
     res.send(error)
   }
 })
