@@ -35,9 +35,10 @@ Set Up schema - Create Flight Backend Functionality - Create Flight Frontend Fun
 Seat Selector
 
 ### Ahmed Belal : 
+choosing deperature and return flights - passengers form 
 
 ### Omar Elsawi:
-
+Reservation Card Design - Reservation Cancellation - Automatic Emailing - Editing User Information
 
 ### Mohamed Amr:
 Flight Card Design - Landing Page Design - Nav Bar Component- userSearchFlights module design - Search Flights front end component - Search flight backend functionality

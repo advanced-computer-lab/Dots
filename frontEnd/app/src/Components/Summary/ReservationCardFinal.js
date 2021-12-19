@@ -154,6 +154,9 @@ class ReservationCardFinal extends Component {
                                                 <Grid item xs={6}>
                                                     <Stack spacing={2}>
                                                         <Typography className="t" sx={{ fontWeight: 'bold' }}>
+                                                            OutBound Class : {this.props.reservation.outBoundClass}<br /><br />
+                                                        </Typography>
+                                                        <Typography className="t" sx={{ fontWeight: 'bold' }}>
                                                             Flight No. {this.props.outBound.flightNumber} (Outbound)<br /><br />
                                                             Departure Details
                                                         </Typography>
@@ -176,6 +179,9 @@ class ReservationCardFinal extends Component {
                                                 </Grid>
                                                 <Grid item xs={6}>
                                                     <Stack spacing={2}>
+                                                        <Typography className="t" sx={{ fontWeight: 'bold' }}>
+                                                            Inbound Class : {this.props.reservation.inBoundClass}<br /><br />
+                                                        </Typography>
                                                         <Typography className="t" sx={{ fontWeight: 'bold' }}>
                                                             Flight No. {this.props.inBound.flightNumber} (Inbound)<br /><br />
                                                             Departure Details
