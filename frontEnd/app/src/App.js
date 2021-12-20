@@ -28,6 +28,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import EditPage from './Components/EditUser/EditPage';
 import UserFlights from './Components/Summary/userFlights';
 import GuestNavBar from './Components/GuestNavBar/GuestNavBar';
+import LoginPage from './Components/login/loginPage';
 
 const theme = createTheme({
   palette: {
@@ -57,7 +58,7 @@ class App extends Component {
           <Route path="/summary" element={<Summary/>} />
           <Route path="/userflights" element={<UserFlights/>} />
           <Route path="/payment" element={<FakePayment/>}/>
-
+          <Route path="/login" element={<LoginPage/>}/>
         </Routes>
 
       </BrowserRouter>
