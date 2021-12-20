@@ -9,6 +9,10 @@ const userSchema = new Schema({
         required:true,
         unique:true
     },
+    password:{
+        type: String,
+        required: true,
+    },
     firstName: {
         type: String,
         required:true
@@ -35,11 +39,10 @@ const userSchema = new Schema({
         unique:true
     },
     reservations:[{
-        type: Schema.Types.ObjectId, ref: 'Reservation' 
+        type: Schema.Types.ObjectId, ref: 'Reservation'
     }]
 
 });
 
-userSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model("User", userSchema);

@@ -67,26 +67,31 @@ const sessionConfig = {
 
 app.use(session(sessionConfig))
 
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(Admin.authenticate()))
+// app.use(passport.initialize());
+// app.use(passport.session());
+// passport.use(new LocalStrategy(Admin.authenticate()))
 
-passport.serializeUser(Admin.serializeUser());
-passport.deserializeUser(Admin.deserializeUser())
+// passport.serializeUser(Admin.serializeUser());
+// passport.deserializeUser(Admin.deserializeUser())
 
+// app.post("/login", (req, res, next) => {
+//   passport.authenticate("local", (err, user, info) => {
+//     if (err) throw err;
+//     if (!user) res.send("No User Exists");
+//     else {
+//       req.logIn(user, (err) => {
+//         if (err) throw err;
+//         res.send("Successfully Authenticated");
+//         console.log(req.user);
+//       });
+//     }
+//   })(req, res, next);
+// });
+
+//------------------------------------------authentication-----------------------------------------
 app.post("/login", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) throw err;
-    if (!user) res.send("No User Exists");
-    else {
-      req.logIn(user, (err) => {
-        if (err) throw err;
-        res.send("Successfully Authenticated");
-        console.log(req.user);
-      });
-    }
-  })(req, res, next);
 });
+
 
 async function rand() {
   const rand = translator.generate().substring(0, 5);
@@ -201,19 +206,19 @@ app.post('/reservationinsertion', async (req,res) => {
     })
     await User.findByIdAndUpdate(new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"), {$push: {reservations: mongooseID}},{new:true});
     if(req.body.outBoundClass === "Economy")
-    var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), {$push: {reservations: mongooseID}, 
+    var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), {$push: {reservations: mongooseID},
   economySeatsAvailable: (req.body.previousStage.depchosenflight.economySeatsAvailable - req.body.passengers.length)},{new:true});
-  else if(req.body.outBoundClass === "First") var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), {$push: {reservations: mongooseID}, 
+  else if(req.body.outBoundClass === "First") var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), {$push: {reservations: mongooseID},
   firstSeatsAvailable: (req.body.previousStage.depchosenflight.firstSeatsAvailable - req.body.passengers.length)},{new:true});
-  else if(req.body.outBoundClass === "Business") var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), {$push: {reservations: mongooseID}, 
+  else if(req.body.outBoundClass === "Business") var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id), {$push: {reservations: mongooseID},
   businessSeatsAvailable: (req.body.previousStage.depchosenflight.businessSeatsAvailable - req.body.passengers.length)},{new:true});
 
   if(req.body.inBoundClass === "Economy")
-  var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), {$push: {reservations: mongooseID}, 
+  var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), {$push: {reservations: mongooseID},
 economySeatsAvailable: (req.body.previousStage.returnchosenflight.economySeatsAvailable - req.body.passengers.length)},{new:true});
-else if(req.body.inBoundClass === "First") var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), {$push: {reservations: mongooseID}, 
+else if(req.body.inBoundClass === "First") var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), {$push: {reservations: mongooseID},
 firstSeatsAvailable: (req.body.previousStage.returnchosenflight.firstSeatsAvailable - req.body.passengers.length)},{new:true});
-else if(req.body.inBoundClass === "Business") var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), {$push: {reservations: mongooseID}, 
+else if(req.body.inBoundClass === "Business") var y = await Flight.findByIdAndUpdate(new mongoose.Types.ObjectId(req.body.previousStage.returnchosenflight._id), {$push: {reservations: mongooseID},
 businessSeatsAvailable: (req.body.previousStage.returnchosenflight.businessSeatsAvailable - req.body.passengers.length)},{new:true});
   });
 app.put('/flights/:flightId', async (req, res) => {
