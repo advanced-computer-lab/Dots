@@ -25,13 +25,13 @@ function Signup(props) {
       <Card
         sx={{
           width: "500px",
-          position: "absolute",
+          position: "fixed",
           display: "flex",
           justifyContent: "center",
           transform: "translate(-50%,-50%)",
           top: "55%",
           left: "50%",
-          zoom: "0.95",
+          zoom: "0.9",
         }}
       >
         <CardContent>
@@ -41,6 +41,36 @@ function Signup(props) {
             </Typography>
             <br />
             <form method="POST" action="http://localhost:8000/register">
+              <TextField
+                required
+                sx={{
+                  width: "300px",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+                label="Username"
+                variant="outlined"
+                name="username"
+              ></TextField>
+              <br />
+              <TextField
+                required
+                sx={{
+                  height: "50px",
+                  display: "flex",
+                  justifyContent: "center",
+                  marginBottom: "15px",
+                }}
+                label="Password"
+                type="password"
+                variant="outlined"
+                name="password"
+                onChange={(e) => setPassword(e.target.value)}
+              ></TextField>
+              <Suspense fallback={null}>
+                <PasswordStrengthBar password={password} />
+              </Suspense>
+              <br />
               <TextField
                 required
                 sx={{
@@ -77,24 +107,6 @@ function Signup(props) {
                 variant="outlined"
                 name="email"
               ></TextField>
-              <br />
-              <TextField
-                required
-                sx={{
-                  height: "50px",
-                  display: "flex",
-                  justifyContent: "center",
-                  marginBottom: "15px",
-                }}
-                label="Password"
-                type="password"
-                variant="outlined"
-                name="password"
-                onChange={(e) => setPassword(e.target.value)}
-              ></TextField>
-              <Suspense fallback={null}>
-                <PasswordStrengthBar password={password} />
-              </Suspense>
               <br />
               <TextField
                 required

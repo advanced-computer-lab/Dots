@@ -72,7 +72,7 @@ passport.use(new LocalStrategy(Admin.authenticate()));
 passport.serializeUser(Admin.serializeUser());
 passport.deserializeUser(Admin.deserializeUser());
 */
-app.post("/login", (req, res, next) => {
+/*app.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) throw err;
     if (!user) res.send("No User Exists");
@@ -84,7 +84,7 @@ app.post("/login", (req, res, next) => {
       });
     }
   })(req, res, next);
-});
+});*/
 
 async function rand() {
   const rand = translator.generate().substring(0, 5);
@@ -139,6 +139,7 @@ app.post("/register", async (req, res) => {
     console.log(req.body);
     console.log(hash);
     User.create({
+      username: req.body.username,
       firstName: req.body.first,
       lastName: req.body.last,
       email: req.body.email,
