@@ -96,22 +96,41 @@ app.post("/login", (req, res, next) => {
       bcrypt.compare(password, user.password)
         .then((isPasswordCorrect) => {
           if (isPasswordCorrect) {
-            const payload = { id: user.id, email: user.email }
+            const payload = { id: user.id, email: user.email,role:'user' }
             jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 60000 }, (err, token) => {
               if (err) return res.json({ msg: err })
               return res.json({
-                accessToken: token
+                accessToken: token,
+                role: 'user'
               })
             })
           } else res.status(401).send({ msg: "Password is incorrect" })
         })
     })
     .catch(() => {
-      res.status(404).send({ msg: "User not found" })
+      Admin.find({email})
+      .then((admin) => {
+        bcrypt.compare(password, admin.password)
+          .then((isPasswordCorrect) => {
+            if (isPasswordCorrect) {
+              const payload = { id: user.id, email: user.email,role:'admin' }
+              jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 60000 }, (err, token) => {
+                if (err) return res.json({ msg: err })
+                return res.json({
+                  accessToken: token,
+                  role: 'admin'
+                })
+              })
+            } else res.status(401).send({ msg: "Password is incorrect" })
+          })
+      })
+      .catch(()=>{
+        res.status(404).send({ msg: "User not found" })
+      })
     })
 });
 
-
+//------------------------------------------------------------------------------------------
 async function rand() {
   const rand = translator.generate().substring(0, 5);
   return rand;
