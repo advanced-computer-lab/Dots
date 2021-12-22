@@ -17,7 +17,6 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true,
-    unique: true,
   },
   firstName: {
     type: String,
@@ -42,7 +41,6 @@ const userSchema = new Schema({
   passportNumber: {
     type: String,
     required: true,
-    unique: true,
   },
 
   reservations: [
