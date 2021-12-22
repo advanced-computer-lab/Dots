@@ -10,12 +10,11 @@ const LocalStrategy = require('passport-local').Strategy;
 const session = require("express-session");
 const bcrypt = require('bcrypt');
 const nodemailer = require("nodemailer");
-
 const Flight = require('./models/flights');
 const Admin = require('./models/admins');
 const Reservation = require('./models/reservations');
 const User = require('./models/users')
-
+const jwt = require('jsonwebtoken');
 const MongoURI = process.env.MONGO_URI;
 let alert = require('alert');
 const short = require('short-uuid');
@@ -89,6 +88,29 @@ app.use(session(sessionConfig))
 // });
 
 //------------------------------------------authentication-----------------------------------------
+// app.use((req, res, next) => {
+//   if (req.url === "/login")
+//     return next()
+//   else
+//     return verifyToken(req, res, next)
+// })
+
+// const verifyAdmin = (req,res,next)=>{
+//   if(req.verifiedUser.role!=='admin') return res.sendStatus(403)
+//   next()
+// }
+
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization
+  const token = authHeader && authHeader.split(' ')[1]
+  if (!token) return res.status(401).send()
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return res.status(403).send()
+    req.verifiedUser = user
+    next()
+  })
+}
+
 app.post("/login", (req, res, next) => {
   const { email, password } = req.body
   User.find({ email })
@@ -96,11 +118,12 @@ app.post("/login", (req, res, next) => {
       bcrypt.compare(password, user.password)
         .then((isPasswordCorrect) => {
           if (isPasswordCorrect) {
-            const payload = { id: user.id, email: user.email,role:'user' }
-            jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 60000 }, (err, token) => {
+            const payload = { id: user.id, email: user.email, role: 'user' }
+            jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
               if (err) return res.json({ msg: err })
               return res.json({
                 accessToken: token,
+                name: user.firstName,
                 role: 'user'
               })
             })
@@ -108,25 +131,25 @@ app.post("/login", (req, res, next) => {
         })
     })
     .catch(() => {
-      Admin.find({email})
-      .then((admin) => {
-        bcrypt.compare(password, admin.password)
-          .then((isPasswordCorrect) => {
-            if (isPasswordCorrect) {
-              const payload = { id: user.id, email: user.email,role:'admin' }
-              jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 60000 }, (err, token) => {
-                if (err) return res.json({ msg: err })
-                return res.json({
-                  accessToken: token,
-                  role: 'admin'
+      Admin.find({ email })
+        .then((admin) => {
+          bcrypt.compare(password, admin.password)
+            .then((isPasswordCorrect) => {
+              if (isPasswordCorrect) {
+                const payload = { id: admin.id, email: admin.email, role: 'admin' }
+                jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
+                  if (err) return res.json({ msg: err })
+                  return res.json({
+                    accessToken: token,
+                    role: 'admin'
+                  })
                 })
-              })
-            } else res.status(401).send({ msg: "Password is incorrect" })
-          })
-      })
-      .catch(()=>{
-        res.status(404).send({ msg: "User not found" })
-      })
+              } else res.status(401).send({ msg: "Password is incorrect" })
+            })
+        })
+        .catch(() => {
+          res.status(404).send({ msg: "User not found" })
+        })
     })
 });
 
@@ -218,6 +241,7 @@ app.get('/userflights', async (req, res) => {
 
 
 app.delete('/flight/:flightId/delete', async (req, res) => {
+
   var id = mongoose.Types.ObjectId(req.params.flightId);
   try {
     await Flight.findByIdAndDelete(id);

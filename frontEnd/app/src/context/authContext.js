@@ -8,25 +8,30 @@ const AuthProvider = ({ children }) => {
 
   const accessToken = localStorage.getItem('accessToken');
   const role = localStorage.getItem('role');
+  const name = localStorage.getItem('name');
 
   const [authState, setAuthState] = useState({
     accessToken,
-    role
+    role,
+    name
   });
 
-  const setAuthInfo = ({ token, userInfo, expiresAt }) => {
+  const setAuthInfo = ({ token, role,name }) => {
     localStorage.setItem('token', token);
     localStorage.setItem('role',role);
+    localStorage.setItem('name',name);
 
     setAuthState({
       token,
       role,
+      name,
     });
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    localStorage.removeItem('name');
     setAuthState({});
   };
 

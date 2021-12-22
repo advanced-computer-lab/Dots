@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useContext,Fragment } from 'react';
 import './App.css';
 import FlightsList from './Components/flightsList.js';
 import UserLanding from './Components/UserLanding/UserLanding.js';
@@ -25,6 +25,7 @@ import GuestNavBar from './Components/GuestNavBar/GuestNavBar';
 import LoginPage from './Components/login/loginPage';
 import { AuthProvider, AuthContext } from './context/authContext';
 import axios from 'axios';
+import { Navigate } from 'react-router-dom'
 
 const theme = createTheme({
   palette: {
@@ -34,11 +35,50 @@ const theme = createTheme({
   }
 });
 
-axios.interceptors.request.use(
-  config => {
-    config.headers.authorization = `Bearer ${AuthContext.authState.token}`
-  }
-)
+
+const AuthenticatedRoute = ({ children, ...rest }) => {
+  const authContext = useContext(AuthContext)
+  return (
+    authContext.isAuthenticated() ? (
+      children
+    ) : (
+      <Navigate to="/" />
+    )
+  )
+}
+
+const AdminRoute = ({ children, ...rest }) => {
+  const authContext = useContext(AuthContext)
+  return (
+    authContext.isAuthenticated() && authContext.isAdmin() ? (
+      children
+    ) : (
+      <Navigate to="/" />
+    )
+  )
+}
+
+const AppRoutes = () => {
+  const authContext = useContext(AuthContext)
+
+
+  return (
+    <Fragment>
+      <Routes>
+        <Route path="/" element={<UserLanding />} />
+        <Route path="/flights" element={<UserFlightList />} />
+        <Route path="/admin" element={<AdminRoute><FlightsList /></AdminRoute>} />
+        <Route path="/:userId/edit-info" element={<AuthenticatedRoute><EditPage /></AuthenticatedRoute>} />
+        <Route path="/seatselector" element={<AuthenticatedRoute><SeatSelector /></AuthenticatedRoute>} />
+        <Route path="/loading" element={<Loading />} />
+        <Route path="/summary" element={<Summary />} />
+        <Route path="/userflights" element={<AuthenticatedRoute><UserFlights /></AuthenticatedRoute>} />
+        <Route path="/payment" element={<AuthenticatedRoute><FakePayment /></AuthenticatedRoute>} />
+        <Route path="/login" element={<LoginPage />} />
+      </Routes>
+    </Fragment>
+  );
+};
 
 class App extends Component {
 
@@ -48,20 +88,11 @@ class App extends Component {
         <GuestNavBar />
         <BrowserRouter>
 
-          <Routes>
-            <AuthProvider>
-              <Route path="/" element={<UserLanding />} />
-              <Route path="/flights" element={<UserFlightList />} />
-              <Route path="/admin" element={<FlightsList />} />
-              <Route path="/:userId/edit-info" element={<EditPage />} />
-              <Route path="/seatselector" element={<SeatSelector />} />
-              <Route path="/loading" element={<Loading />} />
-              <Route path="/summary" element={<Summary />} />
-              <Route path="/userflights" element={<UserFlights />} />
-              <Route path="/payment" element={<FakePayment />} />
-              <Route path="/login" element={<LoginPage />} />
-            </AuthProvider>
-          </Routes>
+
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
+
 
         </BrowserRouter>
       </MuiThemeProvider>

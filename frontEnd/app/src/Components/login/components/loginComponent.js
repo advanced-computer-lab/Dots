@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { TextField } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import axios from 'axios'
-import AuthContext from '../../../context/AuthContext'
+import {AuthContext} from '../../../context/authContext'
 class loginComponent extends Component {
     state = {
         email: '',
