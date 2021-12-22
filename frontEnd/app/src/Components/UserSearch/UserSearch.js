@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component,useContext } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 // import AutoComplete from "../autoComplete/AutoComplete";
@@ -14,7 +14,7 @@ import FilterAltRoundedIcon from '@mui/icons-material/FilterAltRounded';
 import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-
+import axios from 'axios'
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -56,7 +56,7 @@ class UserSearch extends Component {
             openAlert: false,
             errorMessage: "",
             result: {},
-            isChangeSearch:this.props.isChangeSearch,
+            isChangeSearch: this.props.isChangeSearch,
             airports: [],
 
         }
@@ -64,20 +64,20 @@ class UserSearch extends Component {
 
 
     componentDidMount() {
+
         // let ul = document.getElementsByTagName('a')[1];
         // console.log(ul);
-        fetch('http://localhost:8000/flights')
-        .then(response => response.json())
-        .then(flights => {
-  
-          let airportSet = new Set();
-          flights.map((flight) => {
-            airportSet.add(flight.departureLocation.airport)
-            airportSet.add(flight.arrivalLocation.airport)
-          })
-          this.setState({ airports: Array.from(airportSet) })
-  
-        });
+        axios.get('http://localhost:8000/flights')
+            .then(({data}) => {
+                const flights = data
+                let airportSet = new Set();
+                flights.map((flight) => {
+                    airportSet.add(flight.departureLocation.airport)
+                    airportSet.add(flight.arrivalLocation.airport)
+                })
+                this.setState({ airports: Array.from(airportSet) })
+
+            });
     }
 
 
@@ -136,8 +136,8 @@ class UserSearch extends Component {
     areFieldsValid = () => {
         const {
             from, to } = this.state
-            console.log(from === to)
-        return ( from.length > 0 && to.length > 0 ) && (from !== to)
+        console.log(from === to)
+        return (from.length > 0 && to.length > 0) && (from !== to)
 
     }
 
@@ -160,9 +160,9 @@ class UserSearch extends Component {
         return parseInt(adults) + parseInt(kids) > 0
     }
 
-    refreshPage = ()=>{
+    refreshPage = () => {
         window.location.reload();
-     }
+    }
 
     onSearch = () => {
 
@@ -176,19 +176,20 @@ class UserSearch extends Component {
 
                     let query = { "out": { "dep": depDate, "class": classes[depClass].toLowerCase() }, "in": { "dep": arrDate, "class": classes[arrClass].toLowerCase() }, "from": from, "to": to, "adults": adults, "kids": kids }
 
-                    const requestOptions = {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(query)
-                    };
+                    // const requestOptions = {
+                    //     method: 'POST',
+                    //     headers: { 'Content-Type': 'application/json' },
+                    //     body: JSON.stringify(query)
+                    // };
 
 
-                    fetch('http://localhost:8000/flights/flightquery', requestOptions).then(res => res.json()).then(data => {
+                    axios.post('http://localhost:8000/flights/flightquery', query)
+                    .then(({data}) => {
                         console.log('data', data)
                         this.setState({ result: data })
                         console.log('result', this.state.result)
                         let link = document.getElementById('flightLink');
-                        console.log('cond' , this.state.isChangeSearch)
+                        console.log('cond', this.state.isChangeSearch)
 
                         if (this.state.isChangeSearch) link.click();
                         else {
@@ -357,7 +358,7 @@ class UserSearch extends Component {
                             <Button variant="contained" onClick={this.onSearch} type="submit">
                                 Search Flights    </Button>
 
-                            <Link to="/flights" id = "flightLink" type="submit" state={{ result: this.state.result }} > </Link>
+                            <Link to="/flights" id="flightLink" type="submit" state={{ result: this.state.result }} > </Link>
 
 
 

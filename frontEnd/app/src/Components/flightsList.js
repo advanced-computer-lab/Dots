@@ -105,22 +105,19 @@ class FlightsList extends Component {
 
         this.deleteSnackBarHandleOpen();
 
-        fetch("http://localhost:8000/flight/" + this.state.selectedFlight + "/delete", {
-            method: "DELETE",
-        }).then(res => {
-            console.log("Request complete! response:", res);
-        }).then(() => {
-            this.setState((prev) => ({
-                flights: prev.flights.filter(
-                    (row) => row.id !== prev.selectedFlight
-                ),
-                permanentFlights: prev.permanentFlights.filter(
-                    (row) => row.id !== prev.selectedFlight
-                ),
-                selectedFlight: null,
-                openDeleteDialog: false
-            }));
-        })
+        axios.delete("http://localhost:8000/flight/" + this.state.selectedFlight + "/delete")
+            .then(() => {
+                this.setState((prev) => ({
+                    flights: prev.flights.filter(
+                        (row) => row.id !== prev.selectedFlight
+                    ),
+                    permanentFlights: prev.permanentFlights.filter(
+                        (row) => row.id !== prev.selectedFlight
+                    ),
+                    selectedFlight: null,
+                    openDeleteDialog: false
+                }));
+            })
 
     }
 
@@ -146,9 +143,9 @@ class FlightsList extends Component {
 
     componentDidMount() {
         //const {flights} = await axios.get('http://localhost:8000/flights');
-        fetch('http://localhost:8000/flights')
-            .then(response => response.json())
-            .then(flights => {
+        axios.get('http://localhost:8000/flights')
+            .then(({data}) => {
+                const flights = data
                 this.setState({ permanentFlights: flights, flights: flights })
                 console.log(flights[0])
                 let airportSet = new Set();

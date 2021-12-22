@@ -39,7 +39,7 @@ const theme = createTheme({
 const AuthenticatedRoute = ({ children, ...rest }) => {
   const authContext = useContext(AuthContext)
   return (
-    authContext.isAuthenticated() ? (
+    authContext.isAuthenticatedBackend() ? (
       children
     ) : (
       <Navigate to="/" />
@@ -50,7 +50,7 @@ const AuthenticatedRoute = ({ children, ...rest }) => {
 const AdminRoute = ({ children, ...rest }) => {
   const authContext = useContext(AuthContext)
   return (
-    authContext.isAuthenticated() && authContext.isAdmin() ? (
+    authContext.isAuthenticatedBackend() && authContext.isAdminBackend() ? (
       children
     ) : (
       <Navigate to="/" />
@@ -60,7 +60,15 @@ const AdminRoute = ({ children, ...rest }) => {
 
 const AppRoutes = () => {
   const authContext = useContext(AuthContext)
-
+  axios.interceptors.request.use(
+    config => {
+      config.headers['Authorization'] = `Bearer ${authContext.authState.accessToken}`
+      return config
+    },
+    error => {
+      return Promise.reject(error)
+    }
+  )
 
   return (
     <Fragment>

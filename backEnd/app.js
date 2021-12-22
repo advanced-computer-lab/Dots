@@ -88,17 +88,10 @@ app.use(session(sessionConfig))
 // });
 
 //------------------------------------------authentication-----------------------------------------
-// app.use((req, res, next) => {
-//   if (req.url === "/login")
-//     return next()
-//   else
-//     return verifyToken(req, res, next)
-// })
-
-// const verifyAdmin = (req,res,next)=>{
-//   if(req.verifiedUser.role!=='admin') return res.sendStatus(403)
-//   next()
-// }
+const verifyAdmin = (req,res,next)=>{
+  if(req.verifiedUser.role!=='admin') return res.sendStatus(403)
+  next()
+}
 
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization
@@ -111,7 +104,24 @@ const verifyToken = (req, res, next) => {
   })
 }
 
-app.post("/login", (req, res, next) => {
+app.use((req, res, next) => {
+  if (req.url === "/login" || req.url==="/flights" || req.url==="/flights/flightquery")
+    return next()
+  else
+    return verifyToken(req, res, next)
+})
+
+app.get("/checkAuth",(req,res)=>{
+  if(req.verifiedUser) return res.status(200).send(req.verifiedUser)
+  return res.sendStatus(401)
+})
+
+app.get("checkAdmin",(req,res)=>{
+  if (req.verifiedUser.role === 'admin') return res.send(200).send(req.verifiedUser)
+  return res.sendStatus(403)
+})
+
+app.post("/login", (req, res) => {
   const { email, password } = req.body
   User.find({ email })
     .then((user) => {

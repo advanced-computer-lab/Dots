@@ -1,5 +1,6 @@
 import React, { createContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import axios from 'axios'
 
 const AuthContext = createContext();
 const { Provider } = AuthContext;
@@ -16,33 +17,53 @@ const AuthProvider = ({ children }) => {
     name
   });
 
-  const setAuthInfo = ({ token, role,name }) => {
-    localStorage.setItem('token', token);
+  const setAuthInfo = ({ accessToken, role,name }) => {
+    localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('role',role);
     localStorage.setItem('name',name);
 
     setAuthState({
-      token,
+      accessToken,
       role,
       name,
     });
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
     localStorage.removeItem('role');
     localStorage.removeItem('name');
     setAuthState({});
   };
-
+  const isAuthenticatedBackend = () =>{
+    axios.get("http://localhost:8000/checkAuth")
+    .then((verifiedUser)=>{
+        setAuthInfo(verifiedUser)
+        return true
+    })
+    .catch(()=>{
+        return false
+    })
+  }
   const isAuthenticated = () => {
-    if (!authState.token ) {
+    if (!authState.accessToken ) {
       return false;
     }
     return (
      true
     );
   };
+
+  const isAdminBackend = () =>{
+    axios.get("http://localhost:8000/checkAdmin")
+    .then((verifiedUser)=>{
+        setAuthInfo(verifiedUser)
+        return true
+    })
+    .catch(()=>{
+        return false
+    })
+  }
 
   const isAdmin = () => {
     return authState.role === 'admin';
@@ -55,7 +76,9 @@ const AuthProvider = ({ children }) => {
         setAuthState: authInfo => setAuthInfo(authInfo),
         logout,
         isAuthenticated,
-        isAdmin
+        isAdmin,
+        isAuthenticatedBackend,
+        isAdminBackend
       }}
     >
       {children}
