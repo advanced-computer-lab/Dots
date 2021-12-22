@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const passportLocalMongoose = require('passport-local-mongoose');
-const Reservation = require('./reservations');
+const passportLocalMongoose = require("passport-local-mongoose");
+const Reservation = require("./reservations");
 
 const userSchema = new Schema({
     email: {
@@ -41,7 +41,6 @@ const userSchema = new Schema({
     reservations:[{
         type: Schema.Types.ObjectId, ref: 'Reservation'
     }]
-
 });
 
 
