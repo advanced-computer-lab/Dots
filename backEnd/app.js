@@ -27,7 +27,7 @@ var cors = require("cors");
 //App variables
 const app = express();
 const port = process.env.PORT || "8000";
-
+let repeated = false;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Mongo DB
@@ -133,26 +133,38 @@ app.post("/flights", async (req, res) => {
   res.redirect("http://localhost:3000/admin");
 });
 
+app.get("/register", async (req, res) => {
+  if (repeated) {
+    res.send("repeated");
+    repeated = false;
+  }
+});
 app.post("/register", async (req, res) => {
   try {
-    const hash = bcrypt.hashSync(req.body.password, saltRounds);
-    console.log(req.body);
-    console.log(hash);
-    User.create({
-      username: req.body.username,
-      firstName: req.body.first,
-      lastName: req.body.last,
-      email: req.body.email,
-      password: hash,
-      passportNumber: req.body.passportnumber,
-      phoneNumber: req.body.phonenumber,
-      homeAddress: req.body.address,
-      countryCode: req.body.countrycode,
-    });
+    const user = await User.findOne({ username: req.body.username });
+    if (user != null) {
+      res.redirect("http://localhost:3000/register");
+      repeated = true;
+    } else {
+      const hash = bcrypt.hashSync(req.body.password, saltRounds);
+      console.log(req.body);
+      console.log(hash);
+      User.create({
+        username: req.body.username,
+        firstName: req.body.first,
+        lastName: req.body.last,
+        email: req.body.email,
+        password: hash,
+        passportNumber: req.body.passportnumber,
+        phoneNumber: req.body.phonenumber,
+        homeAddress: req.body.address,
+        countryCode: req.body.countrycode,
+      });
+      res.redirect("http://localhost:3000/");
+    }
   } catch (error) {
     console.log(error);
   }
-  res.redirect("http://localhost:3000/");
 });
 
 /*const flightOut = new Flight({

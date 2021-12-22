@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -6,12 +6,19 @@ import {
   TextField,
   Button,
 } from "@mui/material/";
+import axios from "axios";
 import "./signup.css";
 const PasswordStrengthBar = React.lazy(() =>
   import("react-password-strength-bar")
 );
 function Signup(props) {
   const [password, setPassword] = useState("");
+  const [data, setData] = useState("");
+  useEffect(async () => {
+    const result = await axios.get("http://localhost:8000/register");
+    setData(result.data);
+    console.log(data);
+  }, []);
   return (
     <React.Fragment
       sx={{
@@ -32,6 +39,8 @@ function Signup(props) {
           top: "55%",
           left: "50%",
           zoom: "0.9",
+          maxHeight: "800px",
+          overflow: "auto",
         }}
       >
         <CardContent>
@@ -52,6 +61,11 @@ function Signup(props) {
                 variant="outlined"
                 name="username"
               ></TextField>
+              {data === "repeated" ? (
+                <Typography sx={{ color: "red" }}>
+                  Username already taken!
+                </Typography>
+              ) : null}
               <br />
               <TextField
                 required
