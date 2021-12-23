@@ -4,6 +4,7 @@ import FlightsList from './Components/flightsList.js';
 import UserLanding from './Components/UserLanding/UserLanding.js';
 import ReservationsPage from './Components/reservations/ReservationsPage'
 import SeatSelector from './Components/SeatSelector/SeatSelector.js'
+import SingleSeatSelector from './Components/SingleSeatSelector/SingleSeatSelector'
 import UserFlightList from './Components/UserFlightList/userFlightList.js';
 import FakePayment from './Components/FakePayment/FakePayment.js';
 import Test from './Components/SeatMapTransitionControl/SeatMapTransitionControl.js'
@@ -53,6 +54,7 @@ class App extends Component {
           <Route path="/admin" element={<FlightsList />} />
           <Route path="/:userId/edit-info" element={<EditPage/>} />
           <Route path="/seatselector" element={<SeatSelector />} />
+          <Route path="/singleseatselector" element={<SingleSeatSelector />} />
           <Route path="/loading" element={<Loading />} />
           <Route path="/summary" element={<Summary/>} />
           <Route path="/userflights" element={<UserFlights/>} />
