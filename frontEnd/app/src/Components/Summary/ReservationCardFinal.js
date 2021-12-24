@@ -5,9 +5,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import DialogContent from '@mui/material/DialogContent';
+import EditSearch from '../EditReservation/EditSearch/editSearch';
 import Fade from 'react-reveal/Fade';
 import './Summary2.css';
 import axios from 'axios'
+import { Link } from 'react-router-dom';
 
 
 
@@ -15,7 +18,21 @@ class ReservationCardFinal extends Component {
     state = {
         openCancelDialog: false,
         isLoading: false,
-        error: false
+        error: false,
+        openDialog: false,
+        returnSearch: false,
+        departureSearch: false
+    }
+    editReturnSearch = (e) => {
+        this.setState({ returnSearch: true, departureSearch: false, openDialog: true })
+
+    }
+    editSearch = (e) => {
+        this.setState({ returnSearch: false, departureSearch: true, openDialog: true })
+
+    }
+    onSearchClose = () => {
+        this.setState({ openDialog: false })
     }
     onDeleteReservation = () => {
         this.setState({ isLoading: true, error: false })
@@ -37,18 +54,17 @@ class ReservationCardFinal extends Component {
         this.setState({ openCancelDialog: false, error: false })
     }
 
-
     render() {
         var inboundClassPrice = 0;
         var outboundClassPrice = 0;
         for (let i = 0; i < this.props.reservation.passengers.length; i++) {
-            if (this.props.reservation.inBoundClass == "Economy") inboundClassPrice += this.props.inBound.economyClassPrice
-            else if (this.props.reservation.inBoundClass == "Business") inboundClassPrice += this.props.inBound.businessClassPrice
-            else if (this.props.reservation.inBoundClass == "First") inboundClassPrice += this.props.inBound.firstClassPrice
+            if (this.props.reservation.inBoundClass === "Economy") inboundClassPrice += this.props.inBound.economyClassPrice
+            else if (this.props.reservation.inBoundClass === "Business") inboundClassPrice += this.props.inBound.businessClassPrice
+            else if (this.props.reservation.inBoundClass === "First") inboundClassPrice += this.props.inBound.firstClassPrice
 
-            if (this.props.reservation.outBoundClass == "Economy") outboundClassPrice += this.props.outBound.economyClassPrice
-            else if (this.props.reservation.outBoundClass == "Business") outboundClassPrice += this.props.outBound.businessClassPrice
-            else if (this.props.reservation.outBoundClass == "First") outboundClassPrice += this.props.outBound.firstClassPrice
+            if (this.props.reservation.outBoundClass === "Economy") outboundClassPrice += this.props.outBound.economyClassPrice
+            else if (this.props.reservation.outBoundClass === "Business") outboundClassPrice += this.props.outBound.businessClassPrice
+            else if (this.props.reservation.outBoundClass === "First") outboundClassPrice += this.props.outBound.firstClassPrice
         }
         var cardStyle = {
             borderRadius: '1vw'
@@ -219,6 +235,34 @@ class ReservationCardFinal extends Component {
                                                 </Typography>
                                             </div>))}
                                         </Typography>
+
+                                        <Grid item xs={12}>
+                                            <Grid container justifyContent="space-around">
+                                                <Link to="/singleseatselector" type="submit" state={{ result: this.props,flag:"outbound" }} style={{textDecoration: "none"}} >
+                                                    <Button
+                                                        variant="contained"
+                                                        color="success"
+                                                        sx={{ mt: "30px" }}
+                                                        size="large"
+                                                    >
+                                                        Change Departure Flight Seats
+                                                    </Button>
+                                                </Link>
+
+                                                <Link to="/singleseatselector" type="submit" state={{ result: this.props, flag:"inbound" }} style={{textDecoration: "none"}} >
+                                                    <Button
+                                                        variant="contained"
+                                                        color="success"
+                                                        sx={{ mt: "30px" }}
+                                                        size="large"
+                                                    >
+                                                        Change return Flight Seats
+                                                    </Button>
+                                                </Link>
+                                            </Grid>
+                                        </Grid>
+                                        
+
                                         <Grid item xs={12}>
                                             <Divider sx={{ width: '60%' }} />
                                         </Grid>
@@ -230,6 +274,10 @@ class ReservationCardFinal extends Component {
                                         <Grid item xs={12}>
                                             <Grid container justifyContent="center">
                                                 <CardActions>
+                                                    <Button onClick={this.editSearch}
+                                                        variant="contained" size="large" color="info">Edit My Departure Flight</Button>
+                                                    <Button onClick={this.editReturnSearch}
+                                                        variant="contained" size="large" color="info">Edit My Return Flight</Button>
                                                     <Button onClick={this.openDialog}
                                                         variant="contained" size="large" color="error">Cancel My Reservation</Button>
                                                 </CardActions>
@@ -258,6 +306,30 @@ class ReservationCardFinal extends Component {
                                                 variant="contained" size="large" color="error" loading={this.state.isLoading}>Confirm Cancellation</LoadingButton>
                                         </ListItem>
                                     </List>
+                                </Dialog>
+                                <Dialog
+                                    fullWidth={true}
+                                    maxWidth={false}
+                                    open={this.state.openDialog}
+                                    onClose={() => {
+                                        this.onSearchClose();
+                                    }}
+                                >
+                                    <DialogTitle>Edit Search</DialogTitle>
+                                    <DialogContent>
+                                        <EditSearch isChangeSearch={true} oldDepartureFlight={this.props.outBound}
+                                            reservation={this.props.reservation} oldReturnFlight={this.props.inBound}
+                                            depClass={this.props.reservation.outBoundClass}
+                                            arrClass={this.props.reservation.inBoundClass}
+                                            depDate={this.props.outBound.departureTime}
+                                            arrDate={this.props.inBound.departureTime}
+                                            from={this.props.outBound.departureLocation.airport}
+                                            to={this.props.outBound.arrivalLocation.airport}
+                                            adults={this.props.reservation.passengers.length}
+                                            departureSearch={this.state.departureSearch}
+                                            returnSearch={this.state.returnSearch}
+                                        />
+                                    </DialogContent>
                                 </Dialog>
 
                             </Card>

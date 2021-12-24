@@ -1,0 +1,80 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
+
+.summary {
+  font-family: "Montserrat", sans-serif !important;
+}
+#destination {
+  font-weight: bold;
+}
+#title {
+  text-align: center;
+  border-bottom: black;
+  font-family: "Montserrat", sans-serif;
+  font-size: larger;
+  margin-right: 100px;
+  margin-top: 40px;
+}
+
+#backgroundImage {
+  position: fixed;
+}
+
+#Card1 {
+  position: absolute;
+  margin-top: 2em;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+}
+
+#toSeats {
+  font-family: "Montserrat", sans-serif !important;
+  color: white !important;
+  display: flex;
+  justify-content: center;
+}
+
+#cardInterior {
+  background-image: linear-gradient(#000, #000);
+  background-size: 1px 45%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+#top {
+  color: white;
+  font-family: "Montserrat", sans-serif;
+  font-size: 2.7em;
+  position: absolute;
+  left: 50%;
+  padding-top: 100px;
+  margin-bottom: 3em;
+  transform: translateX(-50%);
+}
+
+#totalPrice {
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+#goBackButtonSummary {
+  overflow: hidden;
+  height: 60px;
+  position: absolute;
+  margin-top: 1em;
+  top: 80%;
+  left: 42%;
+  transform: translate(-50%, -50%);
+  font-family: "Montserrat", sans-serif;
+}
+
+#continueAsGuest {
+  height: 60px;
+  width: 200px;
+  position: absolute;
+  top: 80%;
+  left: 58%;
+  transform: translate(-50%, -50%);
+  font-family: "Montserrat", sans-serif;
+}

@@ -32,7 +32,7 @@ const stripe = require('stripe')(stripeSK);
 //App variables
 const app = express();
 const port = process.env.PORT || "8000";
-
+let repeated = false;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Mongo DB
@@ -136,6 +136,41 @@ app.post("/flights", async (req, res) => {
   res.redirect("http://localhost:3000/admin");
 });
 
+/*app.get("/register", async (req, res) => {
+  if (repeated) {
+    res.send("repeated");
+    repeated = false;
+  }
+});*/
+app.post("/checkemail", async (req, res) => {
+  let bool = false;
+  //console.log(req.body.email);
+  if (req.body.email != undefined) {
+    let user = await User.findOne({ email: req.body.email });
+    if (user != null) {
+      // repeated = true;
+      //console.log(user);
+      bool = true;
+      // repeated = false;
+    }
+  }
+  res.send(bool);
+});
+
+app.post("/checkusername", async (req, res) => {
+  let bool = false;
+  //console.log(req.body.username);
+  if (req.body.username != undefined) {
+    let user = await User.findOne({ username: req.body.username });
+    if (user != null) {
+      // repeated = true;
+      console.log(user);
+      bool = true;
+      // repeated = false;
+    }
+  }
+  res.send(bool);
+});
 app.post("/register", async (req, res) => {
   try {
     const hash = bcrypt.hashSync(req.body.password, saltRounds);
@@ -152,10 +187,10 @@ app.post("/register", async (req, res) => {
       homeAddress: req.body.address,
       countryCode: req.body.countrycode,
     });
+    res.redirect("http://localhost:3000/");
   } catch (error) {
     console.log(error);
   }
-  res.redirect("http://localhost:3000/");
 });
 
 /*const flightOut = new Flight({
@@ -186,7 +221,9 @@ app.get("/userflights", async (req, res) => {
   var reservations = user.reservations;
   for (let i = 0; i < reservations.length; i++) {
     await reservations[i].populate("inBoundflight");
+    await reservations[i].inBoundflight.populate("reservations");
     await reservations[i].populate("outBoundflight");
+    await reservations[i].outBoundflight.populate("reservations");
     await reservations[i].populate("user");
   }
   console.log(reservations);

@@ -1,57 +1,79 @@
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import {
   Card,
   CardContent,
   Typography,
   TextField,
   Button,
+  Alert,
 } from "@mui/material/";
+import axios from "axios";
 import "./signup.css";
 const PasswordStrengthBar = React.lazy(() =>
   import("react-password-strength-bar")
 );
 function Signup(props) {
   const [password, setPassword] = useState("");
+  const [user, setUser] = useState();
+  const [takenUsername, setTakenUsername] = useState(false);
+  const [takenEmail, setTakenEmail] = useState(false);
+  //const [button, setButton] = useState(disabled);
+  /*useEffect(async () => {
+    const result = await axios.get("http://localhost:8000/register");
+    setData(result.data);
+    console.log(data);
+  }, []);*/
   return (
-    <React.Fragment
-      sx={{
-        position: "relative",
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
+    <React.Fragment>
       <img id="image" src="/download.jpg" />
       <Card
         sx={{
-          width: "500px",
+          width: "600px",
           position: "fixed",
           display: "flex",
           justifyContent: "center",
           transform: "translate(-50%,-50%)",
           top: "55%",
           left: "50%",
-          zoom: "0.9",
+          zoom: "0.82",
         }}
       >
         <CardContent>
           <div id="signupBody">
-            <Typography sx={{ fontSize: "larger", paddingLeft: "45px" }}>
-              Create an account
-            </Typography>
             <br />
             <form method="POST" action="http://localhost:8000/register">
               <TextField
                 required
                 sx={{
-                  width: "300px",
                   display: "flex",
                   justifyContent: "center",
                 }}
                 label="Username"
                 variant="outlined"
                 name="username"
+                onChange={async (e) => {
+                  //console.log("target" + e.target.value);
+                  //console.log("data " + data);
+                  setTakenUsername(false);
+                  let repeat;
+                  try {
+                    repeat = await axios.post(
+                      "http://localhost:8000/checkusername",
+                      {
+                        username: e.target.value,
+                      }
+                    );
+                  } catch (error) {
+                    console.log(error);
+                  }
+                  if (repeat.data) setTakenUsername(repeat.data);
+                }}
               ></TextField>
+              {takenUsername ? (
+                <Alert severity="warning">Username already taken.</Alert>
+              ) : (
+                () => setTakenUsername(false)
+              )}
               <br />
               <TextField
                 required
@@ -74,7 +96,6 @@ function Signup(props) {
               <TextField
                 required
                 sx={{
-                  width: "300px",
                   display: "flex",
                   justifyContent: "center",
                 }}
@@ -106,7 +127,31 @@ function Signup(props) {
                 type="email"
                 variant="outlined"
                 name="email"
+                onChange={async (e) => {
+                  //console.log("target" + e.target.value);
+                  //console.log("data " + data);
+                  setTakenEmail(false);
+                  let repeat;
+                  try {
+                    repeat = await axios.post(
+                      "http://localhost:8000/checkemail",
+                      {
+                        email: e.target.value,
+                      }
+                    );
+                  } catch (error) {
+                    console.log(error);
+                  }
+                  if (repeat.data) setTakenEmail(repeat.data);
+                }}
               ></TextField>
+              {takenEmail ? (
+                <Alert severity="warning">
+                  An account with this e-mail already exists.
+                </Alert>
+              ) : (
+                () => setTakenEmail(false)
+              )}
               <br />
               <TextField
                 required
@@ -159,7 +204,20 @@ function Signup(props) {
               <Button
                 variant="contained"
                 type="submit"
-                sx={{ backgroundColor: "green !important", marginLeft: "10px" }}
+                sx={
+                  takenUsername | takenEmail
+                    ? {
+                        backgroundColor: "grey !important",
+
+                        width: "350px",
+                      }
+                    : {
+                        backgroundColor: "green !important",
+
+                        width: "350px",
+                      }
+                }
+                disabled={takenUsername | takenEmail}
               >
                 Complete Your Registration
               </Button>

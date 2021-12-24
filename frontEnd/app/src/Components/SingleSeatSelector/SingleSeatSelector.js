@@ -10,7 +10,7 @@ import {
   createTheme,
   withStyles,
 } from "@material-ui/core/styles";
-import "./SeatSelectorCSS.scss";
+import "./SingleSeatSelector.scss";
 import classNames from "classnames";
 import Alert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
@@ -20,119 +20,73 @@ import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import background from '../UserLanding/travel3.jpg';
 
-class SeatSelector extends Component {
-
-
-  componentDidMount()
-  {
-    console.log(this.state);
-  }
-
+class SingleSeatSelector extends Component {
   constructor(props) {
     super(props);
-
-    let outBoundClass = this.props.details.depflightClass;
-    let inBoundClass = this.props.details.returnflightClass;
+    console.log(this.props)
+    
+    let Direction = this.props.details.direction;
+    let Class = this.props.details.flightClass;
     let passengers = this.props.details.passengers
 
     passengers.forEach((passenger) => {
-      passenger.outBoundSeat = "N/A";
-      passenger.inBoundSeat = "N/A";
+      passenger.Seat = "N/A";
     });
 
-    let outBoundtotalEconomySeats = this.props.details.depchosenflight.totalEconomySeats;
-    let outBoundtotalBusinessSeats = this.props.details.depchosenflight.totalBusinessSeats;
-    let outBoundtotalFirstSeats = this.props.details.depchosenflight.totalFirstSeats;
+    let totalEconomySeats = this.props.details.chosenFlight.totalEconomySeats;
+    let totalBusinessSeats = this.props.details.chosenFlight.totalBusinessSeats;
+    let totalFirstSeats = this.props.details.chosenFlight.totalFirstSeats;
 
-    let inBoundtotalEconomySeats = this.props.details.returnchosenflight.totalEconomySeats;;
-    let inBoundtotalBusinessSeats = this.props.details.depchosenflight.totalBusinessSeats;;
-    let inBoundtotalFirstSeats = this.props.details.depchosenflight.totalFirstSeats;;
+    let departureCity = this.props.details.chosenFlight.departureLocation.city;
+    let arrivalCity = this.props.details.chosenFlight.arrivalLocation.city;
 
-    let departureCity = this.props.details.depchosenflight.departureLocation.city;
-    let arrivalCity = this.props.details.depchosenflight.arrivalLocation.city;
+    let SelectedSeats = [];
 
-    let outBoundSelectedSeats = [];
-    let inBoundSelectedSeats = [];
-
-    this.props.details.depchosenflight.reservations.forEach((reservation) => {
-      if(this.props.details.depchosenflight._id===reservation.outBoundflight){
+    this.props.details.chosenFlight.reservations.forEach((reservation) => {
+      if(this.props.details.reservation._id===reservation._id)return;
+      if(this.props.details.chosenFlight._id===reservation.outBoundflight){
         reservation.passengers.forEach((passenger) => {
-          outBoundSelectedSeats.push(passenger.outBoundSeat)
+          SelectedSeats.push(passenger.outBoundSeat)
         })
       }else{
         reservation.passengers.forEach((passenger) => {
-          outBoundSelectedSeats.push(passenger.inBoundSeat)
+          SelectedSeats.push(passenger.inBoundSeat)
         })
       }
     })
 
-    this.props.details.returnchosenflight.reservations.forEach((reservation) => {
-      if(this.props.details.returnchosenflight._id===reservation.outBoundflight){
-        reservation.passengers.forEach((passenger) => {
-          inBoundSelectedSeats.push(passenger.outBoundSeat)
-        })
-      }else{
-        reservation.passengers.forEach((passenger) => {
-          inBoundSelectedSeats.push(passenger.inBoundSeat)
-        })
-      }
-    })
-
-    let outBoundRows = [];
+    let Rows = [];
 
     let id = 1;
     let lastRowNum = "@";
-    let firstRows = this.generateClassSeats(outBoundtotalFirstSeats, "First", id, outBoundSelectedSeats, lastRowNum);
+    let firstRows = this.generateClassSeats(totalFirstSeats, "First", id, SelectedSeats, lastRowNum);
     id = firstRows.id;
     lastRowNum = firstRows.lastRow;
-    let businessRows = this.generateClassSeats(outBoundtotalBusinessSeats, "Business", id, outBoundSelectedSeats, lastRowNum);
+    let businessRows = this.generateClassSeats(totalBusinessSeats, "Business", id, SelectedSeats, lastRowNum);
     id = businessRows.id;
     lastRowNum = businessRows.lastRow;
-    let economyRows = this.generateClassSeats(outBoundtotalEconomySeats, "Economy", id, outBoundSelectedSeats, lastRowNum);
-    outBoundRows.push([]);
-    outBoundRows = outBoundRows.concat(firstRows.rows);
-    outBoundRows.push([]);
-    outBoundRows = outBoundRows.concat(businessRows.rows);
-    outBoundRows.push([]);
-    outBoundRows = outBoundRows.concat(economyRows.rows);
-    outBoundRows.push([]);
-
-
-
-    let inBoundRows = [];
-
-    id = 1;
-    lastRowNum = "@";
-    firstRows = this.generateClassSeats(inBoundtotalFirstSeats, "First", id, inBoundSelectedSeats, lastRowNum);
-    id = firstRows.id;
-    lastRowNum = firstRows.lastRow;
-    businessRows = this.generateClassSeats(inBoundtotalBusinessSeats, "Business", id, inBoundSelectedSeats, lastRowNum);
-    id = businessRows.id;
-    lastRowNum = businessRows.lastRow;
-    economyRows = this.generateClassSeats(inBoundtotalEconomySeats, "Economy", id, inBoundSelectedSeats, lastRowNum);
-    inBoundRows.push([]);
-    inBoundRows = inBoundRows.concat(firstRows.rows);
-    inBoundRows.push([]);
-    inBoundRows = inBoundRows.concat(businessRows.rows);
-    inBoundRows.push([]);
-    inBoundRows = inBoundRows.concat(economyRows.rows);
-    inBoundRows.push([]);
+    let economyRows = this.generateClassSeats(totalEconomySeats, "Economy", id, SelectedSeats, lastRowNum);
+    Rows.push([]);
+    Rows = Rows.concat(firstRows.rows);
+    Rows.push([]);
+    Rows = Rows.concat(businessRows.rows);
+    Rows.push([]);
+    Rows = Rows.concat(economyRows.rows);
+    Rows.push([]);
 
     const confirmationNumber = Math.floor(Math.random() * 100000000000 + 1)
 
     this.state = {
       selectedSeats: [],
-      outBoundRows: outBoundRows,
-      inBoundRows: inBoundRows,
+      Rows: Rows,
       departureCity: departureCity,
       arrivalCity: arrivalCity,
       passengers: passengers,
-      activeFlight: 0,
       activePassenger: 0,
-      outBoundClass: outBoundClass,
-      inBoundClass: inBoundClass,
+      Class: Class,
       previousStage: this.props.details,
       confirmationNumber:confirmationNumber,
+      direction:Direction,
     };
   }
 
@@ -186,46 +140,38 @@ class SeatSelector extends Component {
 
   addFunctionality = (row, number) => {
     this.setState((prevState) => {
-      if (this.state.activeFlight === 0)
-        prevState.passengers[prevState.activePassenger].outBoundSeat =
-          row + number;
-      else
-        prevState.passengers[prevState.activePassenger].inBoundSeat =
-          row + number;
+      prevState.passengers[prevState.activePassenger].Seat =
+        row + number;
       return { passengers: prevState.passengers };
     });
   };
 
-  outBoundAddSeatCallback = async ({ row, number, id }, addCb, removeCb) => {
+  AddSeatCallback = async ({ row, number, id }, addCb, removeCb) => {
 
-    if (this.state.passengers[this.state.activePassenger].outBoundSeat !== "N/A") {
-      let x = this.state.passengers[this.state.activePassenger].outBoundSeat.split("");
+    if (this.state.passengers[this.state.activePassenger].Seat !== "N/A") {
+      let x = this.state.passengers[this.state.activePassenger].Seat.split("");
 
       let gapCounter = 0;
       this.setState((prevState) => {
-        prevState.outBoundRows.forEach((row, index) => {
+        prevState.Rows.forEach((row, index) => {
           if (row.length === 0) {
             gapCounter++;
           }
           const rowNumber = String.fromCharCode("A".charCodeAt(0) + index - gapCounter);
           row.forEach((seat) => {
-            if (seat !== null && rowNumber + "" + seat.number === this.state.passengers[this.state.activePassenger].outBoundSeat) {
+            if (seat !== null && rowNumber + "" + seat.number === this.state.passengers[this.state.activePassenger].Seat) {
               seat.isSelected = false;
             }
           });
         });
-        return { outBoundRows: prevState.outBoundRows };
+        return { Rows: prevState.Rows };
       });
 
       await removeCb(x[0], x[1]);
     }
 
     this.addFunctionality(row, number);
-    if (this.state.activePassenger === this.state.passengers.length - 1) {
-      if (this.state.activeFlight === 0) {
-        this.setState({ activePassenger: 0, activeFlight: 1 });
-      }
-    } else {
+    if (this.state.activePassenger !== this.state.passengers.length - 1) {
       this.setState((prevState) => {
         return { activePassenger: prevState.activePassenger + 1 };
       });
@@ -234,7 +180,7 @@ class SeatSelector extends Component {
     addCb(row, number, id);
 
     this.setState((prevState) => {
-      prevState.outBoundRows.forEach((row) => {
+      prevState.Rows.forEach((row) => {
         row.forEach((seat) => {
           if (seat !== null && seat.id === id) {
             seat.isSelected = true;
@@ -242,135 +188,43 @@ class SeatSelector extends Component {
         });
       });
 
-      return { outBoundRows: prevState.outBoundRows };
+      return { Rows: prevState.Rows };
     });
 
   };
 
 
-  inBoundAddSeatCallback = async ({ row, number, id }, addCb, removeCb) => {
-
-    if (this.state.passengers[this.state.activePassenger].inBoundSeat !== "N/A") {
-      let x = this.state.passengers[this.state.activePassenger].inBoundSeat.split("");
-
-      let gapCounter = 0;
-      this.setState((prevState) => {
-        prevState.inBoundRows.forEach((row, index) => {
-          if (row.length === 0) {
-            gapCounter++;
-          }
-          const rowNumber = String.fromCharCode("A".charCodeAt(0) + index - gapCounter);
-          row.forEach((seat) => {
-            if (seat !== null && rowNumber + "" + seat.number === this.state.passengers[this.state.activePassenger].inBoundSeat) {
-              seat.isSelected = false;
-            }
-          });
-        });
-        return { inBoundRows: prevState.inBoundRows };
-      });
-
-      await removeCb(x[0], x[1]);
-    }
-
-    this.addFunctionality(row, number);
-    if (this.state.activePassenger === this.state.passengers.length - 1) {
-      if (this.state.activeFlight === 0) {
-        this.setState({ activePassenger: 0, activeFlight: 1 });
-      }
-    } else {
-      this.setState((prevState) => {
-        return { activePassenger: prevState.activePassenger + 1 };
-      });
-    }
-
-    addCb(row, number, id);
-
-    this.setState((prevState) => {
-      prevState.inBoundRows.forEach((row) => {
-        row.forEach((seat) => {
-          if (seat !== null && seat.id === id) {
-            seat.isSelected = true;
-          }
-        });
-      });
-
-      return { inBoundRows: prevState.inBoundRows };
-    });
-
-  };
-
-
-  outBoundRemoveSeatCallback = ({ row, number, id }, removeCb) => {
+  RemoveSeatCallback = ({ row, number, id }, removeCb) => {
 
     for (let i = 0; i < this.state.passengers.length; i++) {
-      if (this.state.passengers[i].outBoundSeat === row + number) {
+      if (this.state.passengers[i].Seat === row + number) {
         this.setState((prevState) => {
-          prevState.passengers[i].outBoundSeat = "N/A";
+          prevState.passengers[i].Seat = "N/A";
           prevState.activePassenger = i;
 
           return {
             passengers: prevState.passengers,
             activePassenger: prevState.activePassenger,
-            activeFlight: 0,
           };
         });
       }
     }
     removeCb(row, number);
     this.setState((prevState) => {
-      prevState.outBoundRows.forEach((row) => {
+      prevState.Rows.forEach((row) => {
         row.forEach((seat) => {
           if (seat !== null && seat.id === id) {
             seat.isSelected = false;
           }
         });
       });
-      return { outBoundRows: prevState.outBoundRows };
+      return { Rows: prevState.Rows };
     });
   };
 
-  inBoundRemoveSeatCallback = ({ row, number, id }, removeCb) => {
-
+  seatChosenFlag = (e) => {
     for (let i = 0; i < this.state.passengers.length; i++) {
-      if (this.state.passengers[i].inBoundSeat === row + number) {
-        this.setState((prevState) => {
-          prevState.passengers[i].inBoundSeat = "N/A";
-          prevState.activePassenger = i;
-
-          return {
-            passengers: prevState.passengers,
-            activePassenger: prevState.activePassenger,
-            activeFlight: 1,
-          };
-        });
-      }
-    }
-    removeCb(row, number);
-    this.setState((prevState) => {
-      prevState.inBoundRows.forEach((row) => {
-        row.forEach((seat) => {
-          if (seat !== null && seat.id === id) {
-            seat.isSelected = false;
-          }
-        });
-      });
-      return { inBoundRows: prevState.inBoundRows };
-    });
-  };
-
-  seatChosenFlag = (pos, e) => {
-    for (let i = 0; i < this.state.passengers.length; i++) {
-      if (
-        pos === 0 &&
-        i === e &&
-        this.state.passengers[i].outBoundSeat !== "N/A"
-      ) {
-        return true;
-      } else if (
-        pos === 1 &&
-        i === e &&
-        this.state.passengers[i].inBoundSeat !== "N/A"
-      ) {
+      if (i === e && this.state.passengers[i].Seat !== "N/A" ) {
         return true;
       }
     }
@@ -379,15 +233,11 @@ class SeatSelector extends Component {
 
   successFlag = () => {
     for (let i = 0; i < this.state.passengers.length; i++) {
-      if (this.state.passengers[i].outBoundSeat === "N/A" || this.state.passengers[i].inBoundSeat === "N/A") {
+      if (this.state.passengers[i].Seat === "N/A") {
         return false;
       }
     }
     return (true);
-  };
-
-  currentFlightFlag = () => {
-    return this.state.activeFlight === 0 ? true : false;
   };
 
   render() {
@@ -401,32 +251,30 @@ class SeatSelector extends Component {
 
     const ltrTheme = createTheme({ direction: "ltr" });
     const rtlTheme = createTheme({ direction: "rtl" });
-    const isRtl = true;
+    const isRtl = this.state.direction==="inbound"?true:false;
 
-    var buttonClasses = (pos, index) => {
-      let x = this.seatChosenFlag(pos, index);
+    var buttonClasses = (index) => {
+      let x = this.seatChosenFlag(index);
       return classNames({
-        active:
-          this.state.activePassenger === index &&
-          this.state.activeFlight === pos,
+        active: this.state.activePassenger === index,
         done: x,
         defaultButton: !x,
       });
     };
 
 
-    let outBoundSeatMap = () => {
+    let SeatMap = () => {
       return (<div>
         <div class="cockpit" style={{ marginTop: '-60px' }}>
-          <h2 style={{ textAlign: 'center', marginTop: '60px' }} > OutBound Flight </h2>
+          <h2 style={{ textAlign: 'center', marginTop: '60px' }} > {this.state.direction} Flight </h2>
         </div>
         <div class="fuselage">
           <div class="pick">
             <SeatPicker
-              addSeatCallback={this.outBoundAddSeatCallback}
-              removeSeatCallback={this.outBoundRemoveSeatCallback}
-              rows={this.state.outBoundRows}
-              selectedCabin={this.state.outBoundClass}
+              addSeatCallback={this.AddSeatCallback}
+              removeSeatCallback={this.RemoveSeatCallback}
+              rows={this.state.Rows}
+              selectedCabin={this.state.Class}
               maxReservableSeats={this.state.passengers.length * 2 + 1}
               alpha
               visible
@@ -439,34 +287,6 @@ class SeatSelector extends Component {
       </div>
       )
     }
-
-    let inBoundSeatMap = () => {
-
-      return (
-        <div>
-          <div class="cockpit" style={{ marginTop: '-60px' }}>
-            <h2 style={{ textAlign: 'center', marginTop: '60px' }} > InBound Flight </h2>
-          </div>
-          <div class="fuselage">
-            <div class="pick">
-              <SeatPicker
-                addSeatCallback={this.inBoundAddSeatCallback}
-                removeSeatCallback={this.inBoundRemoveSeatCallback}
-                rows={this.state.inBoundRows}
-                selectedCabin={this.state.inBoundClass}
-                maxReservableSeats={this.state.passengers.length * 2 + 1}
-                alpha
-                visible
-                selectedByDefault
-                loading={loading}
-                tooltipProps={{ multiline: true }}
-              />
-            </div>
-          </div>
-        </div>
-      )
-    }
-
 
 
     return (
@@ -481,7 +301,7 @@ class SeatSelector extends Component {
           }}
         >
           <div >
-            <TransitionControl noTransition={false} switch={this.currentFlightFlag()} outBoundSeatMap={outBoundSeatMap()} inBoundSeatMap={inBoundSeatMap()}></TransitionControl>
+          <TransitionControl noTransition={true} Map={SeatMap()}></TransitionControl>
           </div>
 
           <Box
@@ -509,7 +329,7 @@ class SeatSelector extends Component {
             <Card sx={{ bgcolor: "#076F72" }}>
               <CardContent>
                 <Typography sx={{ font: '30px Railway ' }}>
-                  You can only select {this.state.activeFlight === 0 ? this.state.outBoundClass : this.state.inBoundClass} Class
+                  You can only select {this.state.Class} Class
                 </Typography>
               </CardContent>
             </Card>
@@ -546,18 +366,7 @@ class SeatSelector extends Component {
                       width: "70%",
                     }}
                   >
-                    <Box
-                      sx={{
-                        fontFamily: "Monospace",
-                        fontWeight: "bold",
-                        fontSize: 26,
-                      }}
-                    >
-                      {this.state.departureCity}
-                      <DirectionAwareFlightTakeoffIcon />
-                      {this.state.arrivalCity}
-                    </Box>
-
+                    
                     <Box
                       sx={{
                         fontFamily: "Monospace",
@@ -621,27 +430,14 @@ class SeatSelector extends Component {
                         >
                           <Button
                             variant="outlined"
-                            className={buttonClasses(0, index)}
+                            className={buttonClasses(index)}
                             onClick={() => {
                               this.setState({
-                                activeFlight: 0,
                                 activePassenger: index,
                               });
                             }}
                           >
-                            {passenger.outBoundSeat}
-                          </Button>
-                          <Button
-                            variant="outlined"
-                            className={buttonClasses(1, index)}
-                            onClick={() => {
-                              this.setState({
-                                activeFlight: 1,
-                                activePassenger: index,
-                              });
-                            }}
-                          >
-                            {passenger.inBoundSeat}
+                            {passenger.Seat}
                           </Button>
                         </Box>
                       </Box>
@@ -660,7 +456,8 @@ class SeatSelector extends Component {
                 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignContent: "center" }}>
                   <Alert variant="filled" severity="success" sx={{ mt: "10px" }}>
-                    You have selected all seats! Click Checkout to proceed to payment!
+                    {(this.props.details.editingSeats===true)&&"You have selected all seats! Click Change Seats to proceed!"}
+                    {(this.props.details.editingSeats===false)&&"You have selected all seats! Click Checkout to proceed to payment!"}
                   </Alert>
 
                 </Box>
@@ -671,16 +468,17 @@ class SeatSelector extends Component {
                   flexDirection: 'row',
                   justifyContent: "flex-end",
                 }}>
-                  <Link to="/payment" type="submit" state={{ result: this.state }} style={{textDecoration: "none"}}>
+                  <Link to={(this.props.details.editingSeats===true)?"/userflights":"/payment"} type="submit" state={{ result: this.state }} style={{textDecoration: "none"}}>
                     <Button
                       variant="contained"
                       color="success"
                       sx={{ mt: "30px" }}
-                      onClick={() => {
-                        axios.post('http://localhost:8000/reservationinsertion', this.state);
-                      }}
+                      onClick={this.props.details.editingSeats===true?() => {
+                        axios.patch('http://localhost:8000/changeseats', this.state);
+                      }:null}
                     >
-                      Checkout
+                      {(this.props.details.editingSeats===true)&&"Change Seats"}
+                      {(this.props.details.editingSeats===false)&&"Checkout"}
                     </Button>
                   </Link>
                 </Box>
@@ -696,9 +494,46 @@ class SeatSelector extends Component {
   }
 }
 
-function SeatSelectorFunction(props) {
+function SingleSeatSelectorFunction(props) {
   let location = useLocation();
   const { result } = location.state
+  
+  if(location.state.flag===undefined){
+    
+    if(result.departureSearch===true){
+      result.direction="outbound";
+      result.flightClass=result.depflightClass;
+      result.chosenFlight=result.depchosenflight;
+    }else{
+      result.direction="inbound";
+      result.flightClass=result.returnflightClass;
+      result.chosenFlight=result.returnchosenflight;
+    }
+    
+    result.editingSeats=false;
+    
+  }else{
+    if(location.state.flag==="oubound"){
+      result.direction="outbound";
+      result.flightClass=result.reservation.outBoundClass;
+      result.chosenFlight=result.outBound;
+    }else{
+      result.direction="inbound";
+      result.flightClass=result.reservation.inBoundClass;
+      result.chosenFlight=result.inBound;
+    }
+    
+    result.editingSeats=true;
+  } 
+  
+  result.passengers=result.reservation.passengers;
+  result.passengers.forEach((passenger)=>{
+    delete passenger.outBoundSeat;
+    delete passenger.inBoundSeat;
+  })
+  
+  console.log(result);
+  
   return (
 
     <div style={{
@@ -708,8 +543,7 @@ function SeatSelectorFunction(props) {
       backgroundRepeat: 'no-repeat'
 
   }}>
-      {/* <div> */}
-      <SeatSelector details={result} />
+      <SingleSeatSelector details={result} />
      </div>
   );
 }
@@ -717,4 +551,4 @@ function SeatSelectorFunction(props) {
 
 
 
-export default SeatSelectorFunction;
+export default SingleSeatSelectorFunction;
