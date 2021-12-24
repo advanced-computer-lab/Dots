@@ -84,16 +84,21 @@ function Content(props) {
 
                             </Grid>
                         </Grid>
-                        <Stack direction="row" alignItems="center" spacing={6} id="totalPrice" >
-                            <Typography className="summary" >
-                                New Ticket Price: <br />
-                                <Typography sx={{ transform: 'translateX(40px)' }}>{departureflightprice + arrivalflightprice}$</Typography>
-                            </Typography>
-                            <Typography className="summary">
-                                Old Ticket Price: <br />
-                                <Typography sx={{ transform: 'translateX(40px)' }}>{oldDepPrice + oldReturnPrice}$</Typography>
-                            </Typography>
-                        </Stack>
+                        <Grid container spacing={3}>
+                            <Grid item xs={4}></Grid>
+                            <Grid item xs={8}>
+                                <Stack direction="row" alignItems="center" spacing={6} id="totalPrice" >
+                                    <Typography className="summary" >
+                                        New Ticket Price: <br />
+                                        <Typography sx={{ transform: 'translateX(40px)' }}>{departureflightprice + arrivalflightprice}$</Typography>
+                                    </Typography>
+                                    <Typography className="summary">
+                                        Old Ticket Price: <br />
+                                        <Typography sx={{ transform: 'translateX(40px)' }}>{oldDepPrice + oldReturnPrice}$</Typography>
+                                    </Typography>
+                                </Stack>
+                            </Grid>
+                        </Grid>
                     </div>
                 </CardContent>
             </Card>
