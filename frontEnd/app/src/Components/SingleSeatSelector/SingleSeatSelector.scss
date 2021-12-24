@@ -1,0 +1,63 @@
+.done {
+    background-color: #89a5d4 !important;
+    color: #000000 !important;
+  }
+  
+  .active {
+    background-color: #cccccc !important;
+    color: #000000 !important;
+  }
+  
+  .cockpit {
+    height: 190px; 
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    z-index: 0;
+    &:before {
+      background-color: #a3d1d3;
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 400px;
+      width: 100%;
+      border-radius: 60%;
+      border-right: 5px solid #d8d8d8;
+      border-left: 5px solid #d8d8d8;
+      
+    }
+    h2 {
+      width: 60%;
+      margin: 100px auto 35px auto;
+      z-index: 100000;
+      position: relative;
+    }
+  }
+  
+  .fuselage {
+    border-right: 5px solid #d8d8d8;
+    border-left: 5px solid #d8d8d8;
+    border-bottom: 5px solid #d8d8d8;
+    background-color: #a3d1d3;
+  }
+  
+  .wow{
+      content: "";
+      display: block;
+      // position: absolute;
+      top: 0;
+      left: 0;
+      // height: 400px;
+      // width: 100%;
+      border-top-right-radius: 45%;
+      border-top-left-radius: 45%;
+      // -webkit-border-radius: 60%;
+    //  -moz-border-radius: 60%;
+      border-right: 5px solid #d8d8d8;
+      border-left: 5px solid #d8d8d8;
+      border-bottom: 5px solid #d8d8d8;
+      overflow: hidden;
+  }
+  

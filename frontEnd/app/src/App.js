@@ -4,6 +4,7 @@ import FlightsList from './Components/flightsList.js';
 import UserLanding from './Components/UserLanding/UserLanding.js';
 import ReservationsPage from './Components/reservations/ReservationsPage'
 import SeatSelector from './Components/SeatSelector/SeatSelector.js'
+import SingleSeatSelector from './Components/SingleSeatSelector/SingleSeatSelector'
 import UserFlightList from './Components/UserFlightList/userFlightList.js';
 import FakePayment from './Components/FakePayment/FakePayment.js';
 import EditReservation from './Components/EditReservation/editReservation.js';
@@ -29,6 +30,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import EditPage from './Components/EditUser/EditPage';
 import UserFlights from './Components/Summary/userFlights';
 import GuestNavBar from './Components/GuestNavBar/GuestNavBar';
+import Signup from './Components/UserRegistration/signup';
 
 const theme = createTheme({
   palette: {
@@ -54,11 +56,13 @@ class App extends Component {
           <Route path="/admin" element={<FlightsList />} />
           <Route path="/:userId/edit-info" element={<EditPage/>} />
           <Route path="/seatselector" element={<SeatSelector />} />
+          <Route path="/singleseatselector" element={<SingleSeatSelector />} />
           <Route path="/loading" element={<Loading />} />
           <Route path="/summary" element={<Summary/>} />
           <Route path="/userflights" element={<UserFlights/>} />
           <Route path="/payment" element={<FakePayment/>}/>
           <Route path="/editReservation" element={<EditReservation/>}/>
+          <Route path="/register" element={<Signup/>}/>
 
         </Routes>
 

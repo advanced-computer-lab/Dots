@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router';
-import CircularProgress from '@mui/material/CircularProgress';
-import ReservationCard from '../Summary/ReservationCard.js'
-import axios from 'axios';
-import './FakePayment.css'
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router";
+import CircularProgress from "@mui/material/CircularProgress";
+import ReservationCard from "../Summary/ReservationCard.js";
+import "./FakePayment.css";
 
 const confirmationNumber = Math.floor(Math.random() * 100000000000 + 1);
 function FakePayment(props) {
   let location = useLocation();
   // const confirmationNumber = Math.floor(Math.random() * 100000000000 + 1)
   // console.log(confirmationNumber);
-  const { result } = location.state
+  const { result } = location.state;
   console.log(result);
   // result.confirmationNumber = confirmationNumber;
   const [count, setCount] = useState(false);
@@ -20,22 +19,30 @@ function FakePayment(props) {
       setCount(true);
     }, 5000);
     return () => clearTimeout(timer);
-  }, [])
+  }, []);
   if (!count) {
     return (
       <div id="parent">
         <img id="image" src="/download.jpg" />
         <div id="circle">
-          <CircularProgress /></div>
+          <CircularProgress />
+        </div>
         <div id="paymentText"> Processing Payment...</div>
       </div>
     );
-  }
-  else return (<div>
-  <img id="image" src="/download.jpg" />
-  <ReservationCard outBound = {result.previousStage.depchosenflight} inBound = {result.previousStage.returnchosenflight}
-      reservation = {result.previousStage} confirmationNumber = {result.confirmationNumber} top = {result}/>
-      </div>);
+  } else
+    return (
+      <div>
+        <img id="image" src="/download.jpg" />
+        <ReservationCard
+          outBound={result.previousStage.depchosenflight}
+          inBound={result.previousStage.returnchosenflight}
+          reservation={result.previousStage}
+          confirmationNumber={result.confirmationNumber}
+          top={result}
+        />
+      </div>
+    );
 }
 
 export default FakePayment;
