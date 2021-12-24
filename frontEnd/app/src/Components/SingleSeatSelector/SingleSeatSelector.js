@@ -24,7 +24,7 @@ class SingleSeatSelector extends Component {
   constructor(props) {
     super(props);
     console.log(this.props)
-
+    
     let Direction = this.props.details.direction;
     let Class = this.props.details.flightClass;
     let passengers = this.props.details.passengers
@@ -33,17 +33,18 @@ class SingleSeatSelector extends Component {
       passenger.Seat = "N/A";
     });
 
-    let totalEconomySeats = this.props.details.chosenflight.totalEconomySeats;
-    let totalBusinessSeats = this.props.details.chosenflight.totalBusinessSeats;
-    let totalFirstSeats = this.props.details.chosenflight.totalFirstSeats;
+    let totalEconomySeats = this.props.details.chosenFlight.totalEconomySeats;
+    let totalBusinessSeats = this.props.details.chosenFlight.totalBusinessSeats;
+    let totalFirstSeats = this.props.details.chosenFlight.totalFirstSeats;
 
-    let departureCity = this.props.details.chosenflight.departureLocation.city;
-    let arrivalCity = this.props.details.chosenflight.arrivalLocation.city;
+    let departureCity = this.props.details.chosenFlight.departureLocation.city;
+    let arrivalCity = this.props.details.chosenFlight.arrivalLocation.city;
 
     let SelectedSeats = [];
 
-    this.props.details.chosenflight.reservations.forEach((reservation) => {
-      if(this.props.details.chosenflight._id===reservation.outBoundflight){
+    this.props.details.chosenFlight.reservations.forEach((reservation) => {
+      if(this.props.details.reservation._id===reservation._id)return;
+      if(this.props.details.chosenFlight._id===reservation.outBoundflight){
         reservation.passengers.forEach((passenger) => {
           SelectedSeats.push(passenger.outBoundSeat)
         })
@@ -240,7 +241,6 @@ class SingleSeatSelector extends Component {
   };
 
   render() {
-    console.log(this.state.activePassenger)
     const { loading } = this.state;
 
     const DirectionAwareFlightTakeoffIcon = withStyles((theme) => ({
@@ -456,7 +456,8 @@ class SingleSeatSelector extends Component {
                 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignContent: "center" }}>
                   <Alert variant="filled" severity="success" sx={{ mt: "10px" }}>
-                    You have selected all seats! Click Checkout to proceed to payment!
+                    {(this.props.details.editingSeats===true)&&"You have selected all seats! Click Change Seats to proceed!"}
+                    {(this.props.details.editingSeats===false)&&"You have selected all seats! Click Checkout to proceed to payment!"}
                   </Alert>
 
                 </Box>
@@ -467,16 +468,17 @@ class SingleSeatSelector extends Component {
                   flexDirection: 'row',
                   justifyContent: "flex-end",
                 }}>
-                  <Link to="/payment" type="submit" state={{ result: this.state }} >
+                  <Link to={(this.props.details.editingSeats===true)?"/userflights":"/payment"} type="submit" state={{ result: this.state }} style={{textDecoration: "none"}}>
                     <Button
                       variant="contained"
                       color="success"
                       sx={{ mt: "30px" }}
-                      onClick={() => {
-                        axios.post('http://localhost:8000/reservationinsertion', this.state);
-                      }}
+                      onClick={this.props.details.editingSeats===true?() => {
+                        axios.patch('http://localhost:8000/changeseats', this.state);
+                      }:null}
                     >
-                      Checkout
+                      {(this.props.details.editingSeats===true)&&"Change Seats"}
+                      {(this.props.details.editingSeats===false)&&"Checkout"}
                     </Button>
                   </Link>
                 </Box>
@@ -493,25 +495,45 @@ class SingleSeatSelector extends Component {
 }
 
 function SingleSeatSelectorFunction(props) {
-  // let location = useLocation();
-  // const { result } = location.state
-
-  const result={
-    direction:"OutBound",
-    flightClass:"Economy",
-    passengers:[{firstName:"Ahmed",lastName:"ElAmory"},{firstName:"Ahmed",lastName:"Belal"},{firstName:"Omar",lastName:"ElSawi"}],
-    chosenflight:
-                { totalEconomySeats:20,
-                  totalBusinessSeats:20,
-                  totalFirstSeats:20,
-                  departureLocation:{city:"Cairo"},
-                  arrivalLocation:{city:"Luxor"},
-                  reservations:[],
-
-                }
-                  
-  }
+  let location = useLocation();
+  const { result } = location.state
+  
+  if(location.state.flag===undefined){
+    
+    if(result.departureSearch===true){
+      result.direction="outbound";
+      result.flightClass=result.depflightClass;
+      result.chosenFlight=result.depchosenflight;
+    }else{
+      result.direction="inbound";
+      result.flightClass=result.returnflightClass;
+      result.chosenFlight=result.returnchosenflight;
+    }
+    
+    result.editingSeats=false;
+    
+  }else{
+    if(location.state.flag==="oubound"){
+      result.direction="outbound";
+      result.flightClass=result.reservation.outBoundClass;
+      result.chosenFlight=result.outBound;
+    }else{
+      result.direction="inbound";
+      result.flightClass=result.reservation.inBoundClass;
+      result.chosenFlight=result.inBound;
+    }
+    
+    result.editingSeats=true;
+  } 
+  
+  result.passengers=result.reservation.passengers;
+  result.passengers.forEach((passenger)=>{
+    delete passenger.outBoundSeat;
+    delete passenger.inBoundSeat;
+  })
+  
   console.log(result);
+  
   return (
 
     <div style={{
@@ -521,7 +543,6 @@ function SingleSeatSelectorFunction(props) {
       backgroundRepeat: 'no-repeat'
 
   }}>
-      {/* <div> */}
       <SingleSeatSelector details={result} />
      </div>
   );

@@ -218,7 +218,9 @@ app.get("/userflights", async (req, res) => {
   var reservations = user.reservations;
   for (let i = 0; i < reservations.length; i++) {
     await reservations[i].populate("inBoundflight");
+    await reservations[i].inBoundflight.populate("reservations");
     await reservations[i].populate("outBoundflight");
+    await reservations[i].outBoundflight.populate("reservations");
     await reservations[i].populate("user");
   }
   console.log(reservations);

@@ -664,7 +664,7 @@ class SeatSelector extends Component {
                   flexDirection: 'row',
                   justifyContent: "flex-end",
                 }}>
-                  <Link to="/payment" type="submit" state={{ result: this.state }} >
+                  <Link to="/payment" type="submit" state={{ result: this.state }} style={{textDecoration: "none"}}>
                     <Button
                       variant="contained"
                       color="success"
