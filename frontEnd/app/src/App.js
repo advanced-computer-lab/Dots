@@ -6,6 +6,7 @@ import ReservationsPage from './Components/reservations/ReservationsPage'
 import SeatSelector from './Components/SeatSelector/SeatSelector.js'
 import UserFlightList from './Components/UserFlightList/userFlightList.js';
 import FakePayment from './Components/FakePayment/FakePayment.js';
+import EditReservation from './Components/EditReservation/editReservation.js';
 import Test from './Components/SeatMapTransitionControl/SeatMapTransitionControl.js'
 
 import UserSearch from './Components/UserSearch/UserSearch';
@@ -57,6 +58,7 @@ class App extends Component {
           <Route path="/summary" element={<Summary/>} />
           <Route path="/userflights" element={<UserFlights/>} />
           <Route path="/payment" element={<FakePayment/>}/>
+          <Route path="/editReservation" element={<EditReservation/>}/>
 
         </Routes>
 
