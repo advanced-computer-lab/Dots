@@ -133,35 +133,58 @@ app.post("/flights", async (req, res) => {
   res.redirect("http://localhost:3000/admin");
 });
 
-app.get("/register", async (req, res) => {
+/*app.get("/register", async (req, res) => {
   if (repeated) {
     res.send("repeated");
     repeated = false;
   }
+});*/
+app.post("/checkemail", async (req, res) => {
+  let bool = false;
+  //console.log(req.body.email);
+  if (req.body.email != undefined) {
+    let user = await User.findOne({ email: req.body.email });
+    if (user != null) {
+      // repeated = true;
+      //console.log(user);
+      bool = true;
+      // repeated = false;
+    }
+  }
+  res.send(bool);
+});
+
+app.post("/checkusername", async (req, res) => {
+  let bool = false;
+  //console.log(req.body.username);
+  if (req.body.username != undefined) {
+    let user = await User.findOne({ username: req.body.username });
+    if (user != null) {
+      // repeated = true;
+      console.log(user);
+      bool = true;
+      // repeated = false;
+    }
+  }
+  res.send(bool);
 });
 app.post("/register", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
-    if (user != null) {
-      res.redirect("http://localhost:3000/register");
-      repeated = true;
-    } else {
-      const hash = bcrypt.hashSync(req.body.password, saltRounds);
-      console.log(req.body);
-      console.log(hash);
-      User.create({
-        username: req.body.username,
-        firstName: req.body.first,
-        lastName: req.body.last,
-        email: req.body.email,
-        password: hash,
-        passportNumber: req.body.passportnumber,
-        phoneNumber: req.body.phonenumber,
-        homeAddress: req.body.address,
-        countryCode: req.body.countrycode,
-      });
-      res.redirect("http://localhost:3000/");
-    }
+    const hash = bcrypt.hashSync(req.body.password, saltRounds);
+    console.log(req.body);
+    console.log(hash);
+    User.create({
+      username: req.body.username,
+      firstName: req.body.first,
+      lastName: req.body.last,
+      email: req.body.email,
+      password: hash,
+      passportNumber: req.body.passportnumber,
+      phoneNumber: req.body.phonenumber,
+      homeAddress: req.body.address,
+      countryCode: req.body.countrycode,
+    });
+    res.redirect("http://localhost:3000/");
   } catch (error) {
     console.log(error);
   }
