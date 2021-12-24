@@ -19,7 +19,6 @@ const MongoURI = process.env.MONGO_URI;
 let alert = require("alert");
 const short = require("short-uuid");
 const translator = short();
-const bcrypt = require("bcrypt");
 const saltRounds = 10;
 var cors = require("cors");
 
@@ -86,8 +85,8 @@ app.use(session(sessionConfig));
 // });
 
 //------------------------------------------authentication-----------------------------------------
-const verifyAdmin = (req,res,next)=>{
-  if(req.verifiedUser.role!=='admin') return res.sendStatus(403)
+const verifyAdmin = (req, res, next) => {
+  if (req.verifiedUser.role !== 'admin') return res.sendStatus(403)
   next()
 }
 
@@ -103,30 +102,34 @@ const verifyToken = (req, res, next) => {
 }
 
 app.use((req, res, next) => {
-  if (req.url === "/login" || req.url==="/flights" || req.url==="/flights/flightquery")
+  if (req.url === "/login" || req.url === "/flights" || req.url === "/flights/flightquery" || req.url === "/register")
     return next()
   else
     return verifyToken(req, res, next)
 })
 
-app.get("/checkAuth",(req,res)=>{
-  if(req.verifiedUser) return res.status(200).send(req.verifiedUser)
+app.get("/checkAuth", (req, res) => {
+  const authHeader = req.headers.authorization
+  const token = authHeader && authHeader.split(' ')[1]
+  if (req.verifiedUser) {
+    return res.status(200).send({ accessToken: token, role: req.verifiedUser.role, name: req.verifiedUser.name })
+  }
   return res.sendStatus(401)
 })
 
-app.get("checkAdmin",(req,res)=>{
+app.get("checkAdmin", (req, res) => {
   if (req.verifiedUser.role === 'admin') return res.send(200).send(req.verifiedUser)
   return res.sendStatus(403)
 })
 
 app.post("/login", (req, res) => {
-  const { email, password } = req.body
-  User.find({ email })
+  const { username, password } = req.body
+  User.findOne({ username })
     .then((user) => {
       bcrypt.compare(password, user.password)
         .then((isPasswordCorrect) => {
           if (isPasswordCorrect) {
-            const payload = { id: user.id, email: user.email, role: 'user' }
+            const payload = { id: user._id, name: user.firstName, role: 'user' }
             jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
               if (err) return res.json({ msg: err })
               return res.json({
@@ -139,17 +142,18 @@ app.post("/login", (req, res) => {
         })
     })
     .catch(() => {
-      Admin.find({ email })
+      Admin.find({ username })
         .then((admin) => {
           bcrypt.compare(password, admin.password)
             .then((isPasswordCorrect) => {
               if (isPasswordCorrect) {
-                const payload = { id: admin.id, email: admin.email, role: 'admin' }
+                const payload = { id: admin.id, name: admin.firstName, role: 'admin' }
                 jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
                   if (err) return res.json({ msg: err })
                   return res.json({
                     accessToken: token,
-                    role: 'admin'
+                    role: 'admin',
+                    name: admin.firstName
                   })
                 })
               } else res.status(401).send({ msg: "Password is incorrect" })
@@ -167,7 +171,6 @@ async function rand() {
   return rand;
 }
 app.post("/flights", async (req, res) => {
-  console.log(req.body);
   try {
     Flight.create({
       flightNumber: req.body.flightNo,
@@ -223,8 +226,6 @@ app.post("/register", async (req, res) => {
       repeated = true;
     } else {
       const hash = bcrypt.hashSync(req.body.password, saltRounds);
-      console.log(req.body);
-      console.log(hash);
       User.create({
         username: req.body.username,
         firstName: req.body.first,
@@ -235,8 +236,18 @@ app.post("/register", async (req, res) => {
         phoneNumber: req.body.phonenumber,
         homeAddress: req.body.address,
         countryCode: req.body.countrycode,
-      });
-      res.redirect("http://localhost:3000/");
+      })
+        .then((user) => {
+          const payload = { id: user._id, name: user.firstName, role: 'user' }
+          jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
+            if (err) return res.json({ msg: err })
+            return res.json({
+              accessToken: token,
+              name: user.firstName,
+              role: 'user'
+            })
+          })
+        })
     }
   } catch (error) {
     console.log(error);
@@ -266,6 +277,7 @@ flightIn.save((err) => {
 */
 
 app.get("/userflights", async (req, res) => {
+  console.log(req.verifiedUser)
   var user = await User.find({});
   user = await user[0].populate("reservations");
   var reservations = user.reservations;
@@ -274,7 +286,6 @@ app.get("/userflights", async (req, res) => {
     await reservations[i].populate("outBoundflight");
     await reservations[i].populate("user");
   }
-  console.log(reservations);
   res.json(reservations);
 });
 
@@ -284,7 +295,7 @@ app.get("/userflights", async (req, res) => {
   console.log(allData.inBoundflight.departureTime);
 });*/
 
-app.delete("/flight/:flightId/delete", async (req, res) => {
+app.delete("/flight/:flightId/delete", verifyAdmin, async (req, res) => {
   var id = mongoose.Types.ObjectId(req.params.flightId);
   try {
     await Flight.findByIdAndDelete(id);
@@ -386,7 +397,7 @@ app.post("/reservationinsertion", async (req, res) => {
       { new: true }
     );
 });
-app.put("/flights/:flightId", async (req, res) => {
+app.put("/flights/:flightId", verifyAdmin, async (req, res) => {
   const updateData = req.body;
   delete updateData._id;
 
@@ -408,11 +419,10 @@ app.get("/flights", async (req, res) => {
     res.send(flights);
   } catch (error) {
     res.send([]);
-    console.log(error);
   }
 });
 
-app.get("/flights/:flightId", async (req, res) => {
+app.get("/flights/:flightId", verifyAdmin, async (req, res) => {
   try {
     let flight = await Flight.findById(req.params.flightId).exec();
     res.send(flight);
@@ -510,9 +520,6 @@ app.delete("/reservations/:reservationId", (req, res) => {
                 break;
               default:
             }
-            console.log(outBoundPrice);
-            console.log(inBoundFlight);
-            console.log(inBoundPrice);
             outBoundPrice *= reservationDeleted.passengers.length;
             inBoundPrice *= reservationDeleted.passengers.length;
 
@@ -520,39 +527,36 @@ app.delete("/reservations/:reservationId", (req, res) => {
               from: `'Takeoff Airways' <${process.env.MAIL_USER}>`,
               to: userFound.email,
               subject: "Refund Confirmation",
-              html: `<h2 style="color:#09827C;">Hello ${
-                userFound.firstName
-              }!</h2>
+              html: `<h2 style="color:#09827C;">Hello ${userFound.firstName
+                }!</h2>
                     <h4>This mail is to confirm your refund</h4>
                     <p>Outbound flight total price: <b>$${outBoundPrice}</b></p>
                     <p>Inbound flight total price: <b>$${inBoundPrice}</b></p>
                     <h3>Total Price: $${outBoundPrice + inBoundPrice}</h3>
                     <p>Have a nice day!</p>`
-                    }
+            }
 
-                    transporter.sendMail(mailOptions, (err, data) => {
-                      if (err) {
-                        // Reservation.create(reservationDeleted).then(() => {
-                        //   User.findByIdAndUpdate(reservationDeleted.user, { $push: { reservations: reservationId } })
-                        //     .then(() => {
-                        //       Flight.findByIdAndUpdate(reservationDeleted.outBoundflight, { $push: { reservations: reservationId } })
-                        //         .then(() => {
-                        //           Flight.findByIdAndUpdate(reservationDeleted.inBoundflight, { $push: { reservations: reservationId } })
-                        res.status(400).send(err)
-                        //         })
-                        //     })
-                        // })
-                      }
-                      else
-                        res.send(`Email Sent: ${data}`)
-                    })
-                  })
-              })
+            transporter.sendMail(mailOptions, (err, data) => {
+              if (err) {
+                // Reservation.create(reservationDeleted).then(() => {
+                //   User.findByIdAndUpdate(reservationDeleted.user, { $push: { reservations: reservationId } })
+                //     .then(() => {
+                //       Flight.findByIdAndUpdate(reservationDeleted.outBoundflight, { $push: { reservations: reservationId } })
+                //         .then(() => {
+                //           Flight.findByIdAndUpdate(reservationDeleted.inBoundflight, { $push: { reservations: reservationId } })
+                res.status(400).send(err)
+                //         })
+                //     })
+                // })
+              }
+              else
+                res.send(`Email Sent: ${data}`)
+            })
           })
+        })
       })
-    console.log("data deleted!");
+    })
   } catch (error) {
-    console.log("data deleted!");
     res.send(error);
   }
 });
@@ -614,8 +618,6 @@ app.post("/flights/flightquery", async (req, res) => {
     queryOutDate.setTime(queryOutDate.getTime() + 2 * 60 * 60 * 1000);
     queryInDate.setTime(queryInDate.getTime() + 2 * 60 * 60 * 1000);
 
-    console.log(queryOutDate);
-    console.log(queryInDate);
 
     outDates = [];
     inDates = [];

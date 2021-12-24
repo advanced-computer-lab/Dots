@@ -17,10 +17,10 @@ const AuthProvider = ({ children }) => {
     name
   });
 
-  const setAuthInfo = ({ accessToken, role,name }) => {
+  const setAuthInfo = ({ accessToken, role, name }) => {
     localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('role',role);
-    localStorage.setItem('name',name);
+    localStorage.setItem('role', role);
+    localStorage.setItem('name', name);
 
     setAuthState({
       accessToken,
@@ -35,34 +35,35 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem('name');
     setAuthState({});
   };
-  const isAuthenticatedBackend = () =>{
-    axios.get("http://localhost:8000/checkAuth")
-    .then((verifiedUser)=>{
+  const isAuthenticatedBackend = () => {
+    return axios.get("http://localhost:8000/checkAuth")
+      .then((verifiedUser) => {
         setAuthInfo(verifiedUser)
         return true
-    })
-    .catch(()=>{
+      })
+      .catch(() => {
         return false
-    })
+      })
   }
   const isAuthenticated = () => {
-    if (!authState.accessToken ) {
+    if (!authState.accessToken) {
       return false;
     }
     return (
-     true
+      true
     );
   };
 
-  const isAdminBackend = () =>{
-    axios.get("http://localhost:8000/checkAdmin")
-    .then((verifiedUser)=>{
+  const isAdminBackend = () => {
+    return axios.get("http://localhost:8000/checkAdmin")
+      .then((verifiedUser) => {
+        console.log(verifiedUser)
         setAuthInfo(verifiedUser)
         return true
-    })
-    .catch(()=>{
+      })
+      .catch(() => {
         return false
-    })
+      })
   }
 
   const isAdmin = () => {

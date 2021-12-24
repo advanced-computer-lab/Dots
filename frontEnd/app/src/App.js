@@ -1,4 +1,4 @@
-import React, { Component, useContext,Fragment } from 'react';
+import React, { Component, useContext,Fragment,useEffect } from 'react';
 import './App.css';
 import FlightsList from './Components/flightsList.js';
 import UserLanding from './Components/UserLanding/UserLanding.js';
@@ -37,13 +37,13 @@ const theme = createTheme({
 });
 
 
-const AuthenticatedRoute = ({ children, ...rest }) => {
+const AuthenticatedRoute = ({ children }) => {
   const authContext = useContext(AuthContext)
   return (
-    authContext.isAuthenticatedBackend() ? (
+    authContext.isAuthenticated() ? (
       children
     ) : (
-      <Navigate to="/" />
+      <Navigate to="/login" />
     )
   )
 }
@@ -51,7 +51,7 @@ const AuthenticatedRoute = ({ children, ...rest }) => {
 const AdminRoute = ({ children, ...rest }) => {
   const authContext = useContext(AuthContext)
   return (
-    authContext.isAuthenticatedBackend() && authContext.isAdminBackend() ? (
+    authContext.isAuthenticated() && authContext.isAdmin() ? (
       children
     ) : (
       <Navigate to="/" />

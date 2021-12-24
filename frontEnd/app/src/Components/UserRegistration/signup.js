@@ -1,11 +1,7 @@
-import React, { useState, Suspense, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  TextField,
-  Button,
-} from "@mui/material/";
+import React, { useState, Suspense, useEffect, useContext } from "react";
+import { useNavigate } from 'react-router';
+import { AuthContext } from '../../context/authContext';
+import { Card, CardContent, Typography, TextField, Button, } from "@mui/material/";
 import axios from "axios";
 import "./signup.css";
 const PasswordStrengthBar = React.lazy(() =>
@@ -14,11 +10,31 @@ const PasswordStrengthBar = React.lazy(() =>
 function Signup(props) {
   const [password, setPassword] = useState("");
   const [data, setData] = useState("");
+  const [username, setUsername] = useState("");
+  const [first, setFirst] = useState("");
+  const [last, setLast] = useState("");
+  const [email, setEmail] = useState("");
+  const [passportnumber, setPassportNum] = useState("");
+  const [phonenumber, setPhoneNum] = useState("");
+  const [countrycode, setCountryCode] = useState("");
+  const [address, setAddress] = useState("");
+  const authContext = useContext(AuthContext)
   useEffect(async () => {
     const result = await axios.get("http://localhost:8000/register");
     setData(result.data);
     console.log(data);
   }, []);
+  const navigate = useNavigate()
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const formData = {
+      username, password, first, last, countrycode, address, passportnumber, phonenumber, email
+    }
+    const authData = await axios.post('http://localhost:8000/register', formData)
+    console.log(authData)
+    authContext.setAuthState(authData.data)
+    navigate("/")
+  }
   return (
     <React.Fragment
       sx={{
@@ -49,8 +65,9 @@ function Signup(props) {
               Create an account
             </Typography>
             <br />
-            <form method="POST" action="http://localhost:8000/register">
+            <form onSubmit={handleSubmit}>
               <TextField
+                onChange={e => setUsername(e.target.value)}
                 required
                 sx={{
                   width: "300px",
@@ -86,6 +103,7 @@ function Signup(props) {
               </Suspense>
               <br />
               <TextField
+                onChange={e => setFirst(e.target.value)}
                 required
                 sx={{
                   width: "300px",
@@ -98,6 +116,7 @@ function Signup(props) {
               ></TextField>
               <br />
               <TextField
+                onChange={e => setLast(e.target.value)}
                 required
                 sx={{
                   height: "50px",
@@ -110,6 +129,7 @@ function Signup(props) {
               ></TextField>
               <br />
               <TextField
+                onChange={e => setEmail(e.target.value)}
                 required
                 sx={{
                   height: "50px",
@@ -123,6 +143,7 @@ function Signup(props) {
               ></TextField>
               <br />
               <TextField
+                onChange={e => setPassportNum(e.target.value)}
                 required
                 sx={{
                   height: "50px",
@@ -135,6 +156,7 @@ function Signup(props) {
               ></TextField>
               <br />
               <TextField
+                onChange={e => setPhoneNum(e.target.value)}
                 required
                 sx={{
                   height: "50px",
@@ -147,6 +169,7 @@ function Signup(props) {
               ></TextField>
               <br />
               <TextField
+                onChange={e => setAddress(e.target.value)}
                 required
                 sx={{
                   height: "50px",
@@ -159,6 +182,7 @@ function Signup(props) {
               ></TextField>
               <br />
               <TextField
+                onChange={e => setCountryCode(e.target.value)}
                 required
                 sx={{
                   height: "50px",
