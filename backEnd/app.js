@@ -16,13 +16,18 @@ const Admin = require("./models/admins");
 const Reservation = require("./models/reservations");
 const User = require("./models/users");
 
-const MongoURI = process.env.MONGO_URI;
+// const MongoURI = process.env.MONGO_URI;
+const MongoURI = "mongodb+srv://ACLUsers:GaUD669Bt04ZltRG@cluster0.ofagz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 let alert = require("alert");
 const short = require("short-uuid");
 const translator = short();
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 var cors = require("cors");
+
+const stripeSK = 'sk_test_51K7gFNGx4Kq2M7uIDuWdTvjJmDVKIfKn9ilUGxGN9E29HfUGuFkp1lWRUaq9TojVSQoqxspIiuzl7tAxNdWcA1cW008U6almTb'
+const stripe = require('stripe')(stripeSK);
+
 
 //App variables
 const app = express();
@@ -31,8 +36,7 @@ const port = process.env.PORT || "8000";
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Mongo DB
-mongoose
-  .connect(MongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB is now connected"))
   .catch((err) => console.log(err));
 app.use(cors({ origin: true, credentials: true }));
@@ -48,7 +52,6 @@ let transporter = nodemailer.createTransport({
 });
 //--------------------------
 
-// Flight.create({ from: "LAX", to: "JFK", flightDate: 2022-1-12, cabin: "Cairo"});
 
 // -------------------------------- Login Authentication using passport ---------------------------------
 
@@ -156,12 +159,12 @@ app.post("/register", async (req, res) => {
 });
 
 /*const flightOut = new Flight({
-  _id: new mongoose.Types.ObjectId(),
+  _id: new mongoose.TypesstateectId(),
   departureTime: new Date('2016-08-18T21:11:54'),
   arrivalTime: new Date('2017-08-18T21:11:54')
 });
 const flightIn = new Flight({
-  _id: new mongoose.Types.ObjectId(),
+  _id: new mongoose.TypesstateectId(),
   departureTime: new Date('2020-08-18T21:11:54'),
   arrivalTime: new Date('2023-08-18T21:11:54')
 });
@@ -197,7 +200,7 @@ app.get("/userflights", async (req, res) => {
 });*/
 
 app.delete("/flight/:flightId/delete", async (req, res) => {
-  var id = mongoose.Types.ObjectId(req.params.flightId);
+  var id = mongoose.TypesstateectId(req.params.flightId);
   try {
     await Flight.findByIdAndDelete(id);
     res.send("Flight Deleted");
@@ -207,7 +210,7 @@ app.delete("/flight/:flightId/delete", async (req, res) => {
 });
 
 app.post("/reservationinsertion", async (req, res) => {
-  var mongooseID = new mongoose.Types.ObjectId();
+  var mongooseID = new mongoose.TypesstateectId();
   Reservation.create({
     _id: mongooseID,
     user: "61a762c24c337dff67c229fe",
@@ -220,13 +223,13 @@ app.post("/reservationinsertion", async (req, res) => {
     totalPrice: req.body.totalPrice,
   });
   await User.findByIdAndUpdate(
-    new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"),
+    new mongoose.TypesstateectId("61a762c24c337dff67c229fe"),
     { $push: { reservations: mongooseID } },
     { new: true }
   );
   if (req.body.outBoundClass === "Economy")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id),
+      new mongoose.TypesstateectId(req.body.previousStage.depchosenflight._id),
       {
         $push: { reservations: mongooseID },
         economySeatsAvailable:
@@ -237,7 +240,7 @@ app.post("/reservationinsertion", async (req, res) => {
     );
   else if (req.body.outBoundClass === "First")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id),
+      new mongoose.TypesstateectId(req.body.previousStage.depchosenflight._id),
       {
         $push: { reservations: mongooseID },
         firstSeatsAvailable:
@@ -248,7 +251,7 @@ app.post("/reservationinsertion", async (req, res) => {
     );
   else if (req.body.outBoundClass === "Business")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id),
+      new mongoose.TypesstateectId(req.body.previousStage.depchosenflight._id),
       {
         $push: { reservations: mongooseID },
         businessSeatsAvailable:
@@ -260,7 +263,7 @@ app.post("/reservationinsertion", async (req, res) => {
 
   if (req.body.inBoundClass === "Economy")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.Types.ObjectId(
+      new mongoose.TypesstateectId(
         req.body.previousStage.returnchosenflight._id
       ),
       {
@@ -273,7 +276,7 @@ app.post("/reservationinsertion", async (req, res) => {
     );
   else if (req.body.inBoundClass === "First")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.Types.ObjectId(
+      new mongoose.TypesstateectId(
         req.body.previousStage.returnchosenflight._id
       ),
       {
@@ -286,7 +289,7 @@ app.post("/reservationinsertion", async (req, res) => {
     );
   else if (req.body.inBoundClass === "Business")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.Types.ObjectId(
+      new mongoose.TypesstateectId(
         req.body.previousStage.returnchosenflight._id
       ),
       {
@@ -302,7 +305,7 @@ app.put("/flights/:flightId", async (req, res) => {
   const updateData = req.body;
   delete updateData._id;
 
-  const searchId = mongoose.Types.ObjectId(req.params.flightId);
+  const searchId = mongoose.TypesstateectId(req.params.flightId);
 
   try {
     const doc = await Flight.findByIdAndUpdate(searchId, updateData, {
@@ -338,7 +341,7 @@ app.delete("/reservations/:reservationId", (req, res) => {
   try {
     if (!req.params.reservationId)
       res.status(400).send({ message: "Reservation Id invalid" });
-    const reservationId = mongoose.Types.ObjectId(req.params.reservationId);
+    const reservationId = mongoose.TypesstateectId(req.params.reservationId);
     Reservation.findByIdAndDelete(reservationId).then((reservationDeleted) => {
       if (!reservationDeleted)
         res.status(404).send({ message: "Couldn't find reservation" });
@@ -432,9 +435,8 @@ app.delete("/reservations/:reservationId", (req, res) => {
               from: `'Takeoff Airways' <${process.env.MAIL_USER}>`,
               to: userFound.email,
               subject: "Refund Confirmation",
-              html: `<h2 style="color:#09827C;">Hello ${
-                userFound.firstName
-              }!</h2>
+              html: `<h2 style="color:#09827C;">Hello ${userFound.firstName
+                }!</h2>
                     <h4>This mail is to confirm your refund</h4>
                     <p>Outbound flight total price: <b>$${outBoundPrice}</b></p>
                     <p>Inbound flight total price: <b>$${inBoundPrice}</b></p>
@@ -470,7 +472,7 @@ app.delete("/reservations/:reservationId", (req, res) => {
 
 //----------------get and post user data----------------
 app.get("/users/:userId", async (req, res) => {
-  const userId = mongoose.Types.ObjectId(req.params.userId);
+  const userId = mongoose.TypesstateectId(req.params.userId);
 
   User.findById(userId).then((data) => {
     res.send(data);
@@ -478,7 +480,7 @@ app.get("/users/:userId", async (req, res) => {
 });
 
 app.put("/users/:userId", async (req, res) => {
-  const userId = mongoose.Types.ObjectId(req.params.userId);
+  const userId = mongoose.TypesstateectId(req.params.userId);
   const userData = req.body;
   delete userData._id;
 
@@ -611,8 +613,8 @@ app.post("/flights/flightquery", async (req, res) => {
         return flightDateString === tempDateString;
       });
 
-      let dateObject = {};
-      dateObject[tempDateString] = tempFlights;
+      let datstateect = {};
+      datstateect[tempDateString] = tempFlights;
       outFlightsWithDate.push({ date: tempDate, flights: tempFlights });
     }
 
@@ -628,8 +630,8 @@ app.post("/flights/flightquery", async (req, res) => {
         return flightDateString === tempDateString;
       });
 
-      let dateObject = {};
-      dateObject[tempDateString] = tempFlights;
+      let datstateect = {};
+      datstateect[tempDateString] = tempFlights;
       inFlightsWithDate.push({ date: tempDate, flights: tempFlights });
     }
 
@@ -655,6 +657,369 @@ app.post("/flights/flightquery", async (req, res) => {
     res.status(400).send(null);
   }
 });
+
+
+
+///////////////////// Stripe ////////////////////////
+
+
+
+const createCustomer = async (email) => {
+  const customer = await stripe.customers.create({
+    email: email,
+
+  }
+
+  );
+
+  console.log(customer);
+}
+
+
+const retrieveCustomer = async (email) => {
+
+  const customers = await stripe.customers.list({
+    email: email
+  });
+
+  return customers.data;
+}
+
+
+const updateCustomer = async (id, params) => {
+
+  const customer = await stripe.customers.update(
+    id, params
+  );
+
+}
+
+const createFlightProduct = async (params) => {
+  const product = await stripe.products.create({
+    name: params.from + "-" + params.to,
+    metadata: { "Flight_Number": params.id, "class": params.class, "depTime": params.depDate, "arrTime": params.arrDate }
+  });
+  console.log(product)
+  return product
+}
+
+
+const getFlightProduct = async (id) => {
+  const products = await stripe.products.list();
+  let filteredProducts = products.data.filter(flight => {
+    if (flight.metadata.Flight_Number == id) {
+      return flight
+    }
+
+  })
+  return filteredProducts;
+
+}
+
+const createPrice = async (p, pid) => {
+  const price = await stripe.prices.create({
+    unit_amount: p * 100,
+    currency: 'usd',
+    product: pid
+  });
+
+  return price;
+}
+
+
+const createFlightProducts = async (flight) => {
+
+  const from = flight[0].departureLocation.airport;
+  const to = flight[0].arrivalLocation.airport;
+  const id = flight[0].flightNumber;
+  const ecoPrice = flight[0].economyClassPrice;
+  const busPrice = flight[0].businessClassPrice;
+  const firstPrice = flight[0].firstClassPrice;
+  let depDate = flight[0].departureTime;
+  let arrDate = flight[0].arrivalTime;
+  // parse date to string
+  depDate = new Date(depDate);
+  arrDate = new Date(arrDate);
+  depDate = depDate.toISOString().substring(0, 10);
+  arrDate = arrDate.toISOString().substring(0, 10);
+
+
+  const productEco = await createFlightProduct({ 'from': from, 'to': to, 'id': id, 'class': 'Economy', 'depTime': depDate, 'arrTime': arrDate })
+  const productBus = await createFlightProduct({ 'from': from, 'to': to, 'id': id, 'class': 'Business', 'depTime': depDate, 'arrTime': arrDate })
+  const productFirst = await createFlightProduct({ 'from': from, 'to': to, 'id': id, 'class': 'First', 'depTime': depDate, 'arrTime': arrDate })
+
+  console.log('Eco : ' + productEco.id)
+
+
+  const priceEco = await createPrice(ecoPrice, productEco.id)
+  const priceBus = await createPrice(busPrice, productBus.id)
+  const priceFirst = await createPrice(firstPrice, productFirst.id)
+
+  console.log('Eco Price : ' + priceEco)
+  return [productEco, productBus, productFirst, priceEco, priceBus, priceFirst]
+
+}
+
+
+
+
+app.post("/create-checkout-session", async (req, res) => {
+
+  const state = req.body.state;
+
+  const dep = {
+    "depDate": state.previousStage.depchosenflight.departureTime, "arrDate": state.previousStage.depchosenflight.arrivalTime,
+    "flightNum": state.previousStage.depchosenflight.flightNumber, "class": state.previousStage.depflightClass
+  }
+
+  const arr = {   "depDate": state.previousStage.returnchosenflight.departureTime, "arrDate" : state.previousStage.returnchosenflight.arrivalTime ,
+   "flightNum" : state.previousStage.returnchosenflight.flightNumber , "class" : state.previousStage.returnflightClass  }
+
+   const numPass = state.previousStage.numberOfpassengers;
+
+  // const email = req.body.email;
+ 
+  let depDate1 = dep.depDate;
+  let arrDate1 = dep.arrDate;
+  let depDate2 = arr.depDate;
+  let arrDate2 = arr.arrDate;
+
+
+  depDate1 = new Date(depDate1);
+  arrDate1 = new Date(arrDate1);
+  depDate2 = new Date(depDate2);
+  arrDate2 = new Date(arrDate2);
+  depDate1 = depDate1.toISOString().substring(0,10);
+  arrDate1 = arrDate1.toISOString().substring(0,10);
+  depDate2 = depDate2.toISOString().substring(0,10);
+  arrDate2 = arrDate2.toISOString().substring(0,10);
+
+  // dep = { flightNum , cls , numPass , depDate , arrDate }
+
+  console.log(dep.flightNum);
+
+
+  let depFlight = await Flight.find({ flightNumber: dep.flightNum })
+  let arrFlight = await Flight.find({ flightNumber: arr.flightNum })
+
+  // check if email exists if not create customer 
+  // let customer = await retrieveCustomer(email)
+  // if (customer.length === 0) {
+  //   customer = await createCustomer(email);
+  // }
+  // else {
+  //   customer = customer[0]
+  // }
+
+  console.log(depFlight[0].economyFlightProductId === null);
+
+  // check if both flights exist by flight id if not create 3 flights products for each class 
+
+
+
+  let depFlightProduct = null
+  let arrFlightProduct = null
+  let depPrice = null
+  let arrPrice = null
+
+
+  if (depFlight[0].economyFlightProductId === null) {
+    // create products and return their IDs ; we need them to create the session line items
+    // update in the DB the 3 ids of the 3 classes
+    let depProducts = await createFlightProducts(depFlight)
+    // console.log(depProducts);
+    depBusinessProductId = depProducts[1].id
+    depEconomyProductId = depProducts[0].id
+    depFirstProductId = depProducts[2].id
+    depEconomyPriceId = depProducts[3].id
+    depBusinessPriceId = depProducts[4].id
+    depFirstPriceId = depProducts[5].id
+
+    // update flight id 
+    await Flight.updateOne({ flightNumber: dep.flightNum }, { $set: { economyFlightProductId: depEconomyProductId, businessFlightProductId: depBusinessProductId, firstFlightProductId: depFirstProductId, economyFlightPriceId: depEconomyPriceId, businessFlightPriceId: depBusinessPriceId, firstFlightPriceId: depFirstPriceId } })
+    
+    switch (dep.class) {
+      case 'Economy': depFlightProduct = depEconomyProductId; depPrice = depEconomyPriceId; break;
+      case 'Business': depFlightProduct = depBusinessProductId; depPrice = depBusinessPriceId; break;
+      case 'First': depFlightProduct = depFirstProductId; depPrice = depFirstPriceId; break;
+    }
+
+  }
+  else {
+    console.log(depFlight[0].economyFlightPriceId);
+    console.log("here")
+    switch (dep.class) {
+      case 'Economy': depFlightProduct = depFlight[0].economyFlightProductId; depPrice = depFlight[0].economyFlightPriceId; break;
+      case 'Business': depFlightProduct = depFlight[0].businessFlightProductId; depPrice = depFlight[0].businessFlightPriceId; break;
+      case 'First': depFlightProduct = depFlight[0].firstFlightProductId; depPrice = depFlight[0].firstFlightPriceId; break;
+    }
+  }
+
+  if (arrFlight[0].economyFlightProductId === null) {
+    // create products and return their IDs ; we need them to create the session line items
+    // update in the DB the 3 ids of the 3 classes
+    let arrProducts = await createFlightProducts(arrFlight)
+    arrBusinessProductId = arrProducts[1].id
+    arrEconomyProductId = arrProducts[0].id
+    arrFirstProductId = arrProducts[2].id
+    arrEconomyPriceId = arrProducts[3].id
+    arrBusinessPriceId = arrProducts[4].id
+    arrFirstPriceId = arrProducts[5].id
+
+    // update flight id
+    await Flight.updateOne({ flightNumber: arr.flightNum }, { $set: { economyFlightProductId: arrEconomyProductId, businessFlightProductId: arrBusinessProductId, firstFlightProductId: arrFirstProductId, economyFlightPriceId: arrEconomyPriceId, businessFlightPriceId: arrBusinessPriceId, firstFlightPriceId: arrFirstPriceId } })
+    switch (arr.class) {
+      case 'Economy': arrFlightProduct = arrEconomyProductId; arrPrice = arrEconomyPriceId; break;
+      case 'Business': arrFlightProduct = arrBusinessProductId; arrPrice = arrBusinessPriceId; break;
+      case 'First': arrFlightProduct = arrFirstProductId; arrPrice = arrFirstPriceId; break;
+
+    }
+  }
+  else {
+    console.log(arrFlight[0].economyFlightPriceId);
+    switch (arr.class) {
+      case 'Economy': arrFlightProduct = arrFlight[0].economyFlightProductId; arrPrice = arrFlight[0].economyFlightPriceId; break;
+      case 'Business': arrFlightProduct = arrFlight[0].businessFlightProductId; arrPrice = arrFlight[0].businessFlightPriceId; break;
+      case 'First': arrFlightProduct = arrFlight[0].firstFlightProductId; arrPrice = arrFlight[0].firstFlightPriceId; break;
+    }
+  }
+
+
+
+  // console.log(customer.id)
+  // console.log(numPass)
+  console.log(depPrice)
+  console.log(arrPrice)
+  // console.log(arrFlightProduct)
+
+  
+
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+        price: depPrice,
+        quantity: numPass,
+        description: "Flight Number: " + dep.flightNum + ' ' + '- Class: ' + dep.class + ' - ' + 'Departure Time : ' + dep.depDate1 + ' - ' + 'Arrival Time :' + dep.arrDate1,
+      },
+      {
+        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+        price: arrPrice,
+        quantity: numPass,
+        description: "Flight Number: " + arr.flightNum + ' ' + '- Class: ' + arr.class + ' - ' + 'Departure Time : ' + arr.depDate2 + ' - ' + 'Arrival Time :' + arr.arrDate2,
+
+      },
+    ],
+    mode: 'payment',
+    success_url: 'http://localhost:3000/payment?session_id={CHECKOUT_SESSION_ID}',
+    cancel_url: 'http://localhost:3000/seatselector',
+  });
+
+  console.log(session);
+  res.send(session);
+
+});
+
+
+const createRefund = async (pid, refundAmount) => {
+  const refund = await stripe.refunds.create({
+    payment_intent: pid,
+    amount: refundAmount*100
+  });
+   return refund;
+}
+
+
+app.post("/refund" ,  async (req , res ) =>{
+      try{
+       const refund  = await createRefund(req.body.pid , req.body.amount);
+       console.log(refund)
+       res.send(refund);
+      }
+      catch(err)
+      {
+        console.log(err)
+        res.status(400).send({})
+      }
+
+       
+
+} );
+
+
+
+
+
+app.post('/change-flight-payment', async (req, res) => {
+
+  // get old flight dep and arr 
+  // get new flight dep and arr 
+  // get old flight total price 
+  // get new flight total price 
+  // if new > old redirect to payment session
+  // else refund
+
+  const body = req.body;
+  const flightName = body.name;
+  const amount = body.amount;
+  const numPass = body.numPass;
+  const pid = 'prod_KpJJhW42ynbZ8i'
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        quantity: numPass,
+        price_data: {
+          currency: 'usd',
+          unit_amount: amount * 100,
+          product: pid
+
+        },
+      },
+    ],
+    mode: 'payment',
+    success_url: 'https://example.com/success',
+    cancel_url: 'https://example.com/cancel',
+  });
+
+  res.send(session);
+});
+
+
+
+
+
+
+
+
+
+
+// stripe.prices.retrieve(
+//   'price_1K9egRGx4Kq2M7uIIBfNHlJ6'
+// ).then( price => { console.log(price) } )
+
+
+// Flight.find({ flightNumber: 'AMORY' }).then(flight => {console.log(flight)})
+
+
+
+// app.post('/flights/create-checkout-session', async (req, res) => {
+// const session = await stripe.checkout.sessions.create({
+//   line_items: [
+//     {
+//       // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+//       price: 'price_1K9egRGx4Kq2M7uIIBfNHlJ6',
+//       quantity: 1,
+//     },
+//   ],
+//   mode: 'payment',
+//   success_url: 'http://localhost:3000/payment',
+//     cancel_url: 'http://localhost:3000/seatselector',
+// });
+
+//   res.send(session);
+// });
+
+
 
 // Starting server
 app.listen(port, () => {

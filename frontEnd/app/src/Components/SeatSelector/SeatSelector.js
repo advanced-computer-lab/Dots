@@ -21,6 +21,13 @@ import axios from 'axios';
 import background from '../UserLanding/travel3.jpg';
 
 class SeatSelector extends Component {
+
+
+  componentDidMount()
+  {
+    console.log(this.state);
+  }
+
   constructor(props) {
     super(props);
 

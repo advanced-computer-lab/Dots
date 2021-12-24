@@ -16,6 +16,8 @@
     "@mui/material": "^5.0.6",
     "@mui/x-data-grid": "^5.0.0-beta.2",
     "@mui/x-data-grid-pro": "^5.0.0-beta.2",
+    "@stripe/react-stripe-js": "^1.7.0",
+    "@stripe/stripe-js": "^1.22.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",

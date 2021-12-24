@@ -51,7 +51,12 @@ const userSchema = new Schema({
       ref: "Reservation",
     },
   ],
-});
+  balance : {
+    type: Number
+  }
+}
+
+);
 
 userSchema.plugin(passportLocalMongoose);
 
