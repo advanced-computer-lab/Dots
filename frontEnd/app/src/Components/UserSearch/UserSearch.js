@@ -1,16 +1,12 @@
-import { Component,useContext } from 'react';
-import SearchIcon from '@mui/icons-material/Search';
-import InputAdornment from '@mui/material/InputAdornment';
+import { Component} from 'react';
 // import AutoComplete from "../autoComplete/AutoComplete";
 import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField';
-import Input from '@mui/material/Input';
 import FormControl from '@mui/material/FormControl';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
-import FilterAltRoundedIcon from '@mui/icons-material/FilterAltRounded';
 import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
@@ -18,10 +14,9 @@ import axios from 'axios'
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { withRouter } from 'react-router';
 
 
-import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import './UserSearch.css'
 

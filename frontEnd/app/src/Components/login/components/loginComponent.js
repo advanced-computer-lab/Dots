@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextField, InputAdornment, IconButton, } from '@mui/material'
+import { TextField, InputAdornment, IconButton, Box, Card, CardActions, Typography } from '@mui/material'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import axios from 'axios'
@@ -37,14 +37,15 @@ class loginComponent extends Component {
         })
     }
     areFieldsValid = () => {
-        const errorsArr = Object.keys(this.state.errors)
+        const {errors,username,password} = this.state
+        const errorsArr = Object.keys(errors)
         let valid = true
         errorsArr.forEach(error => {
             if (this.state.errors[error] !== '') {
                 valid = false
             }
         });
-        return valid
+        return valid && username!=='' && password!==''
     }
     handleClickShowPassword = () => {
         this.setState({
@@ -59,39 +60,50 @@ class loginComponent extends Component {
         const { username, password, showPassword } = this.state
         const { usernameError, passwordError } = this.state.errors
         return (
-            <div>
-                <TextField onBlur={this.handleChange}
-                    error={usernameError !== ''} helperText={usernameError}
-                    fullWidth sx={{ mb: 2 }} value={username} onChange={this.handleChange}
-                    label="Username" required type="input" id="username" placeholder="johndoe1" name="username" ></TextField>
+            <Card sx={{ p: 4, height: 400, alignItems: "center" }}>
+                    <Typography variant='h4' gutterBottom textAlign="center" sx={{fontWeight:'bold', color:'#076F72' }}>
+                        Login
+                    </Typography><br/>
+                <Box component="form" onSubmit={this.onSubmit} >
 
-                <TextField onBlur={this.handleChange}
-                    error={passwordError !== ''} helperText={passwordError}
-                    fullWidth sx={{ mb: 2 }} value={password} onChange={this.handleChange}
-                    label="Password" required type="input" id="password"
-                    placeholder="Ex: password123" name="password" >
-                    type={showPassword ? 'text' : 'password'}
-                    endAdornment=
-                    {
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={this.handleClickShowPassword}
-                                onMouseDown={this.handleMouseDownPassword}
-                                edge="end"
-                            >
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                        </InputAdornment>
-                    }
-                </TextField>
-                <LoadingButton disabled={!this.areFieldsValid()}
-                    onClick={this.onSubmit} size="large" variant="contained">
-                    Sign In
-                </LoadingButton>
+                    <TextField onBlur={this.handleChange}
+                        error={usernameError !== ''} helperText={usernameError}
+                        fullWidth sx={{ mb: 2 }} value={username} onChange={this.handleChange}
+                        label="Username" required type="input" id="username" placeholder="johndoe1"
+                        name="username" />
 
-            </div>
-        );
+                    <TextField onBlur={this.handleChange}
+                        error={passwordError !== ''} helperText={passwordError}
+                        fullWidth sx={{ mb: 2 }} value={password} onChange={this.handleChange}
+                        label="Password" required id="password"
+                        placeholder="Ex: password123" name="password"
+                        type={showPassword ? 'input' : 'password'}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={this.handleClickShowPassword}
+                                        onMouseDown={this.handleMouseDownPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }} />
+                    <CardActions sx={{ mt: 2, justifyContent: "center", alignItems: "center" }}>
+                        <LoadingButton disabled={!this.areFieldsValid()}
+                            onClick={this.onSubmit} size="large" variant="contained">
+                            Sign In
+                        </LoadingButton>
+                    </CardActions>
+                </Box><br/>
+                <Typography variant='h3' gutterBottom textAlign="center" sx={{fontWeight:'bold', color:'#076F72' }}>
+                        Ready to take-off?
+                    </Typography>
+            </Card>
+        )
     }
 }
 loginComponent.contextType = AuthContext;

@@ -13,19 +13,20 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Stack from '@mui/material/Stack';
-import './GuestNavBar.css';
+import './NavBar.css';
 import logo from './logo2.jpeg';
 import { Link } from 'react-router-dom';
-
+import {AuthContext} from '../../context/authContext.js'
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 
-const GuestNavBar = () => {
+const UserNavBar = () => {
   // const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const authContext = React.useContext(AuthContext)
+  console.log(authContext)
   // const handleOpenNavMenu = (event) => {
   //   setAnchorElNav(event.currentTarget);
   // };
@@ -53,7 +54,7 @@ const GuestNavBar = () => {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
 
-          <Stack direction="row" spacing={165} alignItems="center">
+          <Stack direction="row" spacing={155} alignItems="center">
             <a href="/">
               <img src={logo} alt="Logo" width="120" />
             </a>
@@ -68,6 +69,7 @@ const GuestNavBar = () => {
             >
               <AccountCircle fontSize="medium" color = "white"/>
             </IconButton>
+            {authContext && authContext.authState.name}
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
@@ -84,14 +86,14 @@ const GuestNavBar = () => {
               onClose={handleClose}
             >
               <MenuItem onClick={handleClose}>
-                <a class = "menuItem" href="/61a762c24c337dff67c229fe/edit-info">
+                <a className = "menuItem" href="/61a762c24c337dff67c229fe/edit-info">
                   <Typography variant="overline" display="block" gutterBottom>
                     Profile
                   </Typography>
                 </a>
               </MenuItem>
               <MenuItem onClick={handleClose}>
-                <a class = "menuItem"  href="/userflights">
+                <a className = "menuItem"  href="/userflights">
                   <Typography variant="overline" display="block" gutterBottom>
                     My Flights
                   </Typography>
@@ -106,4 +108,4 @@ const GuestNavBar = () => {
     </AppBar>
   );
 };
-export default GuestNavBar;
+export default UserNavBar;

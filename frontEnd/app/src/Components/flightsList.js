@@ -406,7 +406,7 @@ class FlightsList extends Component {
   };
 
   render() {
-    const { flights, flightNum, from, to, depDate, pageSize, airports } =
+    const { flights,  depDate, pageSize,  } =
       this.state;
 
     flights.map((flight) => {

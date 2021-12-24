@@ -1,4 +1,4 @@
-import React, { Component, useContext,Fragment,useEffect } from 'react';
+import React, { Component, useContext, Fragment, useEffect, useState } from 'react';
 import './App.css';
 import FlightsList from './Components/flightsList.js';
 import UserLanding from './Components/UserLanding/UserLanding.js';
@@ -11,17 +11,12 @@ import UserSearch from './Components/UserSearch/UserSearch';
 // import UserFlightList from './Components/UserFlightList/userFlightList';
 import UserFlightListFunction from './Components/UserFlightList/userFlightList';
 import Summary from './Components/Summary/Summary';
-import { Navbar } from 'react-bootstrap'
-import { Nav } from 'react-bootstrap'
-import { NavDropdown } from 'react-bootstrap'
-import { Container } from 'react-bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Loading from './Components/Loading/Loading';
 import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import EditPage from './Components/EditUser/EditPage';
 import UserFlights from './Components/Summary/userFlights';
-import GuestNavBar from './Components/GuestNavBar/GuestNavBar';
+import UserNavBar from './Components/NavBars/UserNavBar';
 import LoginPage from './Components/login/loginPage';
 import { AuthProvider, AuthContext } from './context/authContext';
 import axios from 'axios';
@@ -38,29 +33,61 @@ const theme = createTheme({
 
 
 const AuthenticatedRoute = ({ children }) => {
+  const [load, setLoad] = useState('wait')
   const authContext = useContext(AuthContext)
-  return (
-    authContext.isAuthenticated() ? (
-      children
-    ) : (
-      <Navigate to="/login" />
-    )
-  )
+  useEffect(() => {
+    axios.get("http://localhost:8000/checkAuth")
+      .then(({ data: authData }) => {
+        authContext.setAuthState(authData)
+        setLoad('yes')
+      })
+      .catch(() => {
+        authContext.setAuthState({})
+        setLoad('no')
+      })
+  }, [])
+  if (load === 'wait')
+    return <div></div>
+  else if (load === 'no')
+    return <Navigate to="/login" />
+  else if (load === 'yes')
+    return children
+
 }
 
-const AdminRoute = ({ children, ...rest }) => {
+const AdminRoute = ({ children }) => {
+  const [load, setLoad] = useState('wait')
   const authContext = useContext(AuthContext)
-  return (
-    authContext.isAuthenticated() && authContext.isAdmin() ? (
-      children
-    ) : (
-      <Navigate to="/" />
-    )
-  )
+
+  useEffect(() => {
+    axios.get("http://localhost:8000/checkAdmin")
+      .then(({ data: authData }) => {
+        authContext.setAuthState(authData)
+        setLoad('yes')
+      })
+      .catch(() => {
+        setLoad('no')
+      })
+  }, [])
+  if (load === 'wait')
+    return <div></div>
+  else if (load === 'no')
+    return <Navigate to="/" />
+  else if (load === 'yes')
+    return children
 }
 
 const AppRoutes = () => {
   const authContext = useContext(AuthContext)
+  window.addEventListener('storage', () => {
+    console.log('in')
+    authContext.setAuthState({
+      accessToken: localStorage.getItem('accessToken'),
+      role: localStorage.getItem('role'),
+      name: localStorage.getItem('name')
+    })
+  })
+
   axios.interceptors.request.use(
     config => {
       config.headers['Authorization'] = `Bearer ${authContext.authState.accessToken}`
@@ -84,7 +111,7 @@ const AppRoutes = () => {
         <Route path="/userflights" element={<AuthenticatedRoute><UserFlights /></AuthenticatedRoute>} />
         <Route path="/payment" element={<AuthenticatedRoute><FakePayment /></AuthenticatedRoute>} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<Signup/>}/>
+        <Route path="/register" element={<Signup />} />
       </Routes>
     </Fragment>
   );
@@ -95,12 +122,14 @@ class App extends Component {
   render() {
     return (
       <MuiThemeProvider theme={theme}>
-        <GuestNavBar />
         <BrowserRouter>
 
 
           <AuthProvider>
-            <AppRoutes />
+            <div style={{ backgroundImage: `url(${'/download.jpg'})` }}>
+              <UserNavBar />
+              <AppRoutes />
+            </div>
           </AuthProvider>
 
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import GuestNavBar from '../GuestNavBar/GuestNavBar';
+import UserNavBar from '../NavBars/UserNavBar';
 import UserFlightList from '../UserFlightList/userFlightList.js';
 import UserSearch from '../UserSearch/UserSearch';
 import Typography from "@material-ui/core/Typography";
@@ -34,7 +34,7 @@ class UserLanding extends Component {
 
                 {/* <GuestNavBar /> */}
                 <Stack spacing = {30} alignItems = "center">
-                    <Stack id = "alignTitle" direction = "row" justifyContent="flex-start" > 
+                    <Stack id = "alignTitle" direction = "row" justifyContent="flex-start" >
                     <Typography id="titleLanding" variant="h2" gutterBottom component="div">
                         Explore the world  with Takeoff
                     </Typography>

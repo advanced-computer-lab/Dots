@@ -1,12 +1,9 @@
 import React, { createContext, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import axios from 'axios'
 
 const AuthContext = createContext();
 const { Provider } = AuthContext;
 
 const AuthProvider = ({ children }) => {
-
   const accessToken = localStorage.getItem('accessToken');
   const role = localStorage.getItem('role');
   const name = localStorage.getItem('name');
@@ -35,16 +32,6 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem('name');
     setAuthState({});
   };
-  const isAuthenticatedBackend = () => {
-    return axios.get("http://localhost:8000/checkAuth")
-      .then((verifiedUser) => {
-        setAuthInfo(verifiedUser)
-        return true
-      })
-      .catch(() => {
-        return false
-      })
-  }
   const isAuthenticated = () => {
     if (!authState.accessToken) {
       return false;
@@ -54,22 +41,9 @@ const AuthProvider = ({ children }) => {
     );
   };
 
-  const isAdminBackend = () => {
-    return axios.get("http://localhost:8000/checkAdmin")
-      .then((verifiedUser) => {
-        console.log(verifiedUser)
-        setAuthInfo(verifiedUser)
-        return true
-      })
-      .catch(() => {
-        return false
-      })
-  }
-
   const isAdmin = () => {
     return authState.role === 'admin';
   };
-
   return (
     <Provider
       value={{
@@ -78,8 +52,6 @@ const AuthProvider = ({ children }) => {
         logout,
         isAuthenticated,
         isAdmin,
-        isAuthenticatedBackend,
-        isAdminBackend
       }}
     >
       {children}
