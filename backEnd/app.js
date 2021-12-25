@@ -1408,7 +1408,7 @@ app.post("/change-flight-payment", async (req, res) => {
     totalPrice: req.body.newReservation.totalPrice,
     passengers: req.body.newReservation.passengers
   });
-  console.log(reservation);
+  console.log(req.body.newReservation);
 
 
   if (req.body.priceDifference <= 0) {
@@ -1421,7 +1421,7 @@ app.post("/change-flight-payment", async (req, res) => {
       html: `<h2 style="color:#09827C;">Hello ${userFound.firstName
         }!</h2>
                     <h4>This mail is to confirm your refund</h4>
-                    <h3>Total Price: $${req.body.priceDifference}</h3>
+                    <h3>Total Price: $${Math.abs(req.body.priceDifference)}</h3>
                     <p>Have a nice day!</p>`,
     };
 
