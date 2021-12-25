@@ -1,4 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 #signupBody * {
   font-family: "Montserrat", sans-serif !important;
+  color: white;
+  border-color: white;
+}
+
+#createAccount {
+  color: white;
+  font-family: "Poppins", sans-serif;
+  font-size: 1.7em;
 }
