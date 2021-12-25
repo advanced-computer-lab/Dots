@@ -254,7 +254,8 @@ class ReservationCardFinal extends Component {
                                         </Typography>
 
                                         <Grid item xs={12}>
-                                            <Grid container justifyContent="space-around">
+                                            <Grid container justifyContent="space-around" sx={{  display:'flex', justifyContent:'space-between' }}>
+                                            
                                                 <Link to="/singleseatselector" type="submit" state={{ result: this.props, flag: "outbound" }} style={{ textDecoration: "none" }} >
                                                     <Button
                                                         variant="contained"
@@ -268,7 +269,7 @@ class ReservationCardFinal extends Component {
                                                 <Button onClick={this.editSearch}
                                                     variant="contained" size="large" color="info">Edit My Departure Flight</Button>
 
-                                                <Link to="/singleseatselector" type="submit" state={{ result: this.props, flag: "inbound" }} style={{ textDecoration: "none" }} >
+                                                <Link to="/singleseatselector"   type="submit" state={{ result: this.props, flag: "inbound" }} style={{ textDecoration: "none" }} >
                                                     <Button
                                                         variant="contained"
                                                         color="success"
@@ -279,13 +280,13 @@ class ReservationCardFinal extends Component {
                                                     </Button>
                                                 </Link>
                                                 <Button onClick={this.editReturnSearch}
-                                                    variant="contained" size="large" color="info">Edit My Return Flight</Button>
+                                                    variant="contained" sx={{ display:'flex', justifyContent:'space-between' }} size="large" color="info">Edit My Return Flight</Button>
                                             </Grid>
                                         </Grid>
 
 
                                         <Grid item xs={12}>
-                                            <Divider sx={{ width: '60%' }} />
+                                            <Divider id="divide" sx={{ width: '60%' }} />
                                         </Grid>
                                         <Grid item>
                                             <Typography className="summary" variant="h4">

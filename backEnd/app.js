@@ -313,8 +313,9 @@ flightIn.save((err) => {
 
 app.get("/userflights", async (req, res) => {
   console.log(req.verifiedUser)
-  var user = await User.find({});
-  user = await user[0].populate("reservations");
+  const id=new mongoose.Types.ObjectId("61a762c24c337dff67c229fe");
+  let user = await User.findById(id).populate("reservations");
+  
   var reservations = user.reservations;
   for (let i = 0; i < reservations.length; i++) {
     await reservations[i].populate("inBoundflight");
@@ -615,31 +616,33 @@ app.post("/emailreservation", async (req, res) => {
   const userFound = await User.findById(userId);
   let outBoundPrice = 0;
   let inBoundPrice = 0;
+  console.log(reservation);
   switch (reservation.outBoundClass) {
     case "First":
       outBoundPrice = reservation.outBoundflight.firstClassPrice;
       break;
     case "Business":
-      outBoundPrice = reservation.outBoundFlight.businessClassPrice;
+      outBoundPrice = reservation.outBoundflight.businessClassPrice;
       break;
     case "Economy":
-      outBoundPrice = reservation.outBoundFlight.economyClassPrice;
+      outBoundPrice = reservation.outBoundflight.economyClassPrice;
       break;
     default:
   }
 
   switch (reservation.inBoundClass) {
     case "First":
-      inBoundPrice = reservation.inBoundFlight.firstClassPrice;
+      inBoundPrice = reservation.inBoundflight.firstClassPrice;
       break;
     case "Business":
-      inBoundPrice = reservation.inBoundFlight.businessClassPrice;
+      inBoundPrice = reservation.inBoundflight.businessClassPrice;
       break;
     case "Economy":
-      inBoundPrice = reservation.inBoundFlight.economyClassPrice;
+      inBoundPrice = reservation.inBoundflight.economyClassPrice;
       break;
     default:
   }
+  console.log(reservation);
   outBoundPrice *= reservation.passengers.length;
   inBoundPrice *= reservation.passengers.length;
   let mailOptions = {
@@ -650,18 +653,18 @@ app.post("/emailreservation", async (req, res) => {
       }!</h2>
           <h3>This mail is for the iteinerary you requested </h3>
           <h4>The Departure flight details</h4>
-          <p>Flight Number: <b>${reservation.outBoundFlight.flightNumber}</b></p>
-          <p>From: <b>${reservation.outBoundFlight.departureLocation.airport}</b></p>
-          <p>To: <b>${reservation.outBoundFlight.arrivalLocation.airport}</b></p>
-          <p>Departure Time: <b>${new Date(reservation.outBoundFlight.departureTime).toLocaleString()}</b></p>
-          <p>Arrival Time: <b>${new Date(reservation.outBoundFlight.arrivalTime).toLocaleString()}</b></p>
+          <p>Flight Number: <b>${reservation.outBoundflight.flightNumber}</b></p>
+          <p>From: <b>${reservation.outBoundflight.departureLocation.airport}</b></p>
+          <p>To: <b>${reservation.outBoundflight.arrivalLocation.airport}</b></p>
+          <p>Departure Time: <b>${new Date(reservation.outBoundflight.departureTime).toLocaleString()}</b></p>
+          <p>Arrival Time: <b>${new Date(reservation.outBoundflight.arrivalTime).toLocaleString()}</b></p>
           <p>Outbound flight total price: <b>$${outBoundPrice}</b></p>
           <h4>The Return flight details</h4>
-          <p>Flight Number: <b>${reservation.inBoundFlight.flightNumber}</b></p>
-          <p>From: <b>${reservation.inBoundFlight.departureLocation.airport}</b></p>
-          <p>To: <b>${reservation.inBoundFlight.arrivalLocation.airport}</b></p>
-          <p>Departure Time: <b>${new Date(reservation.inBoundFlight.departureTime).toLocaleString()}</b></p>
-          <p>Arrival Time: <b>${new Date(reservation.inBoundFlight.arrivalTime).toLocaleString()}</b></p>
+          <p>Flight Number: <b>${reservation.inBoundflight.flightNumber}</b></p>
+          <p>From: <b>${reservation.inBoundflight.departureLocation.airport}</b></p>
+          <p>To: <b>${reservation.inBoundflight.arrivalLocation.airport}</b></p>
+          <p>Departure Time: <b>${new Date(reservation.inBoundflight.departureTime).toLocaleString()}</b></p>
+          <p>Arrival Time: <b>${new Date(reservation.inBoundflight.arrivalTime).toLocaleString()}</b></p>
           <p>Inbound flight total price: <b>$${inBoundPrice}</b></p>
           <h3>Total Price: $${outBoundPrice + inBoundPrice}</h3>
           <p>Have a nice day!</p>`
