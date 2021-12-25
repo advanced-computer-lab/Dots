@@ -94,7 +94,7 @@ const UserNavBar = () => {
               <MenuItem onClick={handleClose}>
                 <a className = "menuItem" href="/profile/edit-info">
                   <Typography variant="overline" display="block" gutterBottom>
-                    Profile
+                    My Profile
                   </Typography>
                 </a>
               </MenuItem>
@@ -108,7 +108,7 @@ const UserNavBar = () => {
               <MenuItem onClick={handleClose}>
                 <a className = "menuItem"  href="/changepassword">
                   <Typography variant="overline" display="block" gutterBottom>
-                    My Flights
+                    Change my password
                   </Typography>
                 </a>
               </MenuItem>
