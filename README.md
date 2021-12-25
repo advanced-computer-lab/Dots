@@ -61,7 +61,7 @@ As the saying goes, a picture is equal to a thousand words. Most people will be 
 ![MUI](https://img.shields.io/badge/MUI-%230081CB.svg?style=for-the-badge&logo=material-ui&logoColor=white)
 
 ### Features
-- Admin Features: 
+- Admin Features:
 
 -- Create, update and delete flights.
 
@@ -89,7 +89,7 @@ As the saying goes, a picture is equal to a thousand words. Most people will be 
     import GuestNavBar from './GuestNavBar';
     import AdminNavBar from './AdminNavBar';
     import UserNavBar from './UserNavBar';
-    
+
     class NavBarSelector extends Component {
         state = {
             show: 'guest'
@@ -120,7 +120,7 @@ As the saying goes, a picture is equal to a thousand words. Most people will be 
                 return <GuestNavBar />
         }
     }
-    
+
     export default NavBarSelector;
 
 **Backend API request example:**
@@ -173,14 +173,56 @@ request sample:
 }
 ```
 
+### POST /reservation
+request sample
+```
+"[{"firstName":"Mohamed Amr","lastName":"Mohamed ","passportNumber":"A1133","outBoundSeat":"N/A","inBoundSeat":"N/A"}]"
+
+```
+
+response sample
+```
+ { "confirmNum" : ""77217247882"" }
+```
+
+### POST /flight
+request sample
+```
+ { "flightNumber" : "AMORY" }
+```
+
+### POST /refund
+request sample
+```
+{ "confirmNum" : "77217247882" , "amount" : "100" }
+```
+
+### POST /change-flight-payment
+request sample
+```
+  chosenFlight : this.props.details.chosenFlight,
+    priceDifference : this.props.details.priceDifference,
+    direction : this.props.details.direction,
+    newReservation : {
+      _id:this.props.details.reservation._id,
+      outBoundflight: {},
+      inBoundflight: {},
+      outBoundClass: {},
+      inBoundClass: {},
+      passengers: {},
+      confirmationNumber: {},
+      totalPrice: {}
+```
+
+
 ### POST /flights/flightquery
 request sample:
 ```
-"out": { "dep": depDate, "class": classes[depClass] }, 
-"in": { "dep": arrDate, "class": classes[arrClass] }, 
+"out": { "dep": depDate, "class": classes[depClass] },
+"in": { "dep": arrDate, "class": classes[arrClass] },
 "from": from, "to": to, "adults": adults, "kids": kids }
 ```
-response sample: 
+response sample:
 ```
   depOriginalFlights: outFlightsWithDate,
       depAllFlights: outFlightsWithDate,
@@ -247,8 +289,8 @@ response sample:
     passengers: [ [Object] ],
     totalPrice: 4969
    ```
-   
-### POST /checkemail 
+
+### POST /checkemail
 
 Checks whether the email inserted by the user already exists in the database.
 
@@ -288,7 +330,7 @@ response sample:
 ```
 ### GET /userflights
 
-Gets all reserved flights for the currently logged in user, populates the fields and sends all the info in JSON format to the frontend to 
+Gets all reserved flights for the currently logged in user, populates the fields and sends all the info in JSON format to the frontend to
 be displayed.
 
 ```
@@ -299,7 +341,7 @@ be displayed.
       _id: new ObjectId("61c4a281c03da56f546884cb"),
       username: 'auth',
       email: 'ahmed.belal.dawood@gmail.com',
-      password: '$2b$10$uHr5zn2FKBHgn9dooMOrEOAexv.RBQl77I/DZGul8Nl4qlU7lUQVa',        
+      password: '$2b$10$uHr5zn2FKBHgn9dooMOrEOAexv.RBQl77I/DZGul8Nl4qlU7lUQVa',
       firstName: 'auth',
       lastName: 'shouldwork',
       homeAddress: 'auth',
@@ -373,7 +415,7 @@ be displayed.
 
 ### GET /flights
 
-response sample 
+response sample
 ```
 [
   {
@@ -477,7 +519,7 @@ response sample:
 ### POST /login
 sends a request for logging in the user
 
-request sample: 
+request sample:
 ```
 {
     username: "johndoe",
@@ -653,7 +695,7 @@ response sample:
 ### GET /user
 sends a request for getting a user
 
-response sample: 
+response sample:
 ```
 {
     "_id": {
@@ -720,7 +762,7 @@ response sample:
 ### PUT /user
 sends a request for editing a user
 
-request sample: 
+request sample:
 ```
 {
     "email": "omarelsawi98@gmail.com",
@@ -782,7 +824,7 @@ request sample:
 }
 ```
 
-response sample: 
+response sample:
 ```
 {
     "_id": {
