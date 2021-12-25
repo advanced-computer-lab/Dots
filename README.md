@@ -141,6 +141,7 @@ As the saying goes, a picture is equal to a thousand words. Most people will be 
 ### DELETE /flight/:flightId/delete
 
 deletes a flight
+
 flightId is the if for the deleted flight
 
 response sample:
