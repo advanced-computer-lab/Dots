@@ -1,3 +1,4 @@
+
 # Take Off Airlines Web Application Documentation
 
 This is a web application built as a project for the Advanced Computer Lab Course CSEN704.
@@ -60,13 +61,72 @@ As the saying goes, a picture is equal to a thousand words. Most people will be 
 ![MUI](https://img.shields.io/badge/MUI-%230081CB.svg?style=for-the-badge&logo=material-ui&logoColor=white)
 
 ### Features
+- Admin Features: 
+-- Create, update and delete flights.
+- Guest Features:
+-- Search for available flights and view them.
+- Registered User Features:
+-- Search for available flights and view them.
+--Make, update and cancel reservations.
+--View all his reservations.
+--Edit his account information.
 
--
--
 
 ### Code Examples
 
-This is where you try to compress your project and make the reader understand what it does as simply as possible. This should help the reader understand if your code solves their issue.
+**Frontend component example:**
+
+    import axios from 'axios';
+    import React, { Component } from 'react';
+    import GuestNavBar from './GuestNavBar';
+    import AdminNavBar from './AdminNavBar';
+    import UserNavBar from './UserNavBar';
+    
+    class NavBarSelector extends Component {
+        state = {
+            show: 'guest'
+        }
+
+        componentDidMount() {
+            axios.get('http://localhost:8000/checkAuth')
+                .then(() => {
+                    axios.get('http://localhost:8000/checkAdmin')
+                        .then(() => {
+                            this.setState({ show: 'admin' })
+                        })
+                        .catch(() => {
+                            this.setState({ show: 'user' })
+                        })
+                })
+                .catch(() => {
+                    this.setState({ show: 'guest' })
+                })
+        }
+        render() {
+            const { show } = this.state
+            if (show === 'admin')
+                return <AdminNavBar />
+            if (show === 'user')
+                return <UserNavBar />
+            if (show === 'guest')
+                return <GuestNavBar />
+        }
+    }
+    
+    export default NavBarSelector;
+
+**Backend API request example:**
+
+    app.delete("/flight/:flightId/delete", verifyAdmin, async (req, res) => {
+      var id = mongoose.Types.ObjectId(req.params.flightId);
+      try {
+        await Flight.findByIdAndDelete(id);
+        res.send("Flight Deleted");
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
 
 ### Installation
 1. Clone the Repository
@@ -80,20 +140,37 @@ This is where you try to compress your project and make the reader understand wh
 
 
 
-### Tests
-
-
-
 ### How to Use?
 
-
-
-### Contribute
 
 
 ### Credits
 
 
-
 ### License
 
+MIT License
+
+Copyright (c) `2021` `Take Off AirLines Web Application`
+
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the “Software”), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
