@@ -376,7 +376,7 @@ app.get("/flights/:flightId", async (req, res) => {
 //edit reservation
 
 app.patch("/changeseats", async (req, res) => {
-  console.log(req.params)
+  console.log(req.params);
 });
 
 //------------------reservations delete--------
