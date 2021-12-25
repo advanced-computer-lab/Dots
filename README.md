@@ -62,13 +62,21 @@ As the saying goes, a picture is equal to a thousand words. Most people will be 
 
 ### Features
 - Admin Features: 
+
 -- Create, update and delete flights.
+
 - Guest Features:
+
 -- Search for available flights and view them.
+
 - Registered User Features:
+
 -- Search for available flights and view them.
+
 --Make, update and cancel reservations.
+
 --View all his reservations.
+
 --Edit his account information.
 
 
