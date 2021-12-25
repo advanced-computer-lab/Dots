@@ -23,23 +23,40 @@ class ChangePassword extends Component {
 
     handleChange = (e) => {
         let errorMsg = ''
-        const targetError = e.target.name + 'Error'
+        let targetError = e.target.name + 'Error'
 
         this.setState({ [e.target.name]: e.target.value });
 
         if (e.target.value === '')
             errorMsg = 'This field is required'
 
-        this.setState({ errors: { ...this.state.errors, [targetError]: errorMsg } })
+        else if (e.target.name === 'currentPasswordConfirmation'
+            && e.target.value !== '' && e.target.value !== this.state.currentPassword)
+            errorMsg = `Passwords don't match`
+
+        else if (e.target.name === 'currentPassword'
+            && e.target.value !== '' && e.target.value !== this.state.currentPasswordConfirmation){
+                errorMsg = `Passwords don't match`
+                targetError = "currentPasswordConfirmationError"
+            }
+
+        else if (e.target.name === 'currentPassword'
+            && e.target.value !== '' && e.target.value === this.state.newPassword)
+            errorMsg = `New and current passwords are the same`
+
+        else if (e.target.name === 'newPassword'
+            && e.target.value !== '' && e.target.value === this.state.currentPassword)
+            errorMsg = `New and current passwords are the same`
+
+            this.setState({ errors: { ...this.state.errors, [targetError]: errorMsg } })
     }
 
     onSubmit = (e) => {
         e.preventDefault()
         const { newPassword, currentPassword, currentPasswordConfirmation } = this.state
         const dataSent = { newPassword, currentPassword, currentPasswordConfirmation }
-        axios.post(`http://localhost:8000/login`, dataSent)
+        axios.post(`http://localhost:8000/changePassword`, dataSent)
             .then(({ data }) => {
-                this.context.setAuthState(data)
                 this.setState({ newPassword: '', currentPasswordConfirmation: '', currentPassword: '' })
             }).catch((err) => {
                 const errorMsg = err.response.data.msg
@@ -132,20 +149,7 @@ class ChangePassword extends Component {
                         label="Confirm your current password" required id="currentPasswordConfirmation"
                         placeholder="Ex: password123" name="currentPasswordConfirmation"
                         type={showPassword ? 'input' : 'password'}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={this.handleClickShowPassword}
-                                        onMouseDown={this.handleMouseDownPassword}
-                                        edge="end"
-                                    >
-                                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }} />
+                    />
 
                     <CardActions sx={{ mt: 2, justifyContent: "center", alignItems: "center" }}>
                         <LoadingButton disabled={!this.areFieldsValid()} type="submit"

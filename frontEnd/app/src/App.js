@@ -25,6 +25,8 @@ import axios from 'axios';
 import { Navigate } from 'react-router-dom'
 import Signup from './Components/UserRegistration/signup';
 import ChangePasswordPage from './Components/ChangePassword/ChangePasswordPage';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const theme = createTheme({
   palette: {
@@ -82,14 +84,14 @@ const AdminRoute = ({ children }) => {
 
 const AppRoutes = () => {
   const authContext = useContext(AuthContext)
-  window.addEventListener('storage', () => {
-    authContext.setAuthState({
-      accessToken: localStorage.getItem('accessToken'),
-      role: localStorage.getItem('role'),
-      name: localStorage.getItem('name')
-    })
-    console.log("hi")
-  })
+  // window.addEventListener('storage', () => {
+  //   authContext.setAuthState({
+  //     accessToken: localStorage.getItem('accessToken'),
+  //     role: localStorage.getItem('role'),
+  //     name: localStorage.getItem('name')
+  //   })
+  //   console.log("hi")
+  // })
 
   axios.interceptors.request.use(
     config => {
