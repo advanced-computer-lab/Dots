@@ -135,7 +135,7 @@ app.post("/login", (req, res) => {
           if (isPasswordCorrect) {
             const payload = { id: user._id, name: user.firstName, role: 'user' }
             jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
-              if (err) return res.json({ msg: err })
+              if (err) return res.status(400).send({ msg: "Something went wrong. Please try again" })
               return res.json({
                 accessToken: token,
                 name: user.firstName,
@@ -156,7 +156,7 @@ app.post("/login", (req, res) => {
               if (isPasswordCorrect) {
                 const payload = { id: admin.id, name: admin.firstName, role: 'admin' }
                 jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
-                  if (err) return res.json({ msg: err })
+                  if (err) return res.status(400).send({ msg: "Something went wrong. Please try again" })
                   return res.json({
                     accessToken: token,
                     role: 'admin',

@@ -40,7 +40,7 @@ class LoginClassComponent extends Component {
             this.props.close ? this.props.close() : this.props.navigate("/")
             window.location.reload()
         }).catch((err) => {
-            const errorMsg = err.response.data.msg
+            const errorMsg = err.response && err.response.data.msg
             this.setState({ errorMsg, error: true })
             this.context.logout()
         })

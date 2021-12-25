@@ -30,14 +30,18 @@ class ChangePassword extends Component {
         if (e.target.value === '')
             errorMsg = 'This field is required'
 
-        this.setState({ errors: { ...this.state.errors, [targetError]: errorMsg } })
+        if (e.target.name === 'currentPasswordConfirmation'
+            && e.target.value !== '' && e.target.value !== this.state.currentPassword)
+            errorMsg = `Passwords don't match`
+
+            this.setState({ errors: { ...this.state.errors, [targetError]: errorMsg } })
     }
 
     onSubmit = (e) => {
         e.preventDefault()
         const { newPassword, currentPassword, currentPasswordConfirmation } = this.state
         const dataSent = { newPassword, currentPassword, currentPasswordConfirmation }
-        axios.post(`http://localhost:8000/login`, dataSent)
+        axios.post(`http://localhost:8000/changePassword`, dataSent)
             .then(({ data }) => {
                 this.context.setAuthState(data)
                 this.setState({ newPassword: '', currentPasswordConfirmation: '', currentPassword: '' })
@@ -132,20 +136,7 @@ class ChangePassword extends Component {
                         label="Confirm your current password" required id="currentPasswordConfirmation"
                         placeholder="Ex: password123" name="currentPasswordConfirmation"
                         type={showPassword ? 'input' : 'password'}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={this.handleClickShowPassword}
-                                        onMouseDown={this.handleMouseDownPassword}
-                                        edge="end"
-                                    >
-                                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }} />
+                    />
 
                     <CardActions sx={{ mt: 2, justifyContent: "center", alignItems: "center" }}>
                         <LoadingButton disabled={!this.areFieldsValid()} type="submit"

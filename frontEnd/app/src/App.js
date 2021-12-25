@@ -82,14 +82,14 @@ const AdminRoute = ({ children }) => {
 
 const AppRoutes = () => {
   const authContext = useContext(AuthContext)
-  window.addEventListener('storage', () => {
-    authContext.setAuthState({
-      accessToken: localStorage.getItem('accessToken'),
-      role: localStorage.getItem('role'),
-      name: localStorage.getItem('name')
-    })
-    console.log("hi")
-  })
+  // window.addEventListener('storage', () => {
+  //   authContext.setAuthState({
+  //     accessToken: localStorage.getItem('accessToken'),
+  //     role: localStorage.getItem('role'),
+  //     name: localStorage.getItem('name')
+  //   })
+  //   console.log("hi")
+  // })
 
   axios.interceptors.request.use(
     config => {
