@@ -2,12 +2,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 #signupBody * {
   font-family: "Montserrat", sans-serif !important;
-  color: white;
-  border-color: white;
+  color: black;
+  border-color: black;
 }
 
 #createAccount {
-  color: white;
+  color: black;
   font-family: "Poppins", sans-serif;
   font-size: 1.7em;
 }
