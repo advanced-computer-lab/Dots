@@ -1451,7 +1451,7 @@ app.post("/change-flight-payment", async (req, res) => {
           price_data: {
             currency: "usd",
             unit_amount: req.body.priceDifference * 100,
-            product_data: { 'name': req.body.newReservation.outBoundflight.departureLocation.airportName + "-" + req.body.newReservation.outBoundflight.arrivalLocation.airportName },
+            product_data: { 'name': req.body.newReservation.outBoundflight.departureLocation.airport + "-" + req.body.newReservation.outBoundflight.arrivalLocation.airport },
           },
         },
       ],
