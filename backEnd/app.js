@@ -181,7 +181,7 @@ app.post("/login", (req, res) => {
               if (isPasswordCorrect) {
                 const payload = {
                   id: admin.id,
-                  name: admin.firstName,
+                  name: admin.username,
                   role: "admin",
                 };
                 jwt.sign(
@@ -195,7 +195,7 @@ app.post("/login", (req, res) => {
                     return res.json({
                       accessToken: token,
                       role: "admin",
-                      name: admin.firstName,
+                      name: admin.username,
                     });
                   }
                 );

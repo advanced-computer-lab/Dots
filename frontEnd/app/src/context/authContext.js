@@ -31,6 +31,7 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem('role');
     localStorage.removeItem('name');
     setAuthState({});
+    window.location.reload()
   };
   const isAuthenticated = () => {
     if (!authState.accessToken) {
