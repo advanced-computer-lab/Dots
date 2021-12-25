@@ -173,6 +173,48 @@ request sample:
 }
 ```
 
+### POST /reservation
+request sample
+```
+"[{"firstName":"Mohamed Amr","lastName":"Mohamed ","passportNumber":"A1133","outBoundSeat":"N/A","inBoundSeat":"N/A"}]"
+
+```
+
+response sample 
+```
+ { "confirmNum" : ""77217247882"" }
+```
+
+### POST /flight
+request sample
+```
+ { "flightNumber" : "AMORY" }
+```
+
+### POST /refund
+request sample
+```
+{ "confirmNum" : "77217247882" , "amount" : "100" }
+```
+
+### POST /change-flight-payment
+request sample
+```
+  chosenFlight : this.props.details.chosenFlight,
+    priceDifference : this.props.details.priceDifference,
+    direction : this.props.details.direction,
+    newReservation : {
+      _id:this.props.details.reservation._id,
+      outBoundflight: {},
+      inBoundflight: {},
+      outBoundClass: {},
+      inBoundClass: {},
+      passengers: {},
+      confirmationNumber: {},
+      totalPrice: {}
+```
+
+
 ### POST /flights/flightquery
 request sample:
 ```
