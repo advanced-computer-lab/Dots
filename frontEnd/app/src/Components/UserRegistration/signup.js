@@ -23,6 +23,8 @@ function Signup() {
   const [usernamehandler, setUsernameHandler] = useState("");
   const [passwordhandler, setpasswordHandler] = useState("");
   const [emailhandler, setemailHandler] = useState("");
+  const authContext = useContext(AuthContext)
+
   function handlerjson() {
     console.log(finalJson);
     setFinalJson(finalJson);
@@ -50,7 +52,7 @@ function Signup() {
       finaljson
     );
     if (x) {
-      this.context.setAuthState(x)
+      authContext.setAuthState(x)
       navigate("/")
       window.location.reload()
     }
