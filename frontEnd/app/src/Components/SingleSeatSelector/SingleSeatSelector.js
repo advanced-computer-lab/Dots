@@ -118,7 +118,6 @@ class SingleSeatSelector extends Component {
               isReserved: true,
               cabin: cabin,
             });
-            console.log(rowNum + k)
           } else {
             arr.push({ id: id++, number: k + 1, isReserved: selectedSeats.includes(rowNumber + "" + k) ? true : false, cabin: cabin });
           }
@@ -295,7 +294,7 @@ class SingleSeatSelector extends Component {
               variant="contained"
               color="success"
               sx={{ mt: "30px" }}
-              onClick= {() => {
+              onClick= { () => {
                 if(this.props.details.direction==="outbound"){
                   this.props.details.passengers.forEach((passenger)=>{
                     passenger.outBoundSeat=passenger.Seat;
@@ -308,7 +307,18 @@ class SingleSeatSelector extends Component {
                   })
                 }
 
-                axios.patch('http://localhost:8000/changeseats', this.state);
+                let newReservation = {
+                  _id:this.props.details.reservation._id,
+                  outBoundflight: this.props.details.reservation.outBoundflight._id,
+                  inBoundflight: this.props.details.reservation.inBoundflight._id,
+                  outBoundClass: this.props.details.reservation.outBoundClass,
+                  inBoundClass: this.props.details.reservation.inBoundClass,
+                  passengers: this.props.details.passengers,
+                  confirmationNumber: this.props.details.confirmationNumber,
+                  totalPrice: this.props.details.reservation.totalPrice,
+                }
+
+                axios.put('http://localhost:8000/changeseats', {newReservation});
               }}
             >
               Change Seats
@@ -322,7 +332,7 @@ class SingleSeatSelector extends Component {
               variant="contained"
               color="success"
               sx={{ mt: "30px" }}
-              onClick={()=>{
+              onClick={ async()=>{
                 if(this.props.details.direction==="outbound"){
                   this.props.details.passengers.forEach((passenger)=>{
                     passenger.outBoundSeat=passenger.Seat;
@@ -350,7 +360,7 @@ class SingleSeatSelector extends Component {
                   }
                 }
                 console.log(paramaters)
-                axios.post('http://localhost:8000/change-flight-payment', paramaters)
+                await axios.post('http://localhost:8000/change-flight-payment', paramaters)
               }}
             >
               Checkout
@@ -575,7 +585,7 @@ function SingleSeatSelectorFunction(props) {
     result.editingSeats=false;
     
   }else{
-    if(location.state.flag==="oubound"){
+    if(location.state.flag==="outbound"){
       result.direction="outbound";
       result.flightClass=result.reservation.outBoundClass;
       result.chosenFlight=result.outBound;
@@ -590,7 +600,6 @@ function SingleSeatSelectorFunction(props) {
   
   result.passengers=result.reservation.passengers;
 
-  
   console.log(result);
   
   return (

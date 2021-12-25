@@ -52,7 +52,7 @@ class EditFormClass extends Component {
         e.preventDefault()
         this.setState({ loading: true })
         const data = this.state.data
-        axios.put(`http://localhost:8000/users/${this.props.params.userId}`, data).then(() => {
+        axios.put(`http://localhost:8000/user`, data).then(() => {
             this.setState({ loading: false ,editSnackBarOpen:true})
         }).catch((err) => {
             console.log(err)
@@ -60,7 +60,7 @@ class EditFormClass extends Component {
     }
 
     componentDidMount() {
-        axios.get(`http://localhost:8000/users/${this.props.params.userId}`)
+        axios.get(`http://localhost:8000/user`)
             .then(({ data }) => {
                 this.setState({ data })
                 const dataArr = Object.keys(this.state.data)

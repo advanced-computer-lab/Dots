@@ -18,6 +18,7 @@ import Button from "@mui/material/Button";
 import EditForm from "./EditForm";
 
 import DialogTitle from "@mui/material/DialogTitle";
+import { Card } from "@mui/material";
 
 class FlightsList extends Component {
   constructor() {
@@ -100,15 +101,8 @@ class FlightsList extends Component {
   onDialogCloseDelete = () => {
     this.deleteSnackBarHandleOpen();
 
-    fetch(
-      "http://localhost:8000/flight/" + this.state.selectedFlight + "/delete",
-      {
-        method: "DELETE",
-      }
-    )
-      .then((res) => {
-        console.log("Request complete! response:", res);
-      })
+    axios.delete(
+      "http://localhost:8000/flight/" + this.state.selectedFlight + "/delete")
       .then(() => {
         this.setState((prev) => ({
           flights: prev.flights.filter((row) => row.id !== prev.selectedFlight),
@@ -136,9 +130,9 @@ class FlightsList extends Component {
 
   componentDidMount() {
     //const {flights} = await axios.get('http://localhost:8000/flights');
-    fetch("http://localhost:8000/flights")
-      .then((response) => response.json())
-      .then((flights) => {
+    axios.get("http://localhost:8000/flights")
+      .then(({ data }) => {
+        const flights = data
         this.setState({ permanentFlights: flights, flights: flights });
         console.log(flights[0]);
         let airportSet = new Set();
@@ -313,8 +307,8 @@ class FlightsList extends Component {
         // type cast string to int  and compare
         return (
           parseInt(flight.economySeatsAvailable) +
-            parseInt(flight.businessSeatsAvailable) +
-            parseInt(flight.firstSeatsAvailable) >=
+          parseInt(flight.businessSeatsAvailable) +
+          parseInt(flight.firstSeatsAvailable) >=
           parseInt(seats)
         );
       });
@@ -413,7 +407,7 @@ class FlightsList extends Component {
   };
 
   render() {
-    const { flights, flightNum, from, to, depDate, pageSize, airports } =
+    const { flights, depDate, pageSize, } =
       this.state;
 
     flights.map((flight) => {
@@ -550,19 +544,19 @@ class FlightsList extends Component {
           {" "}
         </SearchModule>
 
-        <div
-          style={{ height: 650, width: "70%", position: "fixed", left: 190 }}
+        <Card
+          style={{ height: 650, width: "70%", marginLeft: 190 }}
         >
           <DataGrid
+            autoPageSize
             rows={flights}
             columns={columns}
             pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => this.setPageSize(newPageSize)}
             rowsPerPageOptions={[10, 20, 50]}
             checkboxSelection={false}
             disableSelectionOnClick
           />
-        </div>
+        </Card>
 
         <Dialog
           open={this.state.openDeleteDialog}

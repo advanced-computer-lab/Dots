@@ -1,4 +1,5 @@
-import React, { useState, Suspense, useEffect } from "react";
+import React, { useState, Suspense, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -7,18 +8,23 @@ import {
   Button,
   Alert,
 } from "@mui/material/";
+import { AuthContext } from "../../context/authContext";
 import axios from "axios";
 import Fade from "react-reveal/Fade";
 import "./signup.css";
-const PasswordStrengthBar = React.lazy(() =>
-  import("react-password-strength-bar")
-);
 const finalJson = {};
 let usernameTaken = false;
 let emailTaken = false;
+let done = false;
 function Signup() {
+  const navigate = useNavigate();
   const [finaljson, setFinalJson] = useState({});
-  const [buttondisabled, setButtonDisabled] = useState(false);
+  const [buttondisabled, setButtonDisabled] = useState(true);
+  const [usernamehandler, setUsernameHandler] = useState("");
+  const [passwordhandler, setpasswordHandler] = useState("");
+  const [emailhandler, setemailHandler] = useState("");
+  const authContext = useContext(AuthContext)
+
   function handlerjson() {
     console.log(finalJson);
     setFinalJson(finalJson);
@@ -28,7 +34,31 @@ function Signup() {
     setButtonDisabled(input);
     console.log("button: " + buttondisabled);
   }
+  function usernameHandler(input) {
+    setUsernameHandler(input);
+  }
+  function emailHandler(input) {
+    setemailHandler(input);
+  }
+  function passwordHandler(input) {
+    setpasswordHandler(input);
+  }
   const [display, setDisplay] = useState(true);
+
+  //Sawi's jwt part----------------
+  const handleSubmit = async (e) => {
+    let x = await axios.post(
+      "http://localhost:8000/register",
+      finaljson
+    );
+    if (x) {
+      authContext.setAuthState(x)
+      navigate("/")
+      window.location.reload()
+    }
+  }
+  //-------------------------------------
+
   return (
     <div>
       <img
@@ -74,54 +104,85 @@ function Signup() {
         >
           {display ? (
             <div>
-              <Signup1 handler={handlerjson} handlerbutton={handlerbutton} />
-              <Button
-                sx={
-                  !buttondisabled
-                    ? {
+              <Fade left>
+                <Signup1
+                  handler={handlerjson}
+                  handlerbutton={handlerbutton}
+                  usernamehandler={usernameHandler}
+                  passwordhandler={passwordHandler}
+                  emailhandler={emailHandler}
+                  username={usernamehandler}
+                  password={passwordhandler}
+                  email={emailhandler}
+                />
+                <Button
+                  type="submit"
+                  sx={
+                    !buttondisabled &
+                      (usernamehandler !== "") &
+                      (passwordhandler !== "") &
+                      (emailhandler !== "")
+                      ? {
                         backgroundColor: "green !important",
                         height: "50px",
                         width: "300px",
                         left: "50px",
                         top: "80px",
                       }
-                    : {
+                      : {
                         backgroundColor: "grey !important",
                         height: "50px",
                         width: "300px",
                         left: "50px",
                         top: "80px",
                       }
-                }
-                disabled={buttondisabled}
-                variant="contained"
-                onClick={() => setDisplay(false)}
-              >
-                Proceed
-              </Button>
+                  }
+                  disabled={
+                    buttondisabled |
+                    (usernamehandler === "") |
+                    (passwordhandler === "") |
+                    (emailhandler === "")
+                  }
+                  variant="contained"
+                  onClick={() => setDisplay(false)}
+                >
+                  Proceed
+                </Button>
+              </Fade>
             </div>
           ) : (
-            <Fade left>
+            <Fade right>
               <div>
                 <Signup2 handler={handlerjson} />
+
                 <Button
                   sx={{
                     backgroundColor: "green !important",
                     height: "50px",
                     width: "300px",
                     left: "50px",
-                    top: "80px",
+                    top: "50px",
                   }}
+                  onClick={handleSubmit}
                   variant="contained"
                   type="submit"
-                  onClick={async () =>
-                    await axios.post(
-                      "http://localhost:8000/register",
-                      finaljson
-                    )
-                  }
                 >
                   Complete your registration
+                </Button>
+                <Button
+                  onClick={() => setDisplay(true)}
+                  variant="contained"
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    backgroundColor: "red !important",
+                    height: "40px",
+                    width: "300px",
+                    left: "50px",
+                    top: "80px",
+                  }}
+                >
+                  Go back
                 </Button>
               </div>
             </Fade>
@@ -155,9 +216,11 @@ function Signup1(props) {
         label="Username"
         variant="outlined"
         name="username"
+        value={props.username}
         onChange={async (e) => {
           //console.log("target" + e.target.value);
-          //console.log("data " + data);
+          //console.log("data " + data)
+          props.usernamehandler(e.target.value);
           finalJson.username = e.target.value;
           props.handler();
           usernameTaken = false;
@@ -197,8 +260,10 @@ function Signup1(props) {
         label="Password"
         type="password"
         variant="outlined"
+        value={props.password}
         name="password"
         onChange={(e) => {
+          props.passwordhandler(e.target.value);
           finalJson.password = e.target.value;
           props.handler();
           setPassword(e.target.value);
@@ -220,10 +285,11 @@ function Signup1(props) {
         type="email"
         variant="outlined"
         name="email"
+        value={props.email}
         onChange={async (e) => {
           //console.log("target" + e.target.value);
           //console.log("data " + data);
-
+          props.emailhandler(e.target.value);
           finalJson.email = e.target.value;
           props.handler();
           props.handlerbutton(false);
@@ -234,13 +300,13 @@ function Signup1(props) {
             repeat = await axios.post("http://localhost:8000/checkemail", {
               email: e.target.value,
             });
+            if (repeat.data) {
+              setTakenEmail(repeat.data);
+              emailTaken = true;
+              props.handlerbutton(true);
+            }
           } catch (error) {
             console.log(error);
-          }
-          if (repeat.data) {
-            setTakenEmail(repeat.data);
-            emailTaken = true;
-            props.handlerbutton(true);
           }
         }}
       ></TextField>
