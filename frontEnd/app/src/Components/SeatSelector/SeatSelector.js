@@ -21,11 +21,14 @@ import axios from 'axios';
 import background from '../UserLanding/travel3.jpg';
 
 class SeatSelector extends Component {
+
+
+  componentDidMount() {
+    console.log(this.state);
+  }
+
   constructor(props) {
     super(props);
-
-    console.log("wowow")
-    console.log(this.props.details)
 
     let outBoundClass = this.props.details.depflightClass;
     let inBoundClass = this.props.details.returnflightClass;
@@ -51,10 +54,27 @@ class SeatSelector extends Component {
     let inBoundSelectedSeats = [];
 
     this.props.details.depchosenflight.reservations.forEach((reservation) => {
-      reservation.passengers.forEach((passenger) => {
-        outBoundSelectedSeats.push(passenger.outBoundSeat)
-        inBoundSelectedSeats.push(passenger.inBoundSeat)
-      })
+      if (this.props.details.depchosenflight._id === reservation.outBoundflight) {
+        reservation.passengers.forEach((passenger) => {
+          outBoundSelectedSeats.push(passenger.outBoundSeat)
+        })
+      } else {
+        reservation.passengers.forEach((passenger) => {
+          outBoundSelectedSeats.push(passenger.inBoundSeat)
+        })
+      }
+    })
+
+    this.props.details.returnchosenflight.reservations.forEach((reservation) => {
+      if (this.props.details.returnchosenflight._id === reservation.outBoundflight) {
+        reservation.passengers.forEach((passenger) => {
+          inBoundSelectedSeats.push(passenger.outBoundSeat)
+        })
+      } else {
+        reservation.passengers.forEach((passenger) => {
+          inBoundSelectedSeats.push(passenger.inBoundSeat)
+        })
+      }
     })
 
     let outBoundRows = [];
@@ -111,15 +131,13 @@ class SeatSelector extends Component {
       outBoundClass: outBoundClass,
       inBoundClass: inBoundClass,
       previousStage: this.props.details,
-      confirmationNumber:confirmationNumber,
+      confirmationNumber: confirmationNumber,
     };
   }
 
   generateClassSeats = (totalSeats, cabin, currentId, selectedSeats, lastRowNum) => {
     let id = currentId;
     let m = 0;
-    //Get already selected seats
-
 
     if (cabin === "Economy") {
       m = 6;
@@ -462,7 +480,7 @@ class SeatSelector extends Component {
           }}
         >
           <div >
-            <TransitionControl switch={this.currentFlightFlag()} outBoundSeatMap={outBoundSeatMap()} inBoundSeatMap={inBoundSeatMap()}></TransitionControl>
+            <TransitionControl noTransition={false} switch={this.currentFlightFlag()} outBoundSeatMap={outBoundSeatMap()} inBoundSeatMap={inBoundSeatMap()}></TransitionControl>
           </div>
 
           <Box
@@ -647,23 +665,27 @@ class SeatSelector extends Component {
                 </Box>
 
                 <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: 'row',
-                  justifyContent: "flex-end",
-                }}>
-                  <Link to="/payment" type="submit" state={{ result: this.state }} >
-                    <Button
-                      variant="contained"
-                      color="success"
-                      sx={{ mt: "30px" }}
-                      onClick={() => {
-                        axios.post('http://localhost:8000/reservationinsertion', this.state);
-                      }}
-                    >
-                      Checkout
-                    </Button>
-                  </Link>
+                  sx={{
+                    display: "flex",
+                    flexDirection: 'row',
+                    justifyContent: "flex-end",
+                  }}>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    sx={{ mt: "30px" }}
+                    onClick={async () => {
+                      const s = await axios.post('http://localhost:8000/create-checkout-session', this.state);
+                      // let link = document.getElementById('red');
+                      // link.to=s.url;
+                      // link.click();
+                      console.log(s);
+                      window.location.href=s.data.url;
+                    }}
+                  >
+                    Checkout
+                  </Button>
+                  {/* <Link id="red"></Link> */}
                 </Box>
               </Box>
             </Slide>
@@ -688,10 +710,10 @@ function SeatSelectorFunction(props) {
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat'
 
-  }}>
+    }}>
       {/* <div> */}
       <SeatSelector details={result} />
-     </div>
+    </div>
   );
 }
 
