@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { useNavigate } from 'react-router';
 import { TextField, InputAdornment, IconButton, Box, Card, CardActions, Typography, Alert } from '@mui/material'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import axios from 'axios'
-import { AuthContext } from '../../../context/authContext'
 
-class LoginClassComponent extends Component {
+class ChangePassword extends Component {
     state = {
         username: '',
         password: '',
@@ -17,8 +15,8 @@ class LoginClassComponent extends Component {
         },
 
         showPassword: false,
-        error: false,
-        errorMsg: ''
+        error:false,
+        errorMsg:''
     }
     handleChange = (e) => {
         let errorMsg = ''
@@ -37,12 +35,11 @@ class LoginClassComponent extends Component {
         axios.post(`http://localhost:8000/login`, data).then(({ data }) => {
             this.context.setAuthState(data)
             this.setState({ username: '', password: '' })
-            this.props.close ? this.props.close() : this.props.navigate("/")
-            window.location.reload()
+            this.props.navigate("/")
         }).catch((err) => {
             const errorMsg = err.response.data.msg
-            this.setState({ errorMsg, error: true })
-            this.context.logout()
+            this.setState({errorMsg, error:true})
+            this.context.setAuthState({})
         })
     }
     areFieldsValid = () => {
@@ -66,7 +63,7 @@ class LoginClassComponent extends Component {
         event.preventDefault();
     };
     render() {
-        const { username, password, showPassword, error, errorMsg } = this.state
+        const { username, password, showPassword,error,errorMsg } = this.state
         const { usernameError, passwordError } = this.state.errors
         return (
             <Card sx={{ p: 4, height: 400, alignItems: "center" }}>
@@ -77,15 +74,30 @@ class LoginClassComponent extends Component {
                     </Alert>
                 }
                 <Typography variant='h4' gutterBottom textAlign="center" sx={{ fontWeight: 'bold', color: '#076F72' }}>
-                    Login
+                    Change your password
                 </Typography><br />
                 <Box component="form" onSubmit={this.onSubmit} >
 
-                    <TextField onBlur={this.handleChange}
-                        error={usernameError !== ''} helperText={usernameError}
-                        fullWidth sx={{ mb: 2 }} value={username} onChange={this.handleChange}
-                        label="Username" required type="input" id="username" placeholder="johndoe1"
-                        name="username" />
+                <TextField onBlur={this.handleChange}
+                        error={passwordError !== ''} helperText={passwordError}
+                        fullWidth sx={{ mb: 2 }} value={password} onChange={this.handleChange}
+                        label="Password" required id="password"
+                        placeholder="Ex: password123" name="password"
+                        type={showPassword ? 'input' : 'password'}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={this.handleClickShowPassword}
+                                        onMouseDown={this.handleMouseDownPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }} />
 
                     <TextField onBlur={this.handleChange}
                         error={passwordError !== ''} helperText={passwordError}
@@ -107,10 +119,32 @@ class LoginClassComponent extends Component {
                                 </InputAdornment>
                             )
                         }} />
+
+<TextField onBlur={this.handleChange}
+                        error={passwordError !== ''} helperText={passwordError}
+                        fullWidth sx={{ mb: 2 }} value={password} onChange={this.handleChange}
+                        label="Password" required id="password"
+                        placeholder="Ex: password123" name="password"
+                        type={showPassword ? 'input' : 'password'}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={this.handleClickShowPassword}
+                                        onMouseDown={this.handleMouseDownPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }} />
+
                     <CardActions sx={{ mt: 2, justifyContent: "center", alignItems: "center" }}>
                         <LoadingButton disabled={!this.areFieldsValid()} type="submit"
                             onClick={this.onSubmit} size="large" variant="contained">
-                            Sign In
+                            Confirm Change
                         </LoadingButton>
                     </CardActions>
                 </Box><br />
@@ -121,10 +155,5 @@ class LoginClassComponent extends Component {
         )
     }
 }
-LoginClassComponent.contextType = AuthContext;
 
-const LoginComponent = (props) => {
-    const navigate = useNavigate()
-    return <LoginClassComponent navigate={navigate} close={props.close} />
-}
-export default LoginComponent;
+export default ChangePassword;

@@ -49,6 +49,12 @@ const UserNavBar = () => {
     setAnchorEl(null);
   };
 
+  const handleCloseLogOut= ()=>{
+    console.log("hi")
+    setAnchorEl(null);
+    authContext.logout()
+  }
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -86,7 +92,7 @@ const UserNavBar = () => {
               onClose={handleClose}
             >
               <MenuItem onClick={handleClose}>
-                <a className = "menuItem" href="/61a762c24c337dff67c229fe/edit-info">
+                <a className = "menuItem" href="/profile/edit-info">
                   <Typography variant="overline" display="block" gutterBottom>
                     Profile
                   </Typography>
@@ -96,6 +102,13 @@ const UserNavBar = () => {
                 <a className = "menuItem"  href="/userflights">
                   <Typography variant="overline" display="block" gutterBottom>
                     My Flights
+                  </Typography>
+                </a>
+              </MenuItem>
+              <MenuItem onClick={handleCloseLogOut}>
+                <a className = "menuItem"  href="/">
+                  <Typography variant="overline" display="block" gutterBottom>
+                    Logout
                   </Typography>
                 </a>
               </MenuItem>

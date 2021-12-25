@@ -2,14 +2,10 @@ import React, { Component, useContext, Fragment, useEffect, useState } from 'rea
 import './App.css';
 import FlightsList from './Components/flightsList.js';
 import UserLanding from './Components/UserLanding/UserLanding.js';
-import ReservationsPage from './Components/reservations/ReservationsPage'
 import SeatSelector from './Components/SeatSelector/SeatSelector.js'
 import UserFlightList from './Components/UserFlightList/userFlightList.js';
 import FakePayment from './Components/FakePayment/FakePayment.js';
-import Test from './Components/SeatMapTransitionControl/SeatMapTransitionControl.js'
-import UserSearch from './Components/UserSearch/UserSearch';
 // import UserFlightList from './Components/UserFlightList/userFlightList';
-import UserFlightListFunction from './Components/UserFlightList/userFlightList';
 import Summary from './Components/Summary/Summary';
 import Loading from './Components/Loading/Loading';
 import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
@@ -80,12 +76,12 @@ const AdminRoute = ({ children }) => {
 const AppRoutes = () => {
   const authContext = useContext(AuthContext)
   window.addEventListener('storage', () => {
-    console.log('in')
     authContext.setAuthState({
       accessToken: localStorage.getItem('accessToken'),
       role: localStorage.getItem('role'),
       name: localStorage.getItem('name')
     })
+    console.log("hi")
   })
 
   axios.interceptors.request.use(
@@ -104,7 +100,7 @@ const AppRoutes = () => {
         <Route path="/" element={<UserLanding />} />
         <Route path="/flights" element={<UserFlightList />} />
         <Route path="/admin" element={<AdminRoute><FlightsList /></AdminRoute>} />
-        <Route path="/:userId/edit-info" element={<AuthenticatedRoute><EditPage /></AuthenticatedRoute>} />
+        <Route path="/profile/edit-info" element={<AuthenticatedRoute><EditPage /></AuthenticatedRoute>} />
         <Route path="/seatselector" element={<AuthenticatedRoute><SeatSelector /></AuthenticatedRoute>} />
         <Route path="/loading" element={<Loading />} />
         <Route path="/summary" element={<Summary />} />
