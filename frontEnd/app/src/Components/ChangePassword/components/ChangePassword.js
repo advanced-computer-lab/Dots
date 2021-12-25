@@ -23,16 +23,30 @@ class ChangePassword extends Component {
 
     handleChange = (e) => {
         let errorMsg = ''
-        const targetError = e.target.name + 'Error'
+        let targetError = e.target.name + 'Error'
 
         this.setState({ [e.target.name]: e.target.value });
 
         if (e.target.value === '')
             errorMsg = 'This field is required'
 
-        if (e.target.name === 'currentPasswordConfirmation'
+        else if (e.target.name === 'currentPasswordConfirmation'
             && e.target.value !== '' && e.target.value !== this.state.currentPassword)
             errorMsg = `Passwords don't match`
+
+        else if (e.target.name === 'currentPassword'
+            && e.target.value !== '' && e.target.value !== this.state.currentPasswordConfirmation){
+                errorMsg = `Passwords don't match`
+                targetError = "currentPasswordConfirmationError"
+            }
+
+        else if (e.target.name === 'currentPassword'
+            && e.target.value !== '' && e.target.value === this.state.newPassword)
+            errorMsg = `New and current passwords are the same`
+
+        else if (e.target.name === 'newPassword'
+            && e.target.value !== '' && e.target.value === this.state.currentPassword)
+            errorMsg = `New and current passwords are the same`
 
             this.setState({ errors: { ...this.state.errors, [targetError]: errorMsg } })
     }
@@ -43,7 +57,6 @@ class ChangePassword extends Component {
         const dataSent = { newPassword, currentPassword, currentPasswordConfirmation }
         axios.post(`http://localhost:8000/changePassword`, dataSent)
             .then(({ data }) => {
-                this.context.setAuthState(data)
                 this.setState({ newPassword: '', currentPasswordConfirmation: '', currentPassword: '' })
             }).catch((err) => {
                 const errorMsg = err.response.data.msg

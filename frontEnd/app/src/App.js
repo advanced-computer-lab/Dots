@@ -25,6 +25,8 @@ import axios from 'axios';
 import { Navigate } from 'react-router-dom'
 import Signup from './Components/UserRegistration/signup';
 import ChangePasswordPage from './Components/ChangePassword/ChangePasswordPage';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const theme = createTheme({
   palette: {

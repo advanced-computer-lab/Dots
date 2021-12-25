@@ -193,7 +193,34 @@ app.post("/login", (req, res) => {
 //---------------------------------------change password------------------------------------------------
 
 app.post("/changePassword", (req, res) => {
+  const data = req.body
+  const { currentPassword, currentPasswordConfirmation, newPassword } = data
+  const userId = req.verifiedUser.id
 
+  if (currentPasswordConfirmation !== currentPassword)
+    return res.status(400).send({ msg: "Passwords don't match" })
+  if (currentPassword === newPassword)
+    return res.status(400).send({ msg: "The new password you have entered is the same as your current password" })
+  User.findById(userId)
+    .then((user) => {
+      bcrypt.compare(oldPassword, user.password)
+        .then((isPasswordCorrect) => {
+          if (isPasswordCorrect) {
+            const newEncryptedPassword = bcrypt.hashSync(newPassword, saltRounds)
+            User.findByIdAndUpdate(userId,{password: newEncryptedPassword})
+            .then(()=>{
+              res.sendStatus(200)
+            })
+            .catch(()=>{
+              res.status(400).send({msg: "Something went wrong. Please try again"})
+            })
+          } else res.status(401).send({ msg: "Current password is incorrect" })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+
+    })
 })
 
 //------------------------------------------------------------------------------------------------------
