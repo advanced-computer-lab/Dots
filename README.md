@@ -173,6 +173,48 @@ request sample:
 }
 ```
 
+### POST /reservation
+request sample
+```
+"[{"firstName":"Mohamed Amr","lastName":"Mohamed ","passportNumber":"A1133","outBoundSeat":"N/A","inBoundSeat":"N/A"}]"
+
+```
+
+response sample 
+```
+ { "confirmNum" : ""77217247882"" }
+```
+
+### POST /flight
+request sample
+```
+ { "flightNumber" : "AMORY" }
+```
+
+### POST /refund
+request sample
+```
+{ "confirmNum" : "77217247882" , "amount" : "100" }
+```
+
+### POST /change-flight-payment
+request sample
+```
+  chosenFlight : this.props.details.chosenFlight,
+    priceDifference : this.props.details.priceDifference,
+    direction : this.props.details.direction,
+    newReservation : {
+      _id:this.props.details.reservation._id,
+      outBoundflight: {},
+      inBoundflight: {},
+      outBoundClass: {},
+      inBoundClass: {},
+      passengers: {},
+      confirmationNumber: {},
+      totalPrice: {}
+```
+
+
 ### POST /flights/flightquery
 request sample:
 ```
@@ -370,87 +412,6 @@ be displayed.
 ]
 
 ```
-
-### GET /flights
-
-response sample 
-```
-[
-  {
-    departureLocation: {
-      country: 'egypt',
-      city: 'cairo',
-      airport: 'cairo airport',
-      terminal: '1'
-    },
-    arrivalLocation: {
-      country: 'egypt',
-      city: 'luxor',
-      airport: 'luxor airport',
-      terminal: '2'
-    },
-    economyFlightProductId: null,
-    businessFlightProductId: null,
-    firstFlightProductId: null,
-    economyFlightPriceId: null,
-    businessFlightPriceId: null,
-    firstFlightPriceId: null,
-    _id: new ObjectId("61c2809bf1abec0ff3f648c8"),
-    flightNumber: '111',
-    departureTime: 2021-12-25T01:32:27.000Z,
-    arrivalTime: 2021-12-25T04:30:27.000Z,
-    economySeatsAvailable: 20,
-    businessSeatsAvailable: 20,
-    firstSeatsAvailable: 20,
-    totalEconomySeats: 20,
-    totalBusinessSeats: 20,
-    totalFirstSeats: 20,
-    reservations: [],
-    firstClassPrice: 2000,
-    businessClassPrice: 1000,
-    economyClassPrice: 500,
-    __v: 0
-  },
-  {
-    departureLocation: {
-      country: 'egypt',
-      city: 'cairo',
-      airport: 'cairo airport',
-      terminal: '1'
-    },
-    arrivalLocation: {
-      country: 'egypt',
-      city: 'luxor',
-      airport: 'luxor airport',
-      terminal: '2'
-    },
-    economyFlightProductId: null,
-    businessFlightProductId: null,
-    firstFlightProductId: null,
-    economyFlightPriceId: null,
-    businessFlightPriceId: null,
-    firstFlightPriceId: null,
-    _id: new ObjectId("61c280fbf1abec0ff3f648cc"),
-    flightNumber: '222',
-    departureTime: 2021-12-23T10:34:20.000Z,
-    arrivalTime: 2021-12-23T13:30:20.000Z,
-    economySeatsAvailable: 19,
-    businessSeatsAvailable: 20,
-    firstSeatsAvailable: 20,
-    totalEconomySeats: 20,
-    totalBusinessSeats: 20,
-    totalFirstSeats: 20,
-    reservations: [ new ObjectId("61c281b2f1abec0ff3f648dc") ],
-    firstClassPrice: 3000,
-    businessClassPrice: 2500,
-    economyClassPrice: 1000,
-    __v: 0
-  }
-]
-
-```
-
-
 ### How to Use?
 - Admin
 
