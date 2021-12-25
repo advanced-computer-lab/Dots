@@ -186,11 +186,9 @@ app.post("/changePassword", (req, res) => {
 
   if (currentPasswordConfirmation !== currentPassword)
     return res.status(400).send({ msg: "Passwords don't match" })
-  if (currentPassword === newPassword)
-    return res.status(400).send({ msg: "The new password you have entered is the same as your current password" })
   User.findById(userId)
     .then((user) => {
-      bcrypt.compare(oldPassword, user.password)
+      bcrypt.compare(currentPassword, user.password)
         .then((isPasswordCorrect) => {
           if (isPasswordCorrect) {
             const newEncryptedPassword = bcrypt.hashSync(newPassword, saltRounds)
