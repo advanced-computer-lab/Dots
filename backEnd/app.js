@@ -226,7 +226,6 @@ app.get("/userflights", async (req, res) => {
     await reservations[i].outBoundflight.populate("reservations");
     await reservations[i].populate("user");
   }
-  console.log(reservations);
   res.json(reservations);
 });
 
@@ -375,8 +374,13 @@ app.get("/flights/:flightId", async (req, res) => {
 
 //edit reservation
 
-app.patch("/changeseats", async (req, res) => {
-  console.log(req.params);
+app.put("/changeseats", async (req, res) => {
+  var id = mongoose.Types.ObjectId(req.body.newReservation._id);
+  newReservation=req.body.newReservation;
+
+  newReservation.user= "61a762c24c337dff67c229fe",
+
+  await Reservation.findByIdAndUpdate(id,{ passengers: newReservation.passengers })
 });
 
 //------------------reservations delete--------
