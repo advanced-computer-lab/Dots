@@ -95,6 +95,12 @@ const AdminNavBar = () => {
                 >
                   Admin Panel
                 </Typography>
+                </MenuItem>
+                <MenuItem onClick={() => {
+                  handleCloseLogOut();
+                  navigate("/");
+                }}
+>
                 <Typography color='#076F72' variant="overline" display="block" gutterBottom>
                   Log Out
                 </Typography>
