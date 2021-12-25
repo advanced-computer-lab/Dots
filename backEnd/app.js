@@ -140,9 +140,12 @@ app.post("/login", (req, res) => {
             })
           } else res.status(401).send({ msg: "Password is incorrect" })
         })
+        .catch((err) => {
+          console.log(err)
+        })
     })
     .catch(() => {
-      Admin.find({ username })
+      Admin.findOne({ username })
         .then((admin) => {
           bcrypt.compare(password, admin.password)
             .then((isPasswordCorrect) => {
@@ -158,9 +161,12 @@ app.post("/login", (req, res) => {
                 })
               } else res.status(401).send({ msg: "Password is incorrect" })
             })
+            .catch((err) => {
+              console.log(err)
+            })
         })
         .catch(() => {
-          res.status(404).send({ msg: "User not found" })
+          res.status(404).send({ msg: "Username not found" })
         })
     })
 });
@@ -563,16 +569,16 @@ app.delete("/reservations/:reservationId", (req, res) => {
 //----------------
 
 //----------------get and post user data----------------
-app.get("/users/:userId", async (req, res) => {
-  const userId = mongoose.Types.ObjectId(req.params.userId);
+app.get("/user", async (req, res) => {
+  const userId = mongoose.Types.ObjectId(req.verifiedUser.id);
 
   User.findById(userId).then((data) => {
     res.send(data);
   });
 });
 
-app.put("/users/:userId", async (req, res) => {
-  const userId = mongoose.Types.ObjectId(req.params.userId);
+app.put("/user", async (req, res) => {
+  const userId = mongoose.Types.ObjectId(req.verifiedUser.id);
   const userData = req.body;
   delete userData._id;
 
