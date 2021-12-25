@@ -1,4 +1,5 @@
 import React, { useState, Suspense, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -16,7 +17,9 @@ const PasswordStrengthBar = React.lazy(() =>
 const finalJson = {};
 let usernameTaken = false;
 let emailTaken = false;
+let done = false;
 function Signup() {
+  const navigate = useNavigate();
   const [finaljson, setFinalJson] = useState({});
   const [buttondisabled, setButtonDisabled] = useState(true);
   const [usernamehandler, setUsernameHandler] = useState("");
@@ -136,6 +139,7 @@ function Signup() {
             <Fade right>
               <div>
                 <Signup2 handler={handlerjson} />
+
                 <Button
                   sx={{
                     backgroundColor: "green !important",
@@ -144,14 +148,15 @@ function Signup() {
                     left: "50px",
                     top: "50px",
                   }}
-                  variant="contained"
-                  type="submit"
-                  onClick={async () =>
-                    await axios.post(
+                  onClick={async (e) => {
+                    let x = await axios.post(
                       "http://localhost:8000/register",
                       finaljson
-                    )
-                  }
+                    );
+                    if (x) navigate("/");
+                  }}
+                  variant="contained"
+                  type="submit"
                 >
                   Complete your registration
                 </Button>
