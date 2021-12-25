@@ -1,4 +1,4 @@
-import React, { useState, Suspense, useEffect } from "react";
+import React, { useState, Suspense, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -8,12 +8,10 @@ import {
   Button,
   Alert,
 } from "@mui/material/";
+import { AuthContext } from "../../context/authContext";
 import axios from "axios";
 import Fade from "react-reveal/Fade";
 import "./signup.css";
-const PasswordStrengthBar = React.lazy(() =>
-  import("react-password-strength-bar")
-);
 const finalJson = {};
 let usernameTaken = false;
 let emailTaken = false;
@@ -44,6 +42,23 @@ function Signup() {
     setpasswordHandler(input);
   }
   const [display, setDisplay] = useState(true);
+
+  //Sawi's jwt part----------------
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = {
+      // username, password, first, last, countrycode, address, passportnumber, phonenumber, email
+    };
+    const authData = await axios.post(
+      "http://localhost:8000/register",
+      formData
+    );
+    console.log(authData);
+    // authContext.setAuthState(authData.data)
+    navigate("/");
+  };
+  //-------------------------------------
+
   return (
     <div>
       <img

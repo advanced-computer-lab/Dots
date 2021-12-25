@@ -8,8 +8,9 @@ const mongoose = require("mongoose");
 //const passport = require("passport");
 //const LocalStrategy = require("passport-local").Strategy;
 const session = require("express-session");
-
+const bcrypt = require('bcrypt');
 const nodemailer = require("nodemailer");
+<<<<<<< HEAD
 
 const Flight = require("./models/flights");
 const Admin = require("./models/admins");
@@ -19,10 +20,17 @@ const User = require("./models/users");
 // const MongoURI = process.env.MONGO_URI;
 const MongoURI =
   "mongodb+srv://ACLUsers:GaUD669Bt04ZltRG@cluster0.ofagz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+=======
+const Flight = require('./models/flights');
+const Admin = require('./models/admins');
+const Reservation = require('./models/reservations');
+const User = require('./models/users')
+const jwt = require('jsonwebtoken');
+const MongoURI = process.env.MONGO_URI;
+>>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
 let alert = require("alert");
 const short = require("short-uuid");
 const translator = short();
-const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
 const stripeSK =
@@ -70,33 +78,130 @@ const sessionConfig = {
 
 app.use(session(sessionConfig));
 
-/*app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(Admin.authenticate()));
+// app.use(passport.initialize());
+// app.use(passport.session());
+// passport.use(new LocalStrategy(Admin.authenticate()))
 
-passport.serializeUser(Admin.serializeUser());
-passport.deserializeUser(Admin.deserializeUser());
-*/
-/*app.post("/login", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) throw err;
-    if (!user) res.send("No User Exists");
-    else {
-      req.logIn(user, (err) => {
-        if (err) throw err;
-        res.send("Successfully Authenticated");
-        console.log(req.user);
-      });
-    }
-  })(req, res, next);
-});*/
+// passport.serializeUser(Admin.serializeUser());
+// passport.deserializeUser(Admin.deserializeUser())
 
+// app.post("/login", (req, res, next) => {
+//   passport.authenticate("local", (err, user, info) => {
+//     if (err) throw err;
+//     if (!user) res.send("No User Exists");
+//     else {
+//       req.logIn(user, (err) => {
+//         if (err) throw err;
+//         res.send("Successfully Authenticated");
+//         console.log(req.user);
+//       });
+//     }
+//   })(req, res, next);
+// });
+
+//------------------------------------------authentication & authorization-----------------------------------------
+const verifyAdmin = (req, res, next) => {
+  if (req.verifiedUser.role !== 'admin') return res.sendStatus(403)
+  next()
+}
+
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization
+  const token = authHeader && authHeader.split(' ')[1]
+  if (!token) return res.status(401).send()
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return res.status(403).send()
+    req.verifiedUser = user
+    next()
+  })
+}
+
+app.use((req, res, next) => {
+  if (req.url === "/login" || req.url === "/flights" || req.url === "/flights/flightquery" || req.url === "/register")
+    return next()
+  else
+    return verifyToken(req, res, next)
+})
+
+app.get("/checkAuth", (req, res) => {
+  const authHeader = req.headers.authorization
+  const token = authHeader && authHeader.split(' ')[1]
+  if (req.verifiedUser) {
+    return res.status(200).send({ accessToken: token, role: req.verifiedUser.role, name: req.verifiedUser.name })
+  }
+  return res.sendStatus(401)
+})
+
+app.get("/checkAdmin", (req, res) => {
+  const authHeader = req.headers.authorization
+  const token = authHeader && authHeader.split(' ')[1]
+  if (req.verifiedUser.role === 'admin') return res.json({ accessToken: token, role: req.verifiedUser.role, name: req.verifiedUser.name })
+  return res.sendStatus(403)
+})
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body
+  User.findOne({ username })
+    .then((user) => {
+      bcrypt.compare(password, user.password)
+        .then((isPasswordCorrect) => {
+          if (isPasswordCorrect) {
+            const payload = { id: user._id, name: user.firstName, role: 'user' }
+            jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
+              if (err) return res.status(400).send({ msg: "Something went wrong. Please try again" })
+              return res.json({
+                accessToken: token,
+                name: user.firstName,
+                role: 'user'
+              })
+            })
+          } else res.status(401).send({ msg: "Password is incorrect" })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    })
+    .catch(() => {
+      Admin.findOne({ username })
+        .then((admin) => {
+          bcrypt.compare(password, admin.password)
+            .then((isPasswordCorrect) => {
+              if (isPasswordCorrect) {
+                const payload = { id: admin.id, name: admin.firstName, role: 'admin' }
+                jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
+                  if (err) return res.status(400).send({ msg: "Something went wrong. Please try again" })
+                  return res.json({
+                    accessToken: token,
+                    role: 'admin',
+                    name: admin.firstName
+                  })
+                })
+              } else res.status(401).send({ msg: "Password is incorrect" })
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+        })
+        .catch(() => {
+          res.status(404).send({ msg: "Username not found" })
+        })
+    })
+});
+
+//-------------------------------------------------------------------------------------------------------
+
+//---------------------------------------change password------------------------------------------------
+
+app.post("/changePassword", (req, res) => {
+
+})
+
+//------------------------------------------------------------------------------------------------------
 async function rand() {
   const rand = translator.generate().substring(0, 5);
   return rand;
 }
 app.post("/flights", async (req, res) => {
-  console.log(req.body);
   try {
     Flight.create({
       flightNumber: req.body.flightNo,
@@ -188,22 +293,37 @@ app.post("/register", async (req, res) => {
       phoneNumber: req.body.phonenumber,
       homeAddress: req.body.address,
       countryCode: req.body.countrycode,
+<<<<<<< HEAD
     });
     console.log("testing");
     res.send(true);
     //res.redirect("http://localhost:3000");
+=======
+    }).then((user) => {
+      const payload = { id: user._id, name: user.firstName, role: 'user' }
+      jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
+        if (err) return res.json({ msg: err })
+        return res.json({
+          accessToken: token,
+          name: user.firstName,
+          role: 'user'
+        })
+      })
+    })
+    //res.redirect("http://localhost:3000/");
+>>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
   } catch (error) {
     console.log(error);
   }
 });
 
 /*const flightOut = new Flight({
-  _id: new mongoose.TypesstateectId(),
+  _id: new mongoose.Types.ObjectId(),
   departureTime: new Date('2016-08-18T21:11:54'),
   arrivalTime: new Date('2017-08-18T21:11:54')
 });
 const flightIn = new Flight({
-  _id: new mongoose.TypesstateectId(),
+  _id: new mongoose.Types.ObjectId(),
   departureTime: new Date('2020-08-18T21:11:54'),
   arrivalTime: new Date('2023-08-18T21:11:54')
 });
@@ -220,6 +340,7 @@ flightIn.save((err) => {
 */
 
 app.get("/userflights", async (req, res) => {
+  console.log(req.verifiedUser)
   var user = await User.find({});
   user = await user[0].populate("reservations");
   var reservations = user.reservations;
@@ -238,8 +359,8 @@ app.get("/userflights", async (req, res) => {
   console.log(allData.inBoundflight.departureTime);
 });*/
 
-app.delete("/flight/:flightId/delete", async (req, res) => {
-  var id = mongoose.TypesstateectId(req.params.flightId);
+app.delete("/flight/:flightId/delete", verifyAdmin, async (req, res) => {
+  var id = mongoose.Types.ObjectId(req.params.flightId);
   try {
     await Flight.findByIdAndDelete(id);
     res.send("Flight Deleted");
@@ -249,7 +370,7 @@ app.delete("/flight/:flightId/delete", async (req, res) => {
 });
 
 app.post("/reservationinsertion", async (req, res) => {
-  var mongooseID = new mongoose.TypesstateectId();
+  var mongooseID = new mongoose.Types.ObjectId();
   Reservation.create({
     _id: mongooseID,
     user: "61a762c24c337dff67c229fe",
@@ -262,13 +383,13 @@ app.post("/reservationinsertion", async (req, res) => {
     totalPrice: req.body.totalPrice,
   });
   await User.findByIdAndUpdate(
-    new mongoose.TypesstateectId("61a762c24c337dff67c229fe"),
+    new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"),
     { $push: { reservations: mongooseID } },
     { new: true }
   );
   if (req.body.outBoundClass === "Economy")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.TypesstateectId(req.body.previousStage.depchosenflight._id),
+      new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id),
       {
         $push: { reservations: mongooseID },
         economySeatsAvailable:
@@ -279,7 +400,7 @@ app.post("/reservationinsertion", async (req, res) => {
     );
   else if (req.body.outBoundClass === "First")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.TypesstateectId(req.body.previousStage.depchosenflight._id),
+      new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id),
       {
         $push: { reservations: mongooseID },
         firstSeatsAvailable:
@@ -290,7 +411,7 @@ app.post("/reservationinsertion", async (req, res) => {
     );
   else if (req.body.outBoundClass === "Business")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.TypesstateectId(req.body.previousStage.depchosenflight._id),
+      new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id),
       {
         $push: { reservations: mongooseID },
         businessSeatsAvailable:
@@ -302,7 +423,7 @@ app.post("/reservationinsertion", async (req, res) => {
 
   if (req.body.inBoundClass === "Economy")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.TypesstateectId(
+      new mongoose.Types.ObjectId(
         req.body.previousStage.returnchosenflight._id
       ),
       {
@@ -315,7 +436,7 @@ app.post("/reservationinsertion", async (req, res) => {
     );
   else if (req.body.inBoundClass === "First")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.TypesstateectId(
+      new mongoose.Types.ObjectId(
         req.body.previousStage.returnchosenflight._id
       ),
       {
@@ -328,7 +449,7 @@ app.post("/reservationinsertion", async (req, res) => {
     );
   else if (req.body.inBoundClass === "Business")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.TypesstateectId(
+      new mongoose.Types.ObjectId(
         req.body.previousStage.returnchosenflight._id
       ),
       {
@@ -340,11 +461,11 @@ app.post("/reservationinsertion", async (req, res) => {
       { new: true }
     );
 });
-app.put("/flights/:flightId", async (req, res) => {
+app.put("/flights/:flightId", verifyAdmin, async (req, res) => {
   const updateData = req.body;
   delete updateData._id;
 
-  const searchId = mongoose.TypesstateectId(req.params.flightId);
+  const searchId = mongoose.Types.ObjectId(req.params.flightId);
 
   try {
     const doc = await Flight.findByIdAndUpdate(searchId, updateData, {
@@ -362,11 +483,10 @@ app.get("/flights", async (req, res) => {
     res.send(flights);
   } catch (error) {
     res.send([]);
-    console.log(error);
   }
 });
 
-app.get("/flights/:flightId", async (req, res) => {
+app.get("/flights/:flightId", verifyAdmin, async (req, res) => {
   try {
     let flight = await Flight.findById(req.params.flightId).exec();
     res.send(flight);
@@ -380,11 +500,18 @@ app.get("/flights/:flightId", async (req, res) => {
 app.put("/changeseats", async (req, res) => {
   var id = mongoose.Types.ObjectId(req.body.newReservation._id);
   newReservation = req.body.newReservation;
+<<<<<<< HEAD
 
   (newReservation.user = "61a762c24c337dff67c229fe"),
     await Reservation.findByIdAndUpdate(id, {
       passengers: newReservation.passengers,
     });
+=======
+
+  newReservation.user = "61a762c24c337dff67c229fe",
+
+    await Reservation.findByIdAndUpdate(id, { passengers: newReservation.passengers })
+>>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
 });
 
 //------------------reservations delete--------
@@ -392,7 +519,7 @@ app.delete("/reservations/:reservationId", (req, res) => {
   try {
     if (!req.params.reservationId)
       res.status(400).send({ message: "Reservation Id invalid" });
-    const reservationId = mongoose.TypesstateectId(req.params.reservationId);
+    const reservationId = mongoose.Types.ObjectId(req.params.reservationId);
     Reservation.findByIdAndDelete(reservationId).then((reservationDeleted) => {
       if (!reservationDeleted)
         res.status(404).send({ message: "Couldn't find reservation" });
@@ -476,9 +603,6 @@ app.delete("/reservations/:reservationId", (req, res) => {
                 break;
               default:
             }
-            console.log(outBoundPrice);
-            console.log(inBoundFlight);
-            console.log(inBoundPrice);
             outBoundPrice *= reservationDeleted.passengers.length;
             inBoundPrice *= reservationDeleted.passengers.length;
 
@@ -493,8 +617,8 @@ app.delete("/reservations/:reservationId", (req, res) => {
                     <p>Outbound flight total price: <b>$${outBoundPrice}</b></p>
                     <p>Inbound flight total price: <b>$${inBoundPrice}</b></p>
                     <h3>Total Price: $${outBoundPrice + inBoundPrice}</h3>
-                    <p>Have a nice day!</p>`,
-            };
+                    <p>Have a nice day!</p>`
+            }
 
             transporter.sendMail(mailOptions, (err, data) => {
               if (err) {
@@ -504,35 +628,35 @@ app.delete("/reservations/:reservationId", (req, res) => {
                 //       Flight.findByIdAndUpdate(reservationDeleted.outBoundflight, { $push: { reservations: reservationId } })
                 //         .then(() => {
                 //           Flight.findByIdAndUpdate(reservationDeleted.inBoundflight, { $push: { reservations: reservationId } })
-                res.status(400).send(err);
+                res.status(400).send(err)
                 //         })
                 //     })
                 // })
-              } else res.send(`Email Sent: ${data}`);
-            });
-          });
-        });
-      });
-    });
-    console.log("data deleted!");
+              }
+              else
+                res.send(`Email Sent: ${data}`)
+            })
+          })
+        })
+      })
+    })
   } catch (error) {
-    console.log("data deleted!");
     res.send(error);
   }
 });
 //----------------
 
 //----------------get and post user data----------------
-app.get("/users/:userId", async (req, res) => {
-  const userId = mongoose.TypesstateectId(req.params.userId);
+app.get("/user", async (req, res) => {
+  const userId = mongoose.Types.ObjectId(req.verifiedUser.id);
 
   User.findById(userId).then((data) => {
     res.send(data);
   });
 });
 
-app.put("/users/:userId", async (req, res) => {
-  const userId = mongoose.TypesstateectId(req.params.userId);
+app.put("/user", async (req, res) => {
+  const userId = mongoose.Types.ObjectId(req.verifiedUser.id);
   const userData = req.body;
   delete userData._id;
 
@@ -578,8 +702,6 @@ app.post("/flights/flightquery", async (req, res) => {
     queryOutDate.setTime(queryOutDate.getTime() + 2 * 60 * 60 * 1000);
     queryInDate.setTime(queryInDate.getTime() + 2 * 60 * 60 * 1000);
 
-    console.log(queryOutDate);
-    console.log(queryInDate);
 
     outDates = [];
     inDates = [];
@@ -827,11 +949,17 @@ app.post("/create-checkout-session", async (req, res) => {
   };
 
   const arr = {
+<<<<<<< HEAD
     depDate: state.previousStage.returnchosenflight.departureTime,
     arrDate: state.previousStage.returnchosenflight.arrivalTime,
     flightNum: state.previousStage.returnchosenflight.flightNumber,
     class: state.previousStage.returnflightClass,
   };
+=======
+    "depDate": state.previousStage.returnchosenflight.departureTime, "arrDate": state.previousStage.returnchosenflight.arrivalTime,
+    "flightNum": state.previousStage.returnchosenflight.flightNumber, "class": state.previousStage.returnflightClass
+  }
+>>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
 
   const numPass = state.previousStage.numberOfpassengers;
 
@@ -858,6 +986,12 @@ app.post("/create-checkout-session", async (req, res) => {
   let depFlight = await Flight.find({ flightNumber: dep.flightNum });
   let arrFlight = await Flight.find({ flightNumber: arr.flightNum });
 
+<<<<<<< HEAD
+=======
+  let depFlight = await Flight.find({ flightNumber: dep.flightNum })
+  let arrFlight = await Flight.find({ flightNumber: arr.flightNum })
+
+>>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
   // check if email exists if not create customer
   // let customer = await retrieveCustomer(email)
   // if (customer.length === 0) {
@@ -870,6 +1004,16 @@ app.post("/create-checkout-session", async (req, res) => {
   console.log(depFlight[0].economyFlightProductId === null);
 
   // check if both flights exist by flight id if not create 3 flights products for each class
+<<<<<<< HEAD
+=======
+
+
+
+  let depFlightProduct = null
+  let arrFlightProduct = null
+  let depPrice = null
+  let arrPrice = null
+>>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
 
   let depFlightProduct = null;
   let arrFlightProduct = null;
@@ -881,6 +1025,7 @@ app.post("/create-checkout-session", async (req, res) => {
     // update in the DB the 3 ids of the 3 classes
     let depProducts = await createFlightProducts(depFlight);
     // console.log(depProducts);
+<<<<<<< HEAD
     depBusinessProductId = depProducts[1].id;
     depEconomyProductId = depProducts[0].id;
     depFirstProductId = depProducts[2].id;
@@ -902,6 +1047,17 @@ app.post("/create-checkout-session", async (req, res) => {
         },
       }
     );
+=======
+    depBusinessProductId = depProducts[1].id
+    depEconomyProductId = depProducts[0].id
+    depFirstProductId = depProducts[2].id
+    depEconomyPriceId = depProducts[3].id
+    depBusinessPriceId = depProducts[4].id
+    depFirstPriceId = depProducts[5].id
+
+    // update flight id
+    await Flight.updateOne({ flightNumber: dep.flightNum }, { $set: { economyFlightProductId: depEconomyProductId, businessFlightProductId: depBusinessProductId, firstFlightProductId: depFirstProductId, economyFlightPriceId: depEconomyPriceId, businessFlightPriceId: depBusinessPriceId, firstFlightPriceId: depFirstPriceId } })
+>>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
 
     switch (dep.class) {
       case "Economy":
@@ -999,6 +1155,11 @@ app.post("/create-checkout-session", async (req, res) => {
   console.log(arrPrice);
   // console.log(arrFlightProduct)
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -1049,10 +1210,37 @@ app.post("/create-checkout-session", async (req, res) => {
 const createRefund = async (pid, refundAmount) => {
   const refund = await stripe.refunds.create({
     payment_intent: pid,
+<<<<<<< HEAD
     amount: refundAmount * 100,
   });
   return refund;
 };
+=======
+    amount: refundAmount * 100
+  });
+  return refund;
+}
+
+
+app.post("/refund", async (req, res) => {
+  try {
+    const refund = await createRefund(req.body.pid, req.body.amount);
+    console.log(refund)
+    res.send(refund);
+  }
+  catch (err) {
+    console.log(err)
+    res.status(400).send({})
+  }
+
+
+
+});
+
+
+
+
+>>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
 
 app.post("/refund", async (req, res) => {
   try {
@@ -1065,7 +1253,10 @@ app.post("/refund", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 app.post("/change-flight-payment", async (req, res) => {
+=======
+>>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
   // get old flight dep and arr
   // get new flight dep and arr
   // get old flight total price
