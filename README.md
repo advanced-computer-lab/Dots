@@ -138,14 +138,52 @@ As the saying goes, a picture is equal to a thousand words. Most people will be 
 
 ### API reference
 
+### DELETE /flight/:flightId/delete
+
+deletes a flight
+flightId is the if for the deleted flight
+
+response sample:
+```
+"Flight Deleted"
+```
+### PUT /changeseats
+
+request sample:
+```
+{
+  newReservation: {
+    _id: '61c7811b8ca890dc40b62e48',
+    outBoundflight: '61a5a12c30240908791077f4',
+    inBoundflight: '61a5a12b30240908791077e2',
+    outBoundClass: 'Economy',
+    inBoundClass: 'First',
+    passengers: [ [Object] ],
+    totalPrice: 4969
+  }
+}
+```
+
 
 
 ### How to Use?
-
-
+- Admin
+-- Login to your account then choose the admin panel from the navigation bar.
+-- From the admin panel you can create ,edit and delete flights.
+- Guest
+-- From the website homepage you can search for all the available flights depending on your search criteria.
+-- From the navigation bar you can click on the register button to register for an account.
+- Registered user
+-- From the navigation bar click on the login button to login to your account
+-- Afterwards, you can search for all the available flights and choose your desired flights and cabin class and then you will be redirected to select your flight seats.
+-- After choosing the seats you will be asked to pay for the reservation and you will be redirected to stripe gateway to pay the requested amount.
+-- When the payment is completed you will see a summary of your reservation with all the needed details.
+-- You can also edit your chosen seats or change a different flight for your reservation from your flights list. You can go there by choosing My Flights button from the navigation bar.
 
 ### Credits
-
+**Thanks to all the amazing TAs from the Advanced Computer Lab course**
+we were offered a lot of guidance from each one of them.
+The course was a great experience that made us gain a lot of experience in all web development fields!
 
 ### License
 
