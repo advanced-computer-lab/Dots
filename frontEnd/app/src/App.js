@@ -122,7 +122,7 @@ class App extends Component {
 
 
           <AuthProvider>
-            <div style={{ backgroundImage: `url(${'/download.jpg'})` }}>
+            <div style={{ backgroundImage: `url(${'/download.jpg'})`,minHeight:825 }}>
               <UserNavBar />
               <AppRoutes />
             </div>

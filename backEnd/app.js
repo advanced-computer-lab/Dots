@@ -117,8 +117,10 @@ app.get("/checkAuth", (req, res) => {
   return res.sendStatus(401)
 })
 
-app.get("checkAdmin", (req, res) => {
-  if (req.verifiedUser.role === 'admin') return res.send(200).send(req.verifiedUser)
+app.get("/checkAdmin", (req, res) => {
+  const authHeader = req.headers.authorization
+  const token = authHeader && authHeader.split(' ')[1]
+  if (req.verifiedUser.role === 'admin') return res.json({ accessToken: token, role: req.verifiedUser.role, name: req.verifiedUser.name })
   return res.sendStatus(403)
 })
 

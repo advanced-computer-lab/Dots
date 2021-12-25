@@ -18,6 +18,7 @@ import Button from "@mui/material/Button";
 import EditForm from "./EditForm";
 
 import DialogTitle from "@mui/material/DialogTitle";
+import { Card } from "@mui/material";
 
 class FlightsList extends Component {
   constructor() {
@@ -406,7 +407,7 @@ class FlightsList extends Component {
   };
 
   render() {
-    const { flights,  depDate, pageSize,  } =
+    const { flights, depDate, pageSize, } =
       this.state;
 
     flights.map((flight) => {
@@ -543,19 +544,19 @@ class FlightsList extends Component {
           {" "}
         </SearchModule>
 
-        <div
-          style={{ height: 650, width: "70%", position: "fixed", left: 190 }}
+        <Card
+          style={{ height: 650, width: "70%", marginLeft: 190 }}
         >
           <DataGrid
+            autoPageSize
             rows={flights}
             columns={columns}
             pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => this.setPageSize(newPageSize)}
             rowsPerPageOptions={[10, 20, 50]}
             checkboxSelection={false}
             disableSelectionOnClick
           />
-        </div>
+        </Card>
 
         <Dialog
           open={this.state.openDeleteDialog}
