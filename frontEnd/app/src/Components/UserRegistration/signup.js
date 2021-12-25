@@ -306,13 +306,13 @@ function Signup1(props) {
             repeat = await axios.post("http://localhost:8000/checkemail", {
               email: e.target.value,
             });
+            if (repeat.data) {
+              setTakenEmail(repeat.data);
+              emailTaken = true;
+              props.handlerbutton(true);
+            }
           } catch (error) {
             console.log(error);
-          }
-          if (repeat.data) {
-            setTakenEmail(repeat.data);
-            emailTaken = true;
-            props.handlerbutton(true);
           }
         }}
       ></TextField>

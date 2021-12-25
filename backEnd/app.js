@@ -119,13 +119,11 @@ app.get("/checkAuth", (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(" ")[1];
   if (req.verifiedUser) {
-    return res
-      .status(200)
-      .send({
-        accessToken: token,
-        role: req.verifiedUser.role,
-        name: req.verifiedUser.name,
-      });
+    return res.status(200).send({
+      accessToken: token,
+      role: req.verifiedUser.role,
+      name: req.verifiedUser.name,
+    });
   }
   return res.sendStatus(401);
 });
@@ -189,11 +187,9 @@ app.post("/login", (req, res) => {
                   process.env.ACCESS_TOKEN_SECRET,
                   (err, token) => {
                     if (err)
-                      return res
-                        .status(400)
-                        .send({
-                          msg: "Something went wrong. Please try again",
-                        });
+                      return res.status(400).send({
+                        msg: "Something went wrong. Please try again",
+                      });
                     return res.json({
                       accessToken: token,
                       role: "admin",
@@ -225,11 +221,9 @@ app.post("/changePassword", (req, res) => {
   if (currentPasswordConfirmation !== currentPassword)
     return res.status(400).send({ msg: "Passwords don't match" });
   if (currentPassword === newPassword)
-    return res
-      .status(400)
-      .send({
-        msg: "The new password you have entered is the same as your current password",
-      });
+    return res.status(400).send({
+      msg: "The new password you have entered is the same as your current password",
+    });
   User.findById(userId).then((user) => {
     bcrypt
       .compare(oldPassword, user.password)
@@ -308,7 +302,7 @@ app.post("/flights", async (req, res) => {
 });*/
 app.post("/checkemail", async (req, res) => {
   let bool = false;
-  //console.log(req.body.email);
+  console.log(req.body.email);
   if (req.body.email != undefined) {
     let user = await User.findOne({ email: req.body.email });
     if (user != null) {
@@ -323,7 +317,7 @@ app.post("/checkemail", async (req, res) => {
 
 app.post("/checkusername", async (req, res) => {
   let bool = false;
-  //console.log(req.body.username);
+  console.log(req.body.username);
   if (req.body.username != undefined) {
     let user = await User.findOne({ username: req.body.username });
     if (user != null) {
@@ -392,6 +386,7 @@ flightIn.save((err) => {
 app.get("/userflights", async (req, res) => {
   console.log(req.verifiedUser);
   var user = await User.find({});
+  console.log(req.verifiedUser._id);
   user = await user[0].populate("reservations");
   var reservations = user.reservations;
   for (let i = 0; i < reservations.length; i++) {
@@ -1016,9 +1011,6 @@ app.post("/create-checkout-session", async (req, res) => {
   // dep = { flightNum , cls , numPass , depDate , arrDate }
 
   console.log(dep.flightNum);
-
-  let depFlight = await Flight.find({ flightNumber: dep.flightNum });
-  let arrFlight = await Flight.find({ flightNumber: arr.flightNum });
 
   let depFlight = await Flight.find({ flightNumber: dep.flightNum });
   let arrFlight = await Flight.find({ flightNumber: arr.flightNum });
