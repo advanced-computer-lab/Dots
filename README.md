@@ -199,6 +199,87 @@ response sample:
       noInFlights: noInFlights,
 ```
 
+### POST /emailreservation
+request sample:
+```
+    {
+  reservation: {
+    _id: '61c7811b8ca890dc40b62e48',
+    user: {
+      _id: '61c4a281c03da56f546884cb',
+      username: 'auth',
+      email: 'ahmed.belal.dawood@gmail.com',
+      password: '$2b$10$uHr5zn2FKBHgn9dooMOrEOAexv.RBQl77I/DZGul8Nl4qlU7lUQVa',
+      firstName: 'auth',
+      lastName: 'shouldwork',
+      homeAddress: 'auth',
+      countryCode: 'auth',
+      phoneNumber: '111111111',
+      passportNumber: 'auth',
+      reservations: [Array],
+      __v: 0
+    },
+    outBoundflight: {
+      departureLocation: [Object],
+      arrivalLocation: [Object],
+      economyFlightProductId: null,
+      businessFlightProductId: null,
+      firstFlightProductId: null,
+      economyFlightPriceId: null,
+      businessFlightPriceId: null,
+      firstFlightPriceId: null,
+      _id: '61a5a12c30240908791077f4',
+      economySeatsAvailable: 102,
+      businessSeatsAvailable: 15,
+      firstSeatsAvailable: 12,
+      totalEconomySeats: 30,
+      totalBusinessSeats: 20,
+      totalFirstSeats: 10,
+      reservations: [Array],
+      firstClassPrice: 3615,
+      businessClassPrice: 772,
+      economyClassPrice: 72,
+      flightNumber: '3kMuMW',
+      departureTime: '2022-02-09T11:34:11.999Z',
+      arrivalTime: '2022-02-09T20:34:11.999Z',
+      __v: 0
+    },
+    inBoundflight: {
+      departureLocation: [Object],
+      arrivalLocation: [Object],
+      _id: '61a5a12b30240908791077e2',
+      economySeatsAvailable: 2,
+      businessSeatsAvailable: 4,
+      firstSeatsAvailable: 7,
+      totalEconomySeats: 30,
+      totalBusinessSeats: 20,
+      totalFirstSeats: 10,
+      reservations: [Array],
+      firstClassPrice: 4897,
+      businessClassPrice: 1390,
+      economyClassPrice: 32,
+      flightNumber: '3DdvVv',
+      departureTime: '2022-02-16T18:25:22.999Z',
+      arrivalTime: '2022-02-17T03:25:22.999Z',
+      __v: 0,
+      businessFlightPriceId: 'price_1KAHt0Gx4Kq2M7uI3iquUCsu',
+      businessFlightProductId: 'prod_KpxoSrOofL8rs1',
+      economyFlightProductId: 'prod_KpxoWr2qLShqcn',
+      firstFlightPriceId: 'price_1KAHt1Gx4Kq2M7uIOhnogLS9',
+      firstFlightProductId: 'prod_Kpxo3Ckih9NGqF',
+      economyFlightPriceId: 'price_1KAHt0Gx4Kq2M7uIP7hXMqJ8'
+    },
+    outBoundClass: 'First',
+    inBoundClass: 'Economy',
+    passengers: [ [Object] ],
+    confirmationNumber: 24810854124,
+    totalPrice: 3647,
+    paymentNumber: 'pi_3KAgz1Gx4Kq2M7uI05cHsNEQ',
+    __v: 0
+  }
+}
+```
+
 ### How to Use?
 - Admin
 
