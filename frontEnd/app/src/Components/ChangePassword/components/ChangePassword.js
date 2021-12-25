@@ -48,7 +48,7 @@ class ChangePassword extends Component {
         const dataSent = { newPassword, currentPassword, currentPasswordConfirmation }
         axios.post(`http://localhost:8000/changePassword`, dataSent)
             .then(() => {
-                this.setState({ newPassword: '', currentPasswordConfirmation: '', currentPassword: '', editSnackBarOpen: true })
+                this.setState({ newPassword: '', currentPasswordConfirmation: '', currentPassword: '', editSnackBarOpen: true, error: false })
             }).catch((err) => {
                 const errorMsg = err.response ? err.response.data.msg : ''
                 this.setState({ errorMsg, error: true })
