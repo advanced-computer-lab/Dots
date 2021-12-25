@@ -173,7 +173,31 @@ request sample:
 }
 ```
 
-
+### POST /flights/flightquery
+request sample:
+```
+"out": { "dep": depDate, "class": classes[depClass] }, 
+"in": { "dep": arrDate, "class": classes[arrClass] }, 
+"from": from, "to": to, "adults": adults, "kids": kids }
+```
+response sample: 
+```
+  depOriginalFlights: outFlightsWithDate,
+      depAllFlights: outFlightsWithDate,
+      depsearchdate: new Date(outDepDate),
+      from: body.from,
+      to: body.to,
+      depfaded: true,
+      depchosenFlight: null,
+      returnOriginalFlights: inFlightsWithDate,
+      returnAllflights: inFlightsWithDate,
+      returnsearchdate: new Date(inDepDate),
+      returnchosenflight: null,
+      returnfaded: true,
+      numberOfpassengers: parseInt(body.kids) + parseInt(body.adults),
+      noOutFlights: noOutFlights,
+      noInFlights: noInFlights,
+```
 
 ### How to Use?
 - Admin
