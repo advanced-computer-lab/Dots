@@ -45,18 +45,16 @@ function Signup() {
 
   //Sawi's jwt part----------------
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = {
-      // username, password, first, last, countrycode, address, passportnumber, phonenumber, email
-    };
-    const authData = await axios.post(
+    let x = await axios.post(
       "http://localhost:8000/register",
-      formData
+      finaljson
     );
-    console.log(authData);
-    // authContext.setAuthState(authData.data)
-    navigate("/");
-  };
+    if (x) {
+      this.context.setAuthState(x)
+      navigate("/")
+      window.location.reload()
+    }
+  }
   //-------------------------------------
 
   return (
@@ -119,23 +117,23 @@ function Signup() {
                   type="submit"
                   sx={
                     !buttondisabled &
-                    (usernamehandler != "") &
-                    (passwordhandler != "") &
-                    (emailhandler != "")
+                      (usernamehandler !== "") &
+                      (passwordhandler !== "") &
+                      (emailhandler !== "")
                       ? {
-                          backgroundColor: "green !important",
-                          height: "50px",
-                          width: "300px",
-                          left: "50px",
-                          top: "80px",
-                        }
+                        backgroundColor: "green !important",
+                        height: "50px",
+                        width: "300px",
+                        left: "50px",
+                        top: "80px",
+                      }
                       : {
-                          backgroundColor: "grey !important",
-                          height: "50px",
-                          width: "300px",
-                          left: "50px",
-                          top: "80px",
-                        }
+                        backgroundColor: "grey !important",
+                        height: "50px",
+                        width: "300px",
+                        left: "50px",
+                        top: "80px",
+                      }
                   }
                   disabled={
                     buttondisabled |
@@ -163,13 +161,7 @@ function Signup() {
                     left: "50px",
                     top: "50px",
                   }}
-                  onClick={async (e) => {
-                    let x = await axios.post(
-                      "http://localhost:8000/register",
-                      finaljson
-                    );
-                    if (x) navigate("/");
-                  }}
+                  onClick={handleSubmit}
                   variant="contained"
                   type="submit"
                 >

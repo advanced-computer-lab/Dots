@@ -102,7 +102,7 @@ const AdminNavBar = () => {
                   Change My Password
                 </Typography>
               </MenuItem>
-              <MenuItem onClick={() => { handleCloseLogOut(); navigate("/")}}>
+              <MenuItem onClick={() => { handleCloseLogOut(); navigate("/"); window.location.reload()}}>
                 <Typography color='#076F72' variant="overline" display="block" gutterBottom>
                   Log Out
                 </Typography>
