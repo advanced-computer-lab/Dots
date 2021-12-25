@@ -156,7 +156,7 @@ app.post("/login", (req, res) => {
               name: user.firstName,
               role: "user",
             };
-            jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '3h'}, (err, token) => {
+            jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '3h' }, (err, token) => {
               if (err)
                 return res
                   .status(400)
@@ -187,7 +187,7 @@ app.post("/login", (req, res) => {
                 };
                 jwt.sign(
                   payload,
-                  process.env.ACCESS_TOKEN_SECRET,{expiresIn: '3h'},
+                  process.env.ACCESS_TOKEN_SECRET, { expiresIn: '3h' },
                   (err, token) => {
                     if (err)
                       return res.status(400).send({
@@ -349,7 +349,7 @@ app.post("/register", async (req, res) => {
       countryCode: req.body.countrycode,
     }).then((user) => {
       const payload = { id: user._id, name: user.firstName, role: "user" };
-      jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '3h'}, (err, token) => {
+      jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '3h' }, (err, token) => {
         if (err) return res.json({ msg: err });
         return res.json({
           accessToken: token,
@@ -1397,7 +1397,7 @@ app.post("/change-flight-payment", async (req, res) => {
   //   }
 
 
-  
+
   var id = mongoose.Types.ObjectId(req.body.newReservation._id);
   const reservation = await Reservation.findById(id);
   await Reservation.findByIdAndUpdate(id, {
@@ -1412,7 +1412,34 @@ app.post("/change-flight-payment", async (req, res) => {
 
 
   if (req.body.priceDifference <= 0) {
-    res.send({data:{url:"http://localhost:3000/userflights"}});
+    const userId = req.verifiedUser.id;
+    const userFound = await User.findById(userId);
+    let mailOptions = {
+      from: `'Takeoff Airways' <${process.env.MAIL_USER}>`,
+      to: userFound.email,
+      subject: "Refund Confirmation",
+      html: `<h2 style="color:#09827C;">Hello ${userFound.firstName
+        }!</h2>
+                    <h4>This mail is to confirm your refund</h4>
+                    <h3>Total Price: $${req.body.priceDifference}</h3>
+                    <p>Have a nice day!</p>`,
+    };
+
+    transporter.sendMail(mailOptions, (err, data) => {
+      if (err) {
+        // Reservation.create(reservationDeleted).then(() => {
+        //   User.findByIdAndUpdate(reservationDeleted.user, { $push: { reservations: reservationId } })
+        //     .then(() => {
+        //       Flight.findByIdAndUpdate(reservationDeleted.outBoundflight, { $push: { reservations: reservationId } })
+        //         .then(() => {
+        //           Flight.findByIdAndUpdate(reservationDeleted.inBoundflight, { $push: { reservations: reservationId } })
+        res.status(400).send(err);
+        //         })
+        //     })
+        // })
+      } else res.send(`Email Sent: ${data}`);
+    });
+    res.send({ url: "http://localhost:3000/userflights" });
     return;
   }
 
