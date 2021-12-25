@@ -181,7 +181,7 @@ app.post("/login", (req, res) => {
               if (isPasswordCorrect) {
                 const payload = {
                   id: admin.id,
-                  name: admin.firstName,
+                  name: admin.username,
                   role: "admin",
                 };
                 jwt.sign(
@@ -195,7 +195,7 @@ app.post("/login", (req, res) => {
                     return res.json({
                       accessToken: token,
                       role: "admin",
-                      name: admin.firstName,
+                      name: admin.username,
                     });
                   }
                 );
@@ -364,12 +364,14 @@ app.post("/register", async (req, res) => {
 });
 
 /*const flightOut = new Flight({
-  _id: new mongoose.Types.ObjectId(),
+  _id: new mongoose.Types.ObjectId
+(),
   departureTime: new Date('2016-08-18T21:11:54'),
   arrivalTime: new Date('2017-08-18T21:11:54')
 });
 const flightIn = new Flight({
-  _id: new mongoose.Types.ObjectId(),
+  _id: new mongoose.Types.ObjectId
+(),
   departureTime: new Date('2020-08-18T21:11:54'),
   arrivalTime: new Date('2023-08-18T21:11:54')
 });
@@ -387,9 +389,9 @@ flightIn.save((err) => {
 
 app.get("/userflights", async (req, res) => {
   console.log(req.verifiedUser);
-  var user = await User.find({});
-  console.log(req.verifiedUser.id);
-  user = await user[0].populate("reservations");
+  console.log("userid " + req.verifiedUser.id);
+  var user = await User.findById(req.verifiedUser.id);
+  user = await user.populate("reservations");
   var reservations = user.reservations;
   for (let i = 0; i < reservations.length; i++) {
     await reservations[i].populate("inBoundflight");
@@ -416,21 +418,48 @@ app.delete("/flight/:flightId/delete", verifyAdmin, async (req, res) => {
   }
 });
 
+
+const getPayment = async (pid) => {
+  try {
+    console.log(pid)
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      pid
+    );
+    return paymentIntent;
+
+  }
+
+  catch (err) {
+    console.log(err)
+    return null;
+  }
+
+}
+
+
 app.post("/reservationinsertion", async (req, res) => {
+  console.log(req.body);
   var mongooseID = new mongoose.Types.ObjectId();
+  let payment = await getPayment(req.body.paymentNumber);
+  console.log(payment);
+  let pid = payment.id;
+  let amount = payment.amount;
+  const numPass = req.body.numPass
+  console.log("Passengers " + req.body.passengers);
   Reservation.create({
     _id: mongooseID,
-    user: "61a762c24c337dff67c229fe",
+    user: req.verifiedUser.id,
     outBoundflight: req.body.previousStage.depchosenflight._id,
     inBoundflight: req.body.previousStage.returnchosenflight._id,
     outBoundClass: req.body.outBoundClass,
     inBoundClass: req.body.inBoundClass,
     passengers: req.body.passengers,
     confirmationNumber: req.body.confirmationNumber,
-    totalPrice: req.body.totalPrice,
+    paymentNumber: pid,
+    totalPrice: amount,
   });
   await User.findByIdAndUpdate(
-    new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"),
+    new mongoose.Types.ObjectId(req.verifiedUser.id),
     { $push: { reservations: mongooseID } },
     { new: true }
   );
@@ -441,7 +470,7 @@ app.post("/reservationinsertion", async (req, res) => {
         $push: { reservations: mongooseID },
         economySeatsAvailable:
           req.body.previousStage.depchosenflight.economySeatsAvailable -
-          req.body.passengers.length,
+          numPass,
       },
       { new: true }
     );
@@ -452,7 +481,7 @@ app.post("/reservationinsertion", async (req, res) => {
         $push: { reservations: mongooseID },
         firstSeatsAvailable:
           req.body.previousStage.depchosenflight.firstSeatsAvailable -
-          req.body.passengers.length,
+          numPass,
       },
       { new: true }
     );
@@ -463,7 +492,7 @@ app.post("/reservationinsertion", async (req, res) => {
         $push: { reservations: mongooseID },
         businessSeatsAvailable:
           req.body.previousStage.depchosenflight.businessSeatsAvailable -
-          req.body.passengers.length,
+          numPass,
       },
       { new: true }
     );
@@ -477,7 +506,7 @@ app.post("/reservationinsertion", async (req, res) => {
         $push: { reservations: mongooseID },
         economySeatsAvailable:
           req.body.previousStage.returnchosenflight.economySeatsAvailable -
-          req.body.passengers.length,
+          numPass,
       },
       { new: true }
     );
@@ -490,7 +519,7 @@ app.post("/reservationinsertion", async (req, res) => {
         $push: { reservations: mongooseID },
         firstSeatsAvailable:
           req.body.previousStage.returnchosenflight.firstSeatsAvailable -
-          req.body.passengers.length,
+          numPass,
       },
       { new: true }
     );
@@ -503,10 +532,11 @@ app.post("/reservationinsertion", async (req, res) => {
         $push: { reservations: mongooseID },
         businessSeatsAvailable:
           req.body.previousStage.returnchosenflight.businessSeatsAvailable -
-          req.body.passengers.length,
+          numPass,
       },
       { new: true }
     );
+
 });
 app.put("/flights/:flightId", verifyAdmin, async (req, res) => {
   const updateData = req.body;
@@ -650,9 +680,8 @@ app.delete("/reservations/:reservationId", (req, res) => {
               from: `'Takeoff Airways' <${process.env.MAIL_USER}>`,
               to: userFound.email,
               subject: "Refund Confirmation",
-              html: `<h2 style="color:#09827C;">Hello ${
-                userFound.firstName
-              }!</h2>
+              html: `<h2 style="color:#09827C;">Hello ${userFound.firstName
+                }!</h2>
                     <h4>This mail is to confirm your refund</h4>
                     <p>Outbound flight total price: <b>$${outBoundPrice}</b></p>
                     <p>Inbound flight total price: <b>$${inBoundPrice}</b></p>
@@ -725,34 +754,30 @@ app.post("/emailreservation", async (req, res) => {
     html: `<h2 style="color:#09827C;">Hello ${userFound.firstName}!</h2>
           <h3>This mail is for the iteinerary you requested </h3>
           <h4>The Departure flight details</h4>
-          <p>Flight Number: <b>${
-            reservation.outBoundflight.flightNumber
-          }</b></p>
-          <p>From: <b>${
-            reservation.outBoundflight.departureLocation.airport
-          }</b></p>
-          <p>To: <b>${
-            reservation.outBoundflight.arrivalLocation.airport
-          }</b></p>
+          <p>Flight Number: <b>${reservation.outBoundflight.flightNumber
+      }</b></p>
+          <p>From: <b>${reservation.outBoundflight.departureLocation.airport
+      }</b></p>
+          <p>To: <b>${reservation.outBoundflight.arrivalLocation.airport
+      }</b></p>
           <p>Departure Time: <b>${new Date(
-            reservation.outBoundflight.departureTime
-          ).toLocaleString()}</b></p>
+        reservation.outBoundflight.departureTime
+      ).toLocaleString()}</b></p>
           <p>Arrival Time: <b>${new Date(
-            reservation.outBoundflight.arrivalTime
-          ).toLocaleString()}</b></p>
+        reservation.outBoundflight.arrivalTime
+      ).toLocaleString()}</b></p>
           <p>Outbound flight total price: <b>$${outBoundPrice}</b></p>
           <h4>The Return flight details</h4>
           <p>Flight Number: <b>${reservation.inBoundflight.flightNumber}</b></p>
-          <p>From: <b>${
-            reservation.inBoundflight.departureLocation.airport
-          }</b></p>
+          <p>From: <b>${reservation.inBoundflight.departureLocation.airport
+      }</b></p>
           <p>To: <b>${reservation.inBoundflight.arrivalLocation.airport}</b></p>
           <p>Departure Time: <b>${new Date(
-            reservation.inBoundflight.departureTime
-          ).toLocaleString()}</b></p>
+        reservation.inBoundflight.departureTime
+      ).toLocaleString()}</b></p>
           <p>Arrival Time: <b>${new Date(
-            reservation.inBoundflight.arrivalTime
-          ).toLocaleString()}</b></p>
+        reservation.inBoundflight.arrivalTime
+      ).toLocaleString()}</b></p>
           <p>Inbound flight total price: <b>$${inBoundPrice}</b></p>
           <h3>Total Price: $${outBoundPrice + inBoundPrice}</h3>
           <p>Have a nice day!</p>`,
@@ -1045,7 +1070,6 @@ const createFlightProducts = async (flight) => {
     arrTime: arrDate,
   });
 
-  console.log("Eco : " + productEco.id);
 
   const priceEco = await createPrice(ecoPrice, productEco.id);
   const priceBus = await createPrice(busPrice, productBus.id);
@@ -1053,7 +1077,28 @@ const createFlightProducts = async (flight) => {
 
   console.log("Eco Price : " + priceEco);
   return [productEco, productBus, productFirst, priceEco, priceBus, priceFirst];
-};
+
+}
+app.post("/session", async (req, res) => {
+
+  try {
+    console.log(req.body);
+    const session = await stripe.checkout.sessions.retrieve(
+      req.body.session_id
+    );
+    const state = session.metadata;
+    res.status(200).send(session);
+
+  }
+  catch (err) {
+    console.log(err)
+    res.status(400).send(null);
+  }
+
+
+});
+
+  
 
 app.post("/create-checkout-session", async (req, res) => {
   const state = req.body.state;
@@ -1066,11 +1111,9 @@ app.post("/create-checkout-session", async (req, res) => {
   };
 
   const arr = {
-    depDate: state.previousStage.returnchosenflight.departureTime,
-    arrDate: state.previousStage.returnchosenflight.arrivalTime,
-    flightNum: state.previousStage.returnchosenflight.flightNumber,
-    class: state.previousStage.returnflightClass,
-  };
+    "depDate": state.previousStage.returnchosenflight.departureTime, "arrDate": state.previousStage.returnchosenflight.arrivalTime,
+    "flightNum": state.previousStage.returnchosenflight.flightNumber, "class": state.previousStage.returnflightClass
+  }
 
   const numPass = state.previousStage.numberOfpassengers;
 
@@ -1120,27 +1163,15 @@ app.post("/create-checkout-session", async (req, res) => {
     // update in the DB the 3 ids of the 3 classes
     let depProducts = await createFlightProducts(depFlight);
     // console.log(depProducts);
-    depBusinessProductId = depProducts[1].id;
-    depEconomyProductId = depProducts[0].id;
-    depFirstProductId = depProducts[2].id;
-    depEconomyPriceId = depProducts[3].id;
-    depBusinessPriceId = depProducts[4].id;
-    depFirstPriceId = depProducts[5].id;
+    depBusinessProductId = depProducts[1].id
+    depEconomyProductId = depProducts[0].id
+    depFirstProductId = depProducts[2].id
+    depEconomyPriceId = depProducts[3].id
+    depBusinessPriceId = depProducts[4].id
+    depFirstPriceId = depProducts[5].id
 
-    // update flight id
-    await Flight.updateOne(
-      { flightNumber: dep.flightNum },
-      {
-        $set: {
-          economyFlightProductId: depEconomyProductId,
-          businessFlightProductId: depBusinessProductId,
-          firstFlightProductId: depFirstProductId,
-          economyFlightPriceId: depEconomyPriceId,
-          businessFlightPriceId: depBusinessPriceId,
-          firstFlightPriceId: depFirstPriceId,
-        },
-      }
-    );
+    // update flight id 
+    await Flight.updateOne({ flightNumber: dep.flightNum }, { $set: { economyFlightProductId: depEconomyProductId, businessFlightProductId: depBusinessProductId, firstFlightProductId: depFirstProductId, economyFlightPriceId: depEconomyPriceId, businessFlightPriceId: depBusinessPriceId, firstFlightPriceId: depFirstPriceId } })
 
     switch (dep.class) {
       case "Economy":
@@ -1238,6 +1269,10 @@ app.post("/create-checkout-session", async (req, res) => {
   console.log(arrPrice);
   // console.log(arrFlightProduct)
 
+  const outboundClass = dep.class;
+  const inboundClass = arr.class;
+  const confirmationNumber = Math.floor(Math.random() * 100000000000 + 1);
+
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -1275,23 +1310,52 @@ app.post("/create-checkout-session", async (req, res) => {
           arr.arrDate2,
       },
     ],
-    mode: "payment",
-    success_url:
-      "http://localhost:3000/payment?session_id={CHECKOUT_SESSION_ID}",
-    cancel_url: "http://localhost:3000/seatselector",
+    metadata: { "outboundClass": outboundClass, "inboundClass": inboundClass, "passengers": JSON.stringify(state.previousStage.passengers), "depFlightNumber": dep.flightNum, "arrFlightNumber": arr.flightNum, "confirmationNumber": confirmationNumber, "numPass": numPass },
+    mode: 'payment',
+    success_url: 'http://localhost:3000/payment?session_id={CHECKOUT_SESSION_ID}',
+    cancel_url: 'http://localhost:3000/seatselector',
   });
 
-  console.log(session);
+
+
+  // console.log(session.metadata.passengers.);
   res.send(session);
+  // res.redirect(303, session.url);
+
 });
 
 const createRefund = async (pid, refundAmount) => {
   const refund = await stripe.refunds.create({
     payment_intent: pid,
-    amount: refundAmount * 100,
+    amount: refundAmount * 100
   });
   return refund;
-};
+}
+
+
+
+
+app.post('/reservation', async (req, res) => {
+  console.log(req.body)
+  try {
+    const reservation = await Reservation.find({ confirmationNumber: req.body.confirmNum });
+    console.log(reservation)
+    res.send(reservation);
+  }
+  catch (err) {
+    console.log(err)
+    res.send([])
+  }
+}
+)
+
+
+app.post('/flight', async (req, res) => {
+
+  const flight = await Flight.find({ flightNumber: req.body.flightNum })
+  res.send(flight);
+}
+)
 
 app.post("/refund", async (req, res) => {
   try {
@@ -1312,28 +1376,62 @@ app.post("/change-flight-payment", async (req, res) => {
   // if new > old redirect to payment session
   // else refund
 
-  const body = req.body;
-  const flightName = body.name;
-  const amount = body.amount;
-  const numPass = body.numPass;
-  const pid = "prod_KpJJhW42ynbZ8i";
-  const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        quantity: numPass,
-        price_data: {
-          currency: "usd",
-          unit_amount: amount * 100,
-          product: pid,
-        },
-      },
-    ],
-    mode: "payment",
-    success_url: "https://example.com/success",
-    cancel_url: "https://example.com/cancel",
+
+  // let paramaters={
+  //   chosenFlight : this.props.details.chosenFlight,
+  //   priceDifference : this.props.details.priceDifference,
+  //   direction : this.props.details.direction,
+  //   newReservation : {
+  //     _id:this.props.details.reservation._id,
+  //     outBoundflight: this.props.details.direction==="outbound"?this.props.details.chosenFlight._id:this.props.details.reservation.outBoundflight._id,
+  //     inBoundflight: this.props.details.direction==="inbound"?this.props.details.chosenFlight._id:this.props.details.reservation.inBoundflight._id,
+  //     outBoundClass: this.props.details.direction==="outbound"?this.props.details.flightClass:this.props.details.reservation.outBoundClass,
+  //     inBoundClass: this.props.details.direction==="inbound"?this.props.details.flightClass:this.props.details.reservation.inBoundClass,
+  //     passengers: this.props.details.passengers,
+  //     confirmationNumber: this.props.details.confirmationNumber,
+  //     totalPrice: this.props.details.newPrice
+  //   }
+
+   
+  const reservation = await Reservation.find({ confirmationNumber: req.body.newReservation.confirmationNumber });
+  var id = mongoose.Types.ObjectId(req.body.newReservation._id);
+
+  await Reservation.findByIdAndUpdate( id  , {
+    outBoundflight: req.body.newReservation.outBoundflight,
+    inBoundflight: req.body.newReservation.inBoundflight,
+    outBoundClass: req.body.newReservation.outBoundClass,
+    inBoundClass: req.body.newReservation.inBoundClass,
+    totalPrice : req.body.newReservation.totalPrice,
+    passengers: req.body.newReservation.passengers
   });
 
-  res.send(session);
+
+  if( req.body.priceDifference <= 0 )
+  {
+      createRefund(reservation.paymentNumber, req.body.priceDifference);
+  }
+
+  else{
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          quantity: numPass,
+          price_data: {
+            currency: "usd",
+            unit_amount: req.body.priceDifference * 100,
+            product_data: {'name' : req.body.newReservation.outBoundFlight.departureLocation.airportName + "-" + req.body.newReservation.outBoundFlight.arrivalLocation.airportName},
+          },
+        },
+      ],
+      mode: "payment",
+      success_url: "http://localhost:3000/payment?session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: "https://localhost:3000/userflights",
+    });
+  
+    res.redirect(303, session.url);
+  }
+
+ 
 });
 
 // stripe.prices.retrieve(

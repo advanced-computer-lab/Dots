@@ -36,7 +36,7 @@ const reservationSchema = new Schema({
         type:Number
     },
     paymentNumber : {
-        type:Number,
+        type:String,
     }
 
 

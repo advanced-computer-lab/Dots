@@ -9,7 +9,7 @@ import FakePayment from './Components/FakePayment/FakePayment.js';
 import EditReservation from './Components/EditReservation/editReservation.js';
 import EditSummary from './Components/EditReservation/EditSummary/editSummary.js';
 import Test from './Components/SeatMapTransitionControl/SeatMapTransitionControl.js'
-
+import NavBarSelector from './Components/NavBars/NavBarSelector';
 import UserSearch from './Components/UserSearch/UserSearch';
 // import UserFlightList from './Components/UserFlightList/userFlightList';
 import Summary from './Components/Summary/Summary';
@@ -135,8 +135,8 @@ class App extends Component {
 
 
           <AuthProvider>
-            <div style={{ backgroundImage: `url(${'/download.jpg'})`, minHeight: 825 }}>
-              <UserNavBar />
+            <div>
+              <NavBarSelector />
               <AppRoutes />
             </div>
           </AuthProvider>

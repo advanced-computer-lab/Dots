@@ -294,7 +294,7 @@ class SingleSeatSelector extends Component {
               variant="contained"
               color="success"
               sx={{ mt: "30px" }}
-              onClick= {() => {
+              onClick= { () => {
                 if(this.props.details.direction==="outbound"){
                   this.props.details.passengers.forEach((passenger)=>{
                     passenger.outBoundSeat=passenger.Seat;
@@ -332,7 +332,7 @@ class SingleSeatSelector extends Component {
               variant="contained"
               color="success"
               sx={{ mt: "30px" }}
-              onClick={()=>{
+              onClick={ async()=>{
                 if(this.props.details.direction==="outbound"){
                   this.props.details.passengers.forEach((passenger)=>{
                     passenger.outBoundSeat=passenger.Seat;
@@ -360,7 +360,7 @@ class SingleSeatSelector extends Component {
                   }
                 }
                 console.log(paramaters)
-                axios.post('http://localhost:8000/change-flight-payment', paramaters)
+                await axios.post('http://localhost:8000/change-flight-payment', paramaters)
               }}
             >
               Checkout

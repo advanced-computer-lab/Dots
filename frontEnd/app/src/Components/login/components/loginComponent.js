@@ -69,7 +69,7 @@ class LoginClassComponent extends Component {
         const { username, password, showPassword, error, errorMsg } = this.state
         const { usernameError, passwordError } = this.state.errors
         return (
-            <Card sx={{ p: 4, height: 400, alignItems: "center" }}>
+            <Card sx={{ p: 4, height: 'auto', alignItems: "center" }}>
                 {
                     error &&
                     <Alert variant="filled" severity="error" sx={{ borderRadius: 0 }}>

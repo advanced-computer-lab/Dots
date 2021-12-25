@@ -11,9 +11,10 @@ import Stack from '@mui/material/Stack';
 import './NavBar.css';
 import logo from './logo2.jpeg';
 import { AuthContext } from '../../context/authContext.js'
+import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router';
 
-
-const GuestNavBar = () => {
+const AdminNavBar = () => {
   // const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const authContext = React.useContext(AuthContext)
@@ -32,7 +33,7 @@ const GuestNavBar = () => {
   // const handleCloseUserMenu = () => {
   //   setAnchorElUser(null);
   // };
-
+  const navigate = useNavigate()
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -41,7 +42,6 @@ const GuestNavBar = () => {
   };
 
   const handleCloseLogOut = () => {
-    console.log("hi")
     setAnchorEl(null);
     authContext.logout()
   }
@@ -82,40 +82,30 @@ const GuestNavBar = () => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>
-                <a className="menuItem" href="/admin">
-                  <Typography variant="overline" display="block" gutterBottom>
-                    Admin Panel
-                  </Typography>
-                </a>
+              <MenuItem onClick={() => { handleClose(); navigate("/admin")}}>
+                <Typography color='#076F72' variant="overline" display="block" gutterBottom>
+                  Admin Panel
+                </Typography>
               </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <a className="menuItem" href="/profile/edit-info">
-                  <Typography variant="overline" display="block" gutterBottom>
-                    My Profile
-                  </Typography>
-                </a>
+              <MenuItem onClick={() => { handleClose(); navigate("/profile/edit-info")}}>
+                <Typography color='#076F72' variant="overline" display="block" gutterBottom>
+                  My Profile
+                </Typography>
               </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <a className="menuItem" href="/userflights">
-                  <Typography variant="overline" display="block" gutterBottom>
-                    My Flights
-                  </Typography>
-                </a>
+              <MenuItem onClick={() => { handleClose(); navigate("/userflights")}}>
+                <Typography color='#076F72' variant="overline" display="block" gutterBottom>
+                  My Flights
+                </Typography>
               </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <a className="menuItem" href="/changepassword">
-                  <Typography variant="overline" display="block" gutterBottom>
-                    Change my password
-                  </Typography>
-                </a>
+              <MenuItem onClick={() => { handleClose(); navigate("/changepassword")}}>
+                <Typography color='#076F72' variant="overline" display="block" gutterBottom>
+                  Change My Password
+                </Typography>
               </MenuItem>
-              <MenuItem onClick={handleCloseLogOut}>
-                <a className="menuItem" href="/">
-                  <Typography variant="overline" display="block" gutterBottom>
-                    Logout
-                  </Typography>
-                </a>
+              <MenuItem onClick={() => { handleCloseLogOut(); navigate("/"); window.location.reload()}}>
+                <Typography color='#076F72' variant="overline" display="block" gutterBottom>
+                  Log Out
+                </Typography>
               </MenuItem>
             </Menu>
           </Stack>
@@ -126,4 +116,4 @@ const GuestNavBar = () => {
     </AppBar>
   );
 };
-export default GuestNavBar;
+export default AdminNavBar;
