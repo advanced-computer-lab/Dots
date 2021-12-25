@@ -194,12 +194,14 @@ app.post("/register", async (req, res) => {
 });
 
 /*const flightOut = new Flight({
-  _id: new mongoose.TypesstateectId(),
+  _id: new mongoose.Types.ObjectId
+(),
   departureTime: new Date('2016-08-18T21:11:54'),
   arrivalTime: new Date('2017-08-18T21:11:54')
 });
 const flightIn = new Flight({
-  _id: new mongoose.TypesstateectId(),
+  _id: new mongoose.Types.ObjectId
+(),
   departureTime: new Date('2020-08-18T21:11:54'),
   arrivalTime: new Date('2023-08-18T21:11:54')
 });
@@ -237,7 +239,8 @@ app.get("/userflights", async (req, res) => {
 });*/
 
 app.delete("/flight/:flightId/delete", async (req, res) => {
-  var id = mongoose.TypesstateectId(req.params.flightId);
+  var id = mongoose.Types.ObjectId
+(req.params.flightId);
   try {
     await Flight.findByIdAndDelete(id);
     res.send("Flight Deleted");
@@ -246,8 +249,35 @@ app.delete("/flight/:flightId/delete", async (req, res) => {
   }
 });
 
+
+const getPayment = async (pid) =>{
+  try{
+    console.log(pid)
+  const paymentIntent = await stripe.paymentIntents.retrieve(
+    pid
+  );
+  return paymentIntent;
+
+  }
+
+  catch(err)
+  {
+    console.log(err)
+   return null;
+  }
+
+}
+
+
 app.post("/reservationinsertion", async (req, res) => {
-  var mongooseID = new mongoose.TypesstateectId();
+  console.log(req.body);
+  var mongooseID = new mongoose.Types.ObjectId();
+  let payment = await getPayment(req.body.paymentNumber);
+  console.log(payment);
+  let pid = payment.id;
+  let amount = payment.amount; 
+  const numPass = req.body.numPass
+  console.log( "Passengers " +  req.body.passengers);
   Reservation.create({
     _id: mongooseID,
     user: "61a762c24c337dff67c229fe",
@@ -257,92 +287,102 @@ app.post("/reservationinsertion", async (req, res) => {
     inBoundClass: req.body.inBoundClass,
     passengers: req.body.passengers,
     confirmationNumber: req.body.confirmationNumber,
-    totalPrice: req.body.totalPrice,
+    paymentNumber : pid,
+    totalPrice: amount,
   });
   await User.findByIdAndUpdate(
-    new mongoose.TypesstateectId("61a762c24c337dff67c229fe"),
+    new mongoose.Types.ObjectId
+("61a762c24c337dff67c229fe"),
     { $push: { reservations: mongooseID } },
     { new: true }
   );
   if (req.body.outBoundClass === "Economy")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.TypesstateectId(req.body.previousStage.depchosenflight._id),
+      new mongoose.Types.ObjectId
+(req.body.previousStage.depchosenflight._id),
       {
         $push: { reservations: mongooseID },
         economySeatsAvailable:
           req.body.previousStage.depchosenflight.economySeatsAvailable -
-          req.body.passengers.length,
+          numPass,
       },
       { new: true }
     );
   else if (req.body.outBoundClass === "First")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.TypesstateectId(req.body.previousStage.depchosenflight._id),
+      new mongoose.Types.ObjectId
+(req.body.previousStage.depchosenflight._id),
       {
         $push: { reservations: mongooseID },
         firstSeatsAvailable:
           req.body.previousStage.depchosenflight.firstSeatsAvailable -
-          req.body.passengers.length,
+          numPass,
       },
       { new: true }
     );
   else if (req.body.outBoundClass === "Business")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.TypesstateectId(req.body.previousStage.depchosenflight._id),
+      new mongoose.Types.ObjectId
+(req.body.previousStage.depchosenflight._id),
       {
         $push: { reservations: mongooseID },
         businessSeatsAvailable:
           req.body.previousStage.depchosenflight.businessSeatsAvailable -
-          req.body.passengers.length,
+          numPass,
       },
       { new: true }
     );
 
   if (req.body.inBoundClass === "Economy")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.TypesstateectId(
+      new mongoose.Types.ObjectId
+(
         req.body.previousStage.returnchosenflight._id
       ),
       {
         $push: { reservations: mongooseID },
         economySeatsAvailable:
           req.body.previousStage.returnchosenflight.economySeatsAvailable -
-          req.body.passengers.length,
+          numPass,
       },
       { new: true }
     );
   else if (req.body.inBoundClass === "First")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.TypesstateectId(
+      new mongoose.Types.ObjectId
+(
         req.body.previousStage.returnchosenflight._id
       ),
       {
         $push: { reservations: mongooseID },
         firstSeatsAvailable:
           req.body.previousStage.returnchosenflight.firstSeatsAvailable -
-          req.body.passengers.length,
+          numPass,
       },
       { new: true }
     );
   else if (req.body.inBoundClass === "Business")
     var y = await Flight.findByIdAndUpdate(
-      new mongoose.TypesstateectId(
+      new mongoose.Types.ObjectId
+(
         req.body.previousStage.returnchosenflight._id
       ),
       {
         $push: { reservations: mongooseID },
         businessSeatsAvailable:
           req.body.previousStage.returnchosenflight.businessSeatsAvailable -
-          req.body.passengers.length,
+          numPass,
       },
       { new: true }
     );
+    
 });
 app.put("/flights/:flightId", async (req, res) => {
   const updateData = req.body;
   delete updateData._id;
 
-  const searchId = mongoose.TypesstateectId(req.params.flightId);
+  const searchId = mongoose.Types.ObjectId
+(req.params.flightId);
 
   try {
     const doc = await Flight.findByIdAndUpdate(searchId, updateData, {
@@ -384,7 +424,8 @@ app.delete("/reservations/:reservationId", (req, res) => {
   try {
     if (!req.params.reservationId)
       res.status(400).send({ message: "Reservation Id invalid" });
-    const reservationId = mongoose.TypesstateectId(req.params.reservationId);
+    const reservationId = mongoose.Types.ObjectId
+(req.params.reservationId);
     Reservation.findByIdAndDelete(reservationId).then((reservationDeleted) => {
       if (!reservationDeleted)
         res.status(404).send({ message: "Couldn't find reservation" });
@@ -515,7 +556,8 @@ app.delete("/reservations/:reservationId", (req, res) => {
 
 //----------------get and post user data----------------
 app.get("/users/:userId", async (req, res) => {
-  const userId = mongoose.TypesstateectId(req.params.userId);
+  const userId = mongoose.Types.ObjectId
+(req.params.userId);
 
   User.findById(userId).then((data) => {
     res.send(data);
@@ -523,7 +565,8 @@ app.get("/users/:userId", async (req, res) => {
 });
 
 app.put("/users/:userId", async (req, res) => {
-  const userId = mongoose.TypesstateectId(req.params.userId);
+  const userId = mongoose.Types.ObjectId
+(req.params.userId);
   const userData = req.body;
   delete userData._id;
 
@@ -807,6 +850,7 @@ const createFlightProducts = async (flight) => {
 app.post("/session", async (req, res) => {
 
   try {
+    console.log(req.body);
     const session = await stripe.checkout.sessions.retrieve(
       req.body.session_id
     );
@@ -977,11 +1021,13 @@ app.post("/create-checkout-session", async (req, res) => {
 
       },
     ],
-    metadata: { "outboundClass" :outboundClass , "inboundClass" :inboundClass , "passengers" : JSON.stringify(state.previousStage.passengers) , "depFlightNumber" : dep.flightNum , "arrFlightNumber" : arr.flightNum  , "confirmationNumber" : confirmationNumber },
+    metadata: { "outboundClass" :outboundClass , "inboundClass" :inboundClass , "passengers" : JSON.stringify(state.previousStage.passengers) , "depFlightNumber" : dep.flightNum , "arrFlightNumber" : arr.flightNum  , "confirmationNumber" : confirmationNumber , "numPass" : numPass },
     mode: 'payment',
     success_url: 'http://localhost:3000/payment?session_id={CHECKOUT_SESSION_ID}',
     cancel_url: 'http://localhost:3000/seatselector',
   });
+
+
 
   // console.log(session.metadata.passengers.);
   res.send( session );
@@ -1024,9 +1070,17 @@ app.post( '/flight' , async (req,res) => {
 
 
 app.post( '/reservation' , async (req,res) => {
-        
+  console.log(req.body)
+  try{
   const reservation = await Reservation.find({ confirmationNumber: req.body.confirmNum });
+  console.log(reservation)
   res.send(reservation);
+  }
+  catch(err)
+  {
+    console.log(err)
+    res.send([])
+  }
    }
 )
 
