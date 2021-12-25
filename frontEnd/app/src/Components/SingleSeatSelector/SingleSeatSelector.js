@@ -74,7 +74,6 @@ class SingleSeatSelector extends Component {
     Rows = Rows.concat(economyRows.rows);
     Rows.push([]);
 
-    const confirmationNumber = Math.floor(Math.random() * 100000000000 + 1)
 
     this.state = {
       selectedSeats: [],
@@ -85,7 +84,7 @@ class SingleSeatSelector extends Component {
       activePassenger: 0,
       Class: Class,
       previousStage: this.props.details,
-      confirmationNumber:confirmationNumber,
+      confirmationNumber:this.props.details.reservation.confirmationNumber,
       direction:Direction,
     };
   }
@@ -288,10 +287,59 @@ class SingleSeatSelector extends Component {
       )
     }
 
+    let button = () => {
+      if(this.props.details.editingSeats===true){
+        return(
+          <Link to="/userflights" type="submit" state={{ result: this.state }} style={{textDecoration: "none"}}>
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ mt: "30px" }}
+              onClick= {() => {
+                axios.patch('http://localhost:8000/changeseats', this.state);
+              }}
+            >
+              Change Seats
+            </Button>
+          </Link>
+          
+        )
+      }else{
+        return(
+          <Button
+              variant="contained"
+              color="success"
+              sx={{ mt: "30px" }}
+              onClick={()=>{
+                let paramaters={
+                  chosenFlight : this.props.details.chosenFlight,
+                  priceDifference : this.props.details.priceDifference,
+                  direction : this.props.details.direction,
+                  newReservation : {
+                    _id:this.props.details.reservation._id,
+                    outBoundflight: this.props.details.direction==="outbound"?this.props.details.chosenFlight._id:this.props.details.reservation.outBoundflight,
+                    inBoundflight: this.props.details.direction==="inbound"?this.props.details.chosenFlight._id:this.props.details.reservation.inBoundflight,
+                    outBoundClass: this.props.details.direction==="outbound"?this.props.details.flightClass:this.props.details.reservation.outBoundClass,
+                    inBoundClass: this.props.details.direction==="inbound"?this.props.details.flightClass:this.props.details.reservation.inBoundClass,
+                    passengers: this.props.details.passengers,
+                    confirmationNumber: this.props.details.confirmationNumber,
+                    totalPrice: this.props.details.newPrice,
+                  }
+                }
+                axios.post('http://localhost:8000/change-flight-payment', paramaters)
+              }}
+            >
+              Checkout
+            </Button>
+        )
+      }
+
+      
+    }
+
 
     return (
       <div>
-
         <Box
           sx={{
             display: "flex",
@@ -468,19 +516,7 @@ class SingleSeatSelector extends Component {
                   flexDirection: 'row',
                   justifyContent: "flex-end",
                 }}>
-                  <Link to={(this.props.details.editingSeats===true)?"/userflights":"/payment"} type="submit" state={{ result: this.state }} style={{textDecoration: "none"}}>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      sx={{ mt: "30px" }}
-                      onClick={this.props.details.editingSeats===true?() => {
-                        axios.patch('http://localhost:8000/changeseats', this.state);
-                      }:null}
-                    >
-                      {(this.props.details.editingSeats===true)&&"Change Seats"}
-                      {(this.props.details.editingSeats===false)&&"Checkout"}
-                    </Button>
-                  </Link>
+                  {button()}
                 </Box>
               </Box>
             </Slide>
@@ -497,8 +533,10 @@ class SingleSeatSelector extends Component {
 function SingleSeatSelectorFunction(props) {
   let location = useLocation();
   const { result } = location.state
-  
   if(location.state.flag===undefined){
+
+    result.priceDifference=location.state.priceDifference
+    result.newPrice=location.state.newPrice
     
     if(result.departureSearch===true){
       result.direction="outbound";
