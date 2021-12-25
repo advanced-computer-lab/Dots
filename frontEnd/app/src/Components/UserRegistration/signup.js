@@ -1,18 +1,23 @@
 import React, { useState, Suspense, useEffect, useContext } from "react";
-import { useNavigate } from 'react-router';
-import { AuthContext } from '../../context/authContext';
-import { Card, CardContent, Typography, TextField, Button, } from "@mui/material";
-import {Alert} from '@mui/lab'
+import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Button,
+  Alert,
+} from "@mui/material/";
+import { AuthContext } from "../../context/authContext";
 import axios from "axios";
 import Fade from "react-reveal/Fade";
 import "./signup.css";
-const PasswordStrengthBar = React.lazy(() =>
-  import("react-password-strength-bar")
-);
 const finalJson = {};
 let usernameTaken = false;
 let emailTaken = false;
+let done = false;
 function Signup() {
+  const navigate = useNavigate();
   const [finaljson, setFinalJson] = useState({});
   const [buttondisabled, setButtonDisabled] = useState(true);
   const [usernamehandler, setUsernameHandler] = useState("");
@@ -38,20 +43,21 @@ function Signup() {
   }
   const [display, setDisplay] = useState(true);
 
-  const navigate = useNavigate()
-
   //Sawi's jwt part----------------
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const formData = {
       // username, password, first, last, countrycode, address, passportnumber, phonenumber, email
-    }
-    const authData = await axios.post('http://localhost:8000/register', formData)
-    console.log(authData)
+    };
+    const authData = await axios.post(
+      "http://localhost:8000/register",
+      formData
+    );
+    console.log(authData);
     // authContext.setAuthState(authData.data)
-    navigate("/")
-  }
-//-------------------------------------
+    navigate("/");
+  };
+  //-------------------------------------
 
   return (
     <div>
@@ -148,6 +154,7 @@ function Signup() {
             <Fade right>
               <div>
                 <Signup2 handler={handlerjson} />
+
                 <Button
                   sx={{
                     backgroundColor: "green !important",
@@ -156,14 +163,15 @@ function Signup() {
                     left: "50px",
                     top: "50px",
                   }}
-                  variant="contained"
-                  type="submit"
-                  onClick={async () =>
-                    await axios.post(
+                  onClick={async (e) => {
+                    let x = await axios.post(
                       "http://localhost:8000/register",
                       finaljson
-                    )
-                  }
+                    );
+                    if (x) navigate("/");
+                  }}
+                  variant="contained"
+                  type="submit"
                 >
                   Complete your registration
                 </Button>
