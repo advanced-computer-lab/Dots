@@ -578,10 +578,10 @@ app.put("/changeseats", async (req, res) => {
   var id = mongoose.Types.ObjectId(req.body.newReservation._id);
   newReservation = req.body.newReservation;
 
-  (newReservation.user = "61a762c24c337dff67c229fe"),
-    await Reservation.findByIdAndUpdate(id, {
-      passengers: newReservation.passengers,
-    });
+
+  await Reservation.findByIdAndUpdate(id, {
+    passengers: newReservation.passengers,
+  });
 });
 
 //------------------reservations delete--------
@@ -1098,10 +1098,10 @@ app.post("/session", async (req, res) => {
 
 });
 
-  
+
 
 app.post("/create-checkout-session", async (req, res) => {
-  const state = req.body.state;
+  const state = req.body;
 
   const dep = {
     depDate: state.previousStage.depchosenflight.departureTime,
@@ -1318,9 +1318,9 @@ app.post("/create-checkout-session", async (req, res) => {
 
 
 
-  // console.log(session.metadata.passengers.);
+  //console.log(session);
   res.send(session);
-  // res.redirect(303, session.url);
+  //res.redirect(session.url);
 
 });
 
@@ -1392,46 +1392,47 @@ app.post("/change-flight-payment", async (req, res) => {
   //     totalPrice: this.props.details.newPrice
   //   }
 
-   
-  const reservation = await Reservation.find({ confirmationNumber: req.body.newReservation.confirmationNumber });
-  var id = mongoose.Types.ObjectId(req.body.newReservation._id);
 
-  await Reservation.findByIdAndUpdate( id  , {
-    outBoundflight: req.body.newReservation.outBoundflight,
-    inBoundflight: req.body.newReservation.inBoundflight,
+  
+  var id = mongoose.Types.ObjectId(req.body.newReservation._id);
+  const reservation = await Reservation.findById(id);
+  await Reservation.findByIdAndUpdate(id, {
+    outBoundflight: new mongoose.Types.ObjectId(req.body.newReservation.outBoundflight._id),
+    inBoundflight: (new mongoose.Types.ObjectId(req.body.newReservation.inBoundflight._id)),
     outBoundClass: req.body.newReservation.outBoundClass,
     inBoundClass: req.body.newReservation.inBoundClass,
-    totalPrice : req.body.newReservation.totalPrice,
+    totalPrice: req.body.newReservation.totalPrice,
     passengers: req.body.newReservation.passengers
   });
+  console.log(reservation);
 
 
-  if( req.body.priceDifference <= 0 )
-  {
-      createRefund(reservation.paymentNumber, req.body.priceDifference);
+  if (req.body.priceDifference <= 0) {
+    res.send({data:{url:"http://localhost:3000/userflights"}});
+    return;
   }
 
-  else{
+  else {
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
-          quantity: numPass,
+          quantity: req.body.newReservation.passengers.length,
           price_data: {
             currency: "usd",
             unit_amount: req.body.priceDifference * 100,
-            product_data: {'name' : req.body.newReservation.outBoundFlight.departureLocation.airportName + "-" + req.body.newReservation.outBoundFlight.arrivalLocation.airportName},
+            product_data: { 'name': req.body.newReservation.outBoundflight.departureLocation.airportName + "-" + req.body.newReservation.outBoundflight.arrivalLocation.airportName },
           },
         },
       ],
+      metadata: { "outboundClass": req.body.newReservation.outBoundClass, "inboundClass": req.body.newReservation.inBoundClass, "passengers": JSON.stringify(req.body.newReservation.passengers), "depFlightNumber": req.body.newReservation.outBoundflight.flightNumber, "arrFlightNumber": req.body.newReservation.inBoundflight.flightNumber, "confirmationNumber": reservation.confirmationNumber, "numPass": req.body.newReservation.passengers.length },
       mode: "payment",
       success_url: "http://localhost:3000/payment?session_id={CHECKOUT_SESSION_ID}",
       cancel_url: "https://localhost:3000/userflights",
     });
-  
-    res.redirect(303, session.url);
+    res.send(session);
   }
 
- 
+
 });
 
 // stripe.prices.retrieve(

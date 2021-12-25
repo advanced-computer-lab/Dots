@@ -350,8 +350,8 @@ class SingleSeatSelector extends Component {
                   direction : this.props.details.direction,
                   newReservation : {
                     _id:this.props.details.reservation._id,
-                    outBoundflight: this.props.details.direction==="outbound"?this.props.details.chosenFlight._id:this.props.details.reservation.outBoundflight._id,
-                    inBoundflight: this.props.details.direction==="inbound"?this.props.details.chosenFlight._id:this.props.details.reservation.inBoundflight._id,
+                    outBoundflight: this.props.details.direction==="outbound"?this.props.details.chosenFlight:this.props.details.reservation.outBoundflight,
+                    inBoundflight: this.props.details.direction==="inbound"?this.props.details.chosenFlight:this.props.details.reservation.inBoundflight,
                     outBoundClass: this.props.details.direction==="outbound"?this.props.details.flightClass:this.props.details.reservation.outBoundClass,
                     inBoundClass: this.props.details.direction==="inbound"?this.props.details.flightClass:this.props.details.reservation.inBoundClass,
                     passengers: this.props.details.passengers,
@@ -360,7 +360,9 @@ class SingleSeatSelector extends Component {
                   }
                 }
                 console.log(paramaters)
-                await axios.post('http://localhost:8000/change-flight-payment', paramaters)
+                const s=await axios.post('http://localhost:8000/change-flight-payment', paramaters)
+                console.log(s);
+                window.location.href=s.data.url;
               }}
             >
               Checkout
