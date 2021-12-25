@@ -6,17 +6,19 @@ import axios from 'axios'
 
 class ChangePassword extends Component {
     state = {
-        username: '',
-        password: '',
+        newPassword: '',
+        currentPassword: '',
+        currentPasswordConfirmation: '',
 
         errors: {
-            usernameError: '',
-            passwordError: '',
+            newPasswordError: '',
+            currentPasswordError: '',
+            currentPasswordConfirmationError: '',
         },
 
         showPassword: false,
-        error:false,
-        errorMsg:''
+        error: false,
+        errorMsg: ''
     }
     handleChange = (e) => {
         let errorMsg = ''
@@ -31,19 +33,19 @@ class ChangePassword extends Component {
     }
     onSubmit = (e) => {
         e.preventDefault()
-        const data = { username: this.state.username, password: this.state.password }
-        axios.post(`http://localhost:8000/login`, data).then(({ data }) => {
-            this.context.setAuthState(data)
-            this.setState({ username: '', password: '' })
-            this.props.navigate("/")
-        }).catch((err) => {
-            const errorMsg = err.response.data.msg
-            this.setState({errorMsg, error:true})
-            this.context.setAuthState({})
-        })
+        const { newPassword, currentPassword, currentPasswordConfirmation } = this.state
+        const dataSent = { newPassword, currentPassword, currentPasswordConfirmation }
+        axios.post(`http://localhost:8000/login`, dataSent)
+            .then(({ data }) => {
+                this.context.setAuthState(data)
+                this.setState({ newPassword: '', currentPasswordConfirmation: '', currentPassword: '' })
+            }).catch((err) => {
+                const errorMsg = err.response.data.msg
+                this.setState({ errorMsg, error: true })
+            })
     }
     areFieldsValid = () => {
-        const { errors, username, password } = this.state
+        const { errors, newPassword, currentPassword, currentPasswordConfirmation } = this.state
         const errorsArr = Object.keys(errors)
         let valid = true
         errorsArr.forEach(error => {
@@ -51,7 +53,7 @@ class ChangePassword extends Component {
                 valid = false
             }
         });
-        return valid && username !== '' && password !== ''
+        return valid && newPassword !== '' && currentPassword !== '' && currentPasswordConfirmation !== ''
     }
     handleClickShowPassword = () => {
         this.setState({
@@ -63,8 +65,8 @@ class ChangePassword extends Component {
         event.preventDefault();
     };
     render() {
-        const { password, showPassword,error,errorMsg } = this.state
-        const { passwordError } = this.state.errors
+        const { newPassword, currentPassword, currentPasswordConfirmation, showPassword, error, errorMsg } = this.state
+        const { newPasswordError, currentPasswordError, currentPasswordConfirmationError } = this.state.errors
         return (
             <Card sx={{ p: 4, height: 400, alignItems: "center" }}>
                 {
@@ -78,11 +80,11 @@ class ChangePassword extends Component {
                 </Typography><br />
                 <Box component="form" onSubmit={this.onSubmit} >
 
-                <TextField onBlur={this.handleChange}
-                        error={passwordError !== ''} helperText={passwordError}
-                        fullWidth sx={{ mb: 2 }} value={password} onChange={this.handleChange}
-                        label="Password" required id="password"
-                        placeholder="Ex: password123" name="password"
+                    <TextField onBlur={this.handleChange}
+                        error={newPasswordError !== ''} helperText={newPasswordError}
+                        fullWidth sx={{ mb: 2 }} value={newPassword} onChange={this.handleChange}
+                        label="New Password" required id="newPassword"
+                        placeholder="Ex: password123" name="newPassword"
                         type={showPassword ? 'input' : 'password'}
                         InputProps={{
                             endAdornment: (
@@ -100,10 +102,10 @@ class ChangePassword extends Component {
                         }} />
 
                     <TextField onBlur={this.handleChange}
-                        error={passwordError !== ''} helperText={passwordError}
-                        fullWidth sx={{ mb: 2 }} value={password} onChange={this.handleChange}
-                        label="Password" required id="password"
-                        placeholder="Ex: password123" name="password"
+                        error={currentPasswordError !== ''} helperText={currentPasswordError}
+                        fullWidth sx={{ mb: 2 }} value={currentPassword} onChange={this.handleChange}
+                        label="Current Password" required id="currentPassword"
+                        placeholder="Ex: password123" name="currentPassword"
                         type={showPassword ? 'input' : 'password'}
                         InputProps={{
                             endAdornment: (
@@ -120,11 +122,11 @@ class ChangePassword extends Component {
                             )
                         }} />
 
-<TextField onBlur={this.handleChange}
-                        error={passwordError !== ''} helperText={passwordError}
-                        fullWidth sx={{ mb: 2 }} value={password} onChange={this.handleChange}
-                        label="Password" required id="password"
-                        placeholder="Ex: password123" name="password"
+                    <TextField onBlur={this.handleChange}
+                        error={currentPasswordConfirmationError !== ''} helperText={currentPasswordConfirmationError}
+                        fullWidth sx={{ mb: 2 }} value={currentPasswordConfirmation} onChange={this.handleChange}
+                        label="Confirm your current password" required id="currentPasswordConfirmation"
+                        placeholder="Ex: password123" name="currentPasswordConfirmation"
                         type={showPassword ? 'input' : 'password'}
                         InputProps={{
                             endAdornment: (
@@ -148,9 +150,6 @@ class ChangePassword extends Component {
                         </LoadingButton>
                     </CardActions>
                 </Box><br />
-                <Typography variant='h3' gutterBottom textAlign="center" sx={{ fontWeight: 'bold', color: '#076F72' }}>
-                    Ready to take-off?
-                </Typography>
             </Card>
         )
     }
