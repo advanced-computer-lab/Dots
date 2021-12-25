@@ -100,6 +100,7 @@ const verifyToken = (req, res, next) => {
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if (err) return res.status(403).send();
     req.verifiedUser = user;
+    console.log(user)
     next();
   });
 };
@@ -155,7 +156,7 @@ app.post("/login", (req, res) => {
               name: user.firstName,
               role: "user",
             };
-            jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
+            jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '3h'}, (err, token) => {
               if (err)
                 return res
                   .status(400)
@@ -186,7 +187,7 @@ app.post("/login", (req, res) => {
                 };
                 jwt.sign(
                   payload,
-                  process.env.ACCESS_TOKEN_SECRET,
+                  process.env.ACCESS_TOKEN_SECRET,{expiresIn: '3h'},
                   (err, token) => {
                     if (err)
                       return res.status(400).send({
@@ -228,7 +229,7 @@ app.post("/changePassword", (req, res) => {
     });
   User.findById(userId).then((user) => {
     bcrypt
-      .compare(oldPassword, user.password)
+      .compare(currentPassword, user.password)
       .then((isPasswordCorrect) => {
         if (isPasswordCorrect) {
           const newEncryptedPassword = bcrypt.hashSync(newPassword, saltRounds);
@@ -348,7 +349,7 @@ app.post("/register", async (req, res) => {
       countryCode: req.body.countrycode,
     }).then((user) => {
       const payload = { id: user._id, name: user.firstName, role: "user" };
-      jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
+      jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '3h'}, (err, token) => {
         if (err) return res.json({ msg: err });
         return res.json({
           accessToken: token,
@@ -578,18 +579,21 @@ app.put("/changeseats", async (req, res) => {
   var id = mongoose.Types.ObjectId(req.body.newReservation._id);
   newReservation = req.body.newReservation;
 
-
   await Reservation.findByIdAndUpdate(id, {
     passengers: newReservation.passengers,
   });
 });
 
 //------------------reservations delete--------
-app.delete("/reservations/:reservationId", (req, res) => {
+app.delete("/reservations/:reservationId", async (req, res) => {
+
   try {
     if (!req.params.reservationId)
       res.status(400).send({ message: "Reservation Id invalid" });
     const reservationId = mongoose.Types.ObjectId(req.params.reservationId);
+    let initialRes = await Reservation.findById(reservationId)
+    let refund = await createRefund(initialRes.paymentNumber, initialRes.totalPrice)
+
     Reservation.findByIdAndDelete(reservationId).then((reservationDeleted) => {
       if (!reservationDeleted)
         res.status(404).send({ message: "Couldn't find reservation" });
@@ -1170,7 +1174,7 @@ app.post("/create-checkout-session", async (req, res) => {
     depBusinessPriceId = depProducts[4].id
     depFirstPriceId = depProducts[5].id
 
-    // update flight id 
+    // update flight id
     await Flight.updateOne({ flightNumber: dep.flightNum }, { $set: { economyFlightProductId: depEconomyProductId, businessFlightProductId: depBusinessProductId, firstFlightProductId: depFirstProductId, economyFlightPriceId: depEconomyPriceId, businessFlightPriceId: depBusinessPriceId, firstFlightPriceId: depFirstPriceId } })
 
     switch (dep.class) {

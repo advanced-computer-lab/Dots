@@ -23,7 +23,7 @@ function Signup() {
   const [usernamehandler, setUsernameHandler] = useState("");
   const [passwordhandler, setpasswordHandler] = useState("");
   const [emailhandler, setemailHandler] = useState("");
-  const authContext = useContext(AuthContext)
+  const authContext = useContext(AuthContext);
 
   function handlerjson() {
     console.log(finalJson);
@@ -47,16 +47,14 @@ function Signup() {
 
   //Sawi's jwt part----------------
   const handleSubmit = async (e) => {
-    let x = await axios.post(
-      "http://localhost:8000/register",
-      finaljson
-    );
+    let x = await axios.post("http://localhost:8000/register", finaljson);
     if (x) {
-      authContext.setAuthState(x)
+      const authData = x && x.data
+      authContext.setAuthState(authData)
       navigate("/")
       window.location.reload()
     }
-  }
+  };
   //-------------------------------------
 
   return (
@@ -73,7 +71,7 @@ function Signup() {
       />
       <Card
         sx={{
-          backgroundColor: "#3277ed",
+          backgroundColor: "white",
           height: "100vh",
           position: "fixed",
           zIndex: "1000",
@@ -119,23 +117,23 @@ function Signup() {
                   type="submit"
                   sx={
                     !buttondisabled &
-                      (usernamehandler !== "") &
-                      (passwordhandler !== "") &
-                      (emailhandler !== "")
+                    (usernamehandler !== "") &
+                    (passwordhandler !== "") &
+                    (emailhandler !== "")
                       ? {
-                        backgroundColor: "green !important",
-                        height: "50px",
-                        width: "300px",
-                        left: "50px",
-                        top: "80px",
-                      }
+                          backgroundColor: "green !important",
+                          height: "50px",
+                          width: "300px",
+                          left: "50px",
+                          top: "80px",
+                        }
                       : {
-                        backgroundColor: "grey !important",
-                        height: "50px",
-                        width: "300px",
-                        left: "50px",
-                        top: "80px",
-                      }
+                          backgroundColor: "grey !important",
+                          height: "50px",
+                          width: "300px",
+                          left: "50px",
+                          top: "80px",
+                        }
                   }
                   disabled={
                     buttondisabled |
@@ -241,7 +239,7 @@ function Signup1(props) {
         }}
       ></TextField>
       {takenUsername ? (
-        <Alert sx={{ backgroundColor: "black" }} severity="warning">
+        <Alert sx={{}} severity="warning">
           Username already taken.
         </Alert>
       ) : (

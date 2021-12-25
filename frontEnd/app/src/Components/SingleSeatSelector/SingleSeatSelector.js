@@ -370,9 +370,27 @@ class SingleSeatSelector extends Component {
         )
       }
 
-      
     }
 
+    let backButton = () => {
+      if(this.props.details.editingSeats===true){
+        return(
+              <Link to="/userflights" type="submit" >
+                <Button sx={{ alignSelf: "flex-end", mb: '5px' }} variant="contained">
+                  Go back
+                </Button>
+              </Link>
+        )
+      }else{
+        return(
+              <Link to="/editsummary" type="submit" state={{ result: this.props.details }} >
+                <Button sx={{ alignSelf: "flex-end", mb: '5px' }} variant="contained">
+                  Go back
+                </Button>
+              </Link>
+        )
+      }
+    }
 
     return (
       <div>
@@ -402,11 +420,7 @@ class SingleSeatSelector extends Component {
             <Box
               sx={{ alignSelf: "flex-end" }}
             >
-              <Link to="/summary" type="submit" state={{ result: this.props.details }} >
-                <Button sx={{ alignSelf: "flex-end", mb: '5px' }} variant="contained">
-                  Go back
-                </Button>
-              </Link>
+              {backButton()}
             </Box>
 
 
