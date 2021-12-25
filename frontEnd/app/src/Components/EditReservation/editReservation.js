@@ -57,14 +57,11 @@ class EditReservation extends Component {
     componentDidMount() {
         console.log(this.state)
 
-        if (this.state.noInFlights && this.state.noOutFlights) {
-            this.setState({ openAlert: true, errorMessage: 'Sorry. There are no flights matching your query. Try searching with other parameters' })
-        }
 
-        else if (this.state.noInFlights) {
+        if (this.state.noInFlights && this.state.returnSearch) {
             this.setState({ openAlert: true, errorMessage: 'Sorry. There are no inward flights matching your query. Try searching with other parameters' })
         }
-        else if (this.state.noOutFlights) {
+        else if (this.state.noOutFlights && this.state.departureSearch) {
             this.setState({ openAlert: true, errorMessage: 'Sorry. There are no outward flights matching your query. Try searching with other parameters' })
         }
 
@@ -113,6 +110,10 @@ class EditReservation extends Component {
 
     onSearchClose = () => {
         this.setState({ openDialog: false })
+    }
+    clickNext = () => {
+         let link = document.getElementById('summaryLink2');
+        link.click();
     }
 
     render() {
@@ -186,9 +187,12 @@ class EditReservation extends Component {
                         updatechosenflight={this.updatereturnchosenflight}
                         updateclass={this.updatereturnClass} />}
                 <div>
-                    {!this.state.depfaded || !this.state.returnfaded ? <Button variant="contained" type="submit" id='submitButton'>Next</Button>
+                    <Link to="/userflights" type="submit">
+                        <Button variant="contained" type="submit" id='submitButton'>Back</Button>
+                    </Link>
+                    {!this.state.depfaded || !this.state.returnfaded ? <Button onClick={this.clickNext} variant="contained" type="submit" id='submitButton'>Next</Button>
                         : <div></div>}
-                    <Link to="/summary" id="summaryLink" type="submit" state={{ result: this.state }} > </Link>
+                    <Link to="/editsummary" id="summaryLink2" type="submit" state={{ result: this.state }} > </Link>
                 </div>
             </Container>
         </div>

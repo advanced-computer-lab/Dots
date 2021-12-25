@@ -21,6 +21,13 @@ import axios from 'axios';
 import background from '../UserLanding/travel3.jpg';
 
 class SeatSelector extends Component {
+
+
+  componentDidMount()
+  {
+    console.log(this.state);
+  }
+
   constructor(props) {
     super(props);
 
@@ -664,7 +671,7 @@ class SeatSelector extends Component {
                   flexDirection: 'row',
                   justifyContent: "flex-end",
                 }}>
-                  <Link to="/payment" type="submit" state={{ result: this.state }} >
+                  <Link to="/payment" type="submit" state={{ result: this.state }} style={{textDecoration: "none"}}>
                     <Button
                       variant="contained"
                       color="success"

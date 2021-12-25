@@ -8,6 +8,30 @@ const flightSchema = new Schema({
         type:String,
         
     },
+    economyFlightProductId :{
+        type:String,
+        default:null
+    },
+    businessFlightProductId :{
+        type:String,
+        default:null
+    },
+    firstFlightProductId : {
+        type:String,
+        default:null
+    },
+    economyFlightPriceId :{
+        type:String,
+        default:null
+    },
+    businessFlightPriceId :{
+        type:String,
+        default:null
+    },
+    firstFlightPriceId : {
+        type:String,
+        default:null
+    },
    
     departureLocation: {
         country:{type:String /*required:true*/},

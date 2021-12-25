@@ -10,6 +10,7 @@ import EditSearch from '../EditReservation/EditSearch/editSearch';
 import Fade from 'react-reveal/Fade';
 import './Summary2.css';
 import axios from 'axios'
+import { Link } from 'react-router-dom';
 
 
 
@@ -234,6 +235,34 @@ class ReservationCardFinal extends Component {
                                                 </Typography>
                                             </div>))}
                                         </Typography>
+
+                                        <Grid item xs={12}>
+                                            <Grid container justifyContent="space-around">
+                                                <Link to="/singleseatselector" type="submit" state={{ result: this.props,flag:"outbound" }} style={{textDecoration: "none"}} >
+                                                    <Button
+                                                        variant="contained"
+                                                        color="success"
+                                                        sx={{ mt: "30px" }}
+                                                        size="large"
+                                                    >
+                                                        Change Departure Flight Seats
+                                                    </Button>
+                                                </Link>
+
+                                                <Link to="/singleseatselector" type="submit" state={{ result: this.props, flag:"inbound" }} style={{textDecoration: "none"}} >
+                                                    <Button
+                                                        variant="contained"
+                                                        color="success"
+                                                        sx={{ mt: "30px" }}
+                                                        size="large"
+                                                    >
+                                                        Change return Flight Seats
+                                                    </Button>
+                                                </Link>
+                                            </Grid>
+                                        </Grid>
+                                        
+
                                         <Grid item xs={12}>
                                             <Divider sx={{ width: '60%' }} />
                                         </Grid>

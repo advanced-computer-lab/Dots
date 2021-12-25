@@ -34,6 +34,9 @@ const reservationSchema = new Schema({
     },
     totalPrice: {
         type:Number
+    },
+    paymentNumber : {
+        type:Number,
     }
 
 
