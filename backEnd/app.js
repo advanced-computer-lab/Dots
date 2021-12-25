@@ -609,7 +609,73 @@ app.delete("/reservations/:reservationId", (req, res) => {
   }
 });
 //----------------
+app.post("/emailreservation", async (req, res) => {
+  const { reservation } = req.body;
+  const userId = req.verifiedUser.id;
+  const userFound = await User.findById(userId);
+  let outBoundPrice = 0;
+  let inBoundPrice = 0;
+  switch (reservation.outBoundClass) {
+    case "First":
+      outBoundPrice = reservation.outBoundflight.firstClassPrice;
+      break;
+    case "Business":
+      outBoundPrice = reservation.outBoundFlight.businessClassPrice;
+      break;
+    case "Economy":
+      outBoundPrice = reservation.outBoundFlight.economyClassPrice;
+      break;
+    default:
+  }
 
+  switch (reservation.inBoundClass) {
+    case "First":
+      inBoundPrice = reservation.inBoundFlight.firstClassPrice;
+      break;
+    case "Business":
+      inBoundPrice = reservation.inBoundFlight.businessClassPrice;
+      break;
+    case "Economy":
+      inBoundPrice = reservation.inBoundFlight.economyClassPrice;
+      break;
+    default:
+  }
+  outBoundPrice *= reservation.passengers.length;
+  inBoundPrice *= reservation.passengers.length;
+  let mailOptions = {
+    from: `'Takeoff Airways' <${process.env.MAIL_USER}>`,
+    to: userFound.email,
+    subject: "Itinerary Email",
+    html: `<h2 style="color:#09827C;">Hello ${userFound.firstName
+      }!</h2>
+          <h3>This mail is for the iteinerary you requested </h3>
+          <h4>The Departure flight details</h4>
+          <p>Flight Number: <b>${reservation.outBoundFlight.flightNumber}</b></p>
+          <p>From: <b>${reservation.outBoundFlight.departureLocation.airport}</b></p>
+          <p>To: <b>${reservation.outBoundFlight.arrivalLocation.airport}</b></p>
+          <p>Departure Time: <b>${new Date(reservation.outBoundFlight.departureTime).toLocaleString()}</b></p>
+          <p>Arrival Time: <b>${new Date(reservation.outBoundFlight.arrivalTime).toLocaleString()}</b></p>
+          <p>Outbound flight total price: <b>$${outBoundPrice}</b></p>
+          <h4>The Return flight details</h4>
+          <p>Flight Number: <b>${reservation.inBoundFlight.flightNumber}</b></p>
+          <p>From: <b>${reservation.inBoundFlight.departureLocation.airport}</b></p>
+          <p>To: <b>${reservation.inBoundFlight.arrivalLocation.airport}</b></p>
+          <p>Departure Time: <b>${new Date(reservation.inBoundFlight.departureTime).toLocaleString()}</b></p>
+          <p>Arrival Time: <b>${new Date(reservation.inBoundFlight.arrivalTime).toLocaleString()}</b></p>
+          <p>Inbound flight total price: <b>$${inBoundPrice}</b></p>
+          <h3>Total Price: $${outBoundPrice + inBoundPrice}</h3>
+          <p>Have a nice day!</p>`
+  }
+
+  transporter.sendMail(mailOptions, (err, data) => {
+    if (err) {
+      res.status(400).send(err)
+    }
+    else
+      res.send(`Email Sent: ${data}`)
+  })
+
+})
 //----------------get and post user data----------------
 app.get("/user", async (req, res) => {
   const userId = mongoose.Types.ObjectId(req.verifiedUser.id);
