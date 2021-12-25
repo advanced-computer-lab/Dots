@@ -104,7 +104,8 @@ const verifyToken = (req, res, next) => {
 }
 
 app.use((req, res, next) => {
-  if (req.url === "/login" || req.url === "/flights" || req.url === "/flights/flightquery" || req.url === "/register")
+  if (req.url === "/login" || req.url === "/flights" || req.url === "/flights/flightquery" || req.url === "/register"
+    || req.url === "/checkusername" || req.url === "/checkemail")
     return next()
   else
     return verifyToken(req, res, next)
@@ -154,13 +155,13 @@ app.post("/login", (req, res) => {
           bcrypt.compare(password, admin.password)
             .then((isPasswordCorrect) => {
               if (isPasswordCorrect) {
-                const payload = { id: admin.id, name: admin.firstName, role: 'admin' }
+                const payload = { id: admin.id, name: admin.username, role: 'admin' }
                 jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
                   if (err) return res.status(400).send({ msg: "Something went wrong. Please try again" })
                   return res.json({
                     accessToken: token,
                     role: 'admin',
-                    name: admin.firstName
+                    name: admin.username
                   })
                 })
               } else res.status(401).send({ msg: "Password is incorrect" })
@@ -192,13 +193,13 @@ app.post("/changePassword", (req, res) => {
         .then((isPasswordCorrect) => {
           if (isPasswordCorrect) {
             const newEncryptedPassword = bcrypt.hashSync(newPassword, saltRounds)
-            User.findByIdAndUpdate(userId,{password: newEncryptedPassword})
-            .then(()=>{
-              res.sendStatus(200)
-            })
-            .catch(()=>{
-              res.status(400).send({msg: "Something went wrong. Please try again"})
-            })
+            User.findByIdAndUpdate(userId, { password: newEncryptedPassword })
+              .then(() => {
+                res.sendStatus(200)
+              })
+              .catch(() => {
+                res.status(400).send({ msg: "Something went wrong. Please try again" })
+              })
           } else res.status(401).send({ msg: "Current password is incorrect" })
         })
         .catch((err) => {

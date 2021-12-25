@@ -10,11 +10,13 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import Stack from '@mui/material/Stack';
 import './NavBar.css';
 import logo from './logo2.jpeg';
+import { AuthContext } from '../../context/authContext.js'
 
 
 const GuestNavBar = () => {
   // const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const authContext = React.useContext(AuthContext)
 
   // const handleOpenNavMenu = (event) => {
   //   setAnchorElNav(event.currentTarget);
@@ -38,12 +40,18 @@ const GuestNavBar = () => {
     setAnchorEl(null);
   };
 
+  const handleCloseLogOut = () => {
+    console.log("hi")
+    setAnchorEl(null);
+    authContext.logout()
+  }
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
 
-          <Stack direction="row" spacing={165} alignItems="center">
+          <Stack direction="row" spacing={155} alignItems="center">
             <a href="/">
               <img src={logo} alt="Logo" width="120" />
             </a>
@@ -56,8 +64,9 @@ const GuestNavBar = () => {
               onClick={handleMenu}
               color="inherit"
             >
-              <AccountCircle fontSize="medium" color = "white"/>
+              <AccountCircle fontSize="medium" color="white" />
             </IconButton>
+            {authContext && authContext.authState.name}
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
@@ -74,16 +83,37 @@ const GuestNavBar = () => {
               onClose={handleClose}
             >
               <MenuItem onClick={handleClose}>
-                <a class = "menuItem" href="/61a762c24c337dff67c229fe/edit-info">
+                <a className="menuItem" href="/admin">
                   <Typography variant="overline" display="block" gutterBottom>
-                    Profile
+                    Admin Panel
                   </Typography>
                 </a>
               </MenuItem>
               <MenuItem onClick={handleClose}>
-                <a class = "menuItem"  href="/userflights">
+                <a className="menuItem" href="/profile/edit-info">
+                  <Typography variant="overline" display="block" gutterBottom>
+                    My Profile
+                  </Typography>
+                </a>
+              </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <a className="menuItem" href="/userflights">
                   <Typography variant="overline" display="block" gutterBottom>
                     My Flights
+                  </Typography>
+                </a>
+              </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <a className="menuItem" href="/changepassword">
+                  <Typography variant="overline" display="block" gutterBottom>
+                    Change my password
+                  </Typography>
+                </a>
+              </MenuItem>
+              <MenuItem onClick={handleCloseLogOut}>
+                <a className="menuItem" href="/">
+                  <Typography variant="overline" display="block" gutterBottom>
+                    Logout
                   </Typography>
                 </a>
               </MenuItem>
