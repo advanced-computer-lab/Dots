@@ -8,26 +8,14 @@ const mongoose = require("mongoose");
 //const passport = require("passport");
 //const LocalStrategy = require("passport-local").Strategy;
 const session = require("express-session");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
-<<<<<<< HEAD
-
 const Flight = require("./models/flights");
 const Admin = require("./models/admins");
 const Reservation = require("./models/reservations");
 const User = require("./models/users");
-
-// const MongoURI = process.env.MONGO_URI;
-const MongoURI =
-  "mongodb+srv://ACLUsers:GaUD669Bt04ZltRG@cluster0.ofagz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-=======
-const Flight = require('./models/flights');
-const Admin = require('./models/admins');
-const Reservation = require('./models/reservations');
-const User = require('./models/users')
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const MongoURI = process.env.MONGO_URI;
->>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
 let alert = require("alert");
 const short = require("short-uuid");
 const translator = short();
@@ -101,91 +89,128 @@ app.use(session(sessionConfig));
 
 //------------------------------------------authentication & authorization-----------------------------------------
 const verifyAdmin = (req, res, next) => {
-  if (req.verifiedUser.role !== 'admin') return res.sendStatus(403)
-  next()
-}
+  if (req.verifiedUser.role !== "admin") return res.sendStatus(403);
+  next();
+};
 
 const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.authorization
-  const token = authHeader && authHeader.split(' ')[1]
-  if (!token) return res.status(401).send()
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) return res.status(401).send();
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) return res.status(403).send()
-    req.verifiedUser = user
-    next()
-  })
-}
+    if (err) return res.status(403).send();
+    req.verifiedUser = user;
+    next();
+  });
+};
 
 app.use((req, res, next) => {
-  if (req.url === "/login" || req.url === "/flights" || req.url === "/flights/flightquery" || req.url === "/register")
-    return next()
-  else
-    return verifyToken(req, res, next)
-})
+  if (
+    req.url === "/login" ||
+    req.url === "/flights" ||
+    req.url === "/flights/flightquery" ||
+    req.url === "/register"
+  )
+    return next();
+  else return verifyToken(req, res, next);
+});
 
 app.get("/checkAuth", (req, res) => {
-  const authHeader = req.headers.authorization
-  const token = authHeader && authHeader.split(' ')[1]
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
   if (req.verifiedUser) {
-    return res.status(200).send({ accessToken: token, role: req.verifiedUser.role, name: req.verifiedUser.name })
+    return res
+      .status(200)
+      .send({
+        accessToken: token,
+        role: req.verifiedUser.role,
+        name: req.verifiedUser.name,
+      });
   }
-  return res.sendStatus(401)
-})
+  return res.sendStatus(401);
+});
 
 app.get("/checkAdmin", (req, res) => {
-  const authHeader = req.headers.authorization
-  const token = authHeader && authHeader.split(' ')[1]
-  if (req.verifiedUser.role === 'admin') return res.json({ accessToken: token, role: req.verifiedUser.role, name: req.verifiedUser.name })
-  return res.sendStatus(403)
-})
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
+  if (req.verifiedUser.role === "admin")
+    return res.json({
+      accessToken: token,
+      role: req.verifiedUser.role,
+      name: req.verifiedUser.name,
+    });
+  return res.sendStatus(403);
+});
 
 app.post("/login", (req, res) => {
-  const { username, password } = req.body
+  const { username, password } = req.body;
   User.findOne({ username })
     .then((user) => {
-      bcrypt.compare(password, user.password)
+      bcrypt
+        .compare(password, user.password)
         .then((isPasswordCorrect) => {
           if (isPasswordCorrect) {
-            const payload = { id: user._id, name: user.firstName, role: 'user' }
+            const payload = {
+              id: user._id,
+              name: user.firstName,
+              role: "user",
+            };
             jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
-              if (err) return res.status(400).send({ msg: "Something went wrong. Please try again" })
+              if (err)
+                return res
+                  .status(400)
+                  .send({ msg: "Something went wrong. Please try again" });
               return res.json({
                 accessToken: token,
                 name: user.firstName,
-                role: 'user'
-              })
-            })
-          } else res.status(401).send({ msg: "Password is incorrect" })
+                role: "user",
+              });
+            });
+          } else res.status(401).send({ msg: "Password is incorrect" });
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
     })
     .catch(() => {
       Admin.findOne({ username })
         .then((admin) => {
-          bcrypt.compare(password, admin.password)
+          bcrypt
+            .compare(password, admin.password)
             .then((isPasswordCorrect) => {
               if (isPasswordCorrect) {
-                const payload = { id: admin.id, name: admin.firstName, role: 'admin' }
-                jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
-                  if (err) return res.status(400).send({ msg: "Something went wrong. Please try again" })
-                  return res.json({
-                    accessToken: token,
-                    role: 'admin',
-                    name: admin.firstName
-                  })
-                })
-              } else res.status(401).send({ msg: "Password is incorrect" })
+                const payload = {
+                  id: admin.id,
+                  name: admin.firstName,
+                  role: "admin",
+                };
+                jwt.sign(
+                  payload,
+                  process.env.ACCESS_TOKEN_SECRET,
+                  (err, token) => {
+                    if (err)
+                      return res
+                        .status(400)
+                        .send({
+                          msg: "Something went wrong. Please try again",
+                        });
+                    return res.json({
+                      accessToken: token,
+                      role: "admin",
+                      name: admin.firstName,
+                    });
+                  }
+                );
+              } else res.status(401).send({ msg: "Password is incorrect" });
             })
             .catch((err) => {
-              console.log(err)
-            })
+              console.log(err);
+            });
         })
         .catch(() => {
-          res.status(404).send({ msg: "Username not found" })
-        })
-    })
+          res.status(404).send({ msg: "Username not found" });
+        });
+    });
 });
 
 //-------------------------------------------------------------------------------------------------------
@@ -193,35 +218,40 @@ app.post("/login", (req, res) => {
 //---------------------------------------change password------------------------------------------------
 
 app.post("/changePassword", (req, res) => {
-  const data = req.body
-  const { currentPassword, currentPasswordConfirmation, newPassword } = data
-  const userId = req.verifiedUser.id
+  const data = req.body;
+  const { currentPassword, currentPasswordConfirmation, newPassword } = data;
+  const userId = req.verifiedUser.id;
 
   if (currentPasswordConfirmation !== currentPassword)
-    return res.status(400).send({ msg: "Passwords don't match" })
+    return res.status(400).send({ msg: "Passwords don't match" });
   if (currentPassword === newPassword)
-    return res.status(400).send({ msg: "The new password you have entered is the same as your current password" })
-  User.findById(userId)
-    .then((user) => {
-      bcrypt.compare(oldPassword, user.password)
-        .then((isPasswordCorrect) => {
-          if (isPasswordCorrect) {
-            const newEncryptedPassword = bcrypt.hashSync(newPassword, saltRounds)
-            User.findByIdAndUpdate(userId,{password: newEncryptedPassword})
-            .then(()=>{
-              res.sendStatus(200)
+    return res
+      .status(400)
+      .send({
+        msg: "The new password you have entered is the same as your current password",
+      });
+  User.findById(userId).then((user) => {
+    bcrypt
+      .compare(oldPassword, user.password)
+      .then((isPasswordCorrect) => {
+        if (isPasswordCorrect) {
+          const newEncryptedPassword = bcrypt.hashSync(newPassword, saltRounds);
+          User.findByIdAndUpdate(userId, { password: newEncryptedPassword })
+            .then(() => {
+              res.sendStatus(200);
             })
-            .catch(()=>{
-              res.status(400).send({msg: "Something went wrong. Please try again"})
-            })
-          } else res.status(401).send({ msg: "Current password is incorrect" })
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-
-    })
-})
+            .catch(() => {
+              res
+                .status(400)
+                .send({ msg: "Something went wrong. Please try again" });
+            });
+        } else res.status(401).send({ msg: "Current password is incorrect" });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
+});
 
 //------------------------------------------------------------------------------------------------------
 async function rand() {
@@ -320,25 +350,18 @@ app.post("/register", async (req, res) => {
       phoneNumber: req.body.phonenumber,
       homeAddress: req.body.address,
       countryCode: req.body.countrycode,
-<<<<<<< HEAD
-    });
-    console.log("testing");
-    res.send(true);
-    //res.redirect("http://localhost:3000");
-=======
     }).then((user) => {
-      const payload = { id: user._id, name: user.firstName, role: 'user' }
+      const payload = { id: user._id, name: user.firstName, role: "user" };
       jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
-        if (err) return res.json({ msg: err })
+        if (err) return res.json({ msg: err });
         return res.json({
           accessToken: token,
           name: user.firstName,
-          role: 'user'
-        })
-      })
-    })
+          role: "user",
+        });
+      });
+    });
     //res.redirect("http://localhost:3000/");
->>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
   } catch (error) {
     console.log(error);
   }
@@ -367,7 +390,7 @@ flightIn.save((err) => {
 */
 
 app.get("/userflights", async (req, res) => {
-  console.log(req.verifiedUser)
+  console.log(req.verifiedUser);
   var user = await User.find({});
   user = await user[0].populate("reservations");
   var reservations = user.reservations;
@@ -527,18 +550,11 @@ app.get("/flights/:flightId", verifyAdmin, async (req, res) => {
 app.put("/changeseats", async (req, res) => {
   var id = mongoose.Types.ObjectId(req.body.newReservation._id);
   newReservation = req.body.newReservation;
-<<<<<<< HEAD
 
   (newReservation.user = "61a762c24c337dff67c229fe"),
     await Reservation.findByIdAndUpdate(id, {
       passengers: newReservation.passengers,
     });
-=======
-
-  newReservation.user = "61a762c24c337dff67c229fe",
-
-    await Reservation.findByIdAndUpdate(id, { passengers: newReservation.passengers })
->>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
 });
 
 //------------------reservations delete--------
@@ -644,8 +660,8 @@ app.delete("/reservations/:reservationId", (req, res) => {
                     <p>Outbound flight total price: <b>$${outBoundPrice}</b></p>
                     <p>Inbound flight total price: <b>$${inBoundPrice}</b></p>
                     <h3>Total Price: $${outBoundPrice + inBoundPrice}</h3>
-                    <p>Have a nice day!</p>`
-            }
+                    <p>Have a nice day!</p>`,
+            };
 
             transporter.sendMail(mailOptions, (err, data) => {
               if (err) {
@@ -655,18 +671,16 @@ app.delete("/reservations/:reservationId", (req, res) => {
                 //       Flight.findByIdAndUpdate(reservationDeleted.outBoundflight, { $push: { reservations: reservationId } })
                 //         .then(() => {
                 //           Flight.findByIdAndUpdate(reservationDeleted.inBoundflight, { $push: { reservations: reservationId } })
-                res.status(400).send(err)
+                res.status(400).send(err);
                 //         })
                 //     })
                 // })
-              }
-              else
-                res.send(`Email Sent: ${data}`)
-            })
-          })
-        })
-      })
-    })
+              } else res.send(`Email Sent: ${data}`);
+            });
+          });
+        });
+      });
+    });
   } catch (error) {
     res.send(error);
   }
@@ -728,7 +742,6 @@ app.post("/flights/flightquery", async (req, res) => {
 
     queryOutDate.setTime(queryOutDate.getTime() + 2 * 60 * 60 * 1000);
     queryInDate.setTime(queryInDate.getTime() + 2 * 60 * 60 * 1000);
-
 
     outDates = [];
     inDates = [];
@@ -976,17 +989,11 @@ app.post("/create-checkout-session", async (req, res) => {
   };
 
   const arr = {
-<<<<<<< HEAD
     depDate: state.previousStage.returnchosenflight.departureTime,
     arrDate: state.previousStage.returnchosenflight.arrivalTime,
     flightNum: state.previousStage.returnchosenflight.flightNumber,
     class: state.previousStage.returnflightClass,
   };
-=======
-    "depDate": state.previousStage.returnchosenflight.departureTime, "arrDate": state.previousStage.returnchosenflight.arrivalTime,
-    "flightNum": state.previousStage.returnchosenflight.flightNumber, "class": state.previousStage.returnflightClass
-  }
->>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
 
   const numPass = state.previousStage.numberOfpassengers;
 
@@ -1013,12 +1020,9 @@ app.post("/create-checkout-session", async (req, res) => {
   let depFlight = await Flight.find({ flightNumber: dep.flightNum });
   let arrFlight = await Flight.find({ flightNumber: arr.flightNum });
 
-<<<<<<< HEAD
-=======
-  let depFlight = await Flight.find({ flightNumber: dep.flightNum })
-  let arrFlight = await Flight.find({ flightNumber: arr.flightNum })
+  let depFlight = await Flight.find({ flightNumber: dep.flightNum });
+  let arrFlight = await Flight.find({ flightNumber: arr.flightNum });
 
->>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
   // check if email exists if not create customer
   // let customer = await retrieveCustomer(email)
   // if (customer.length === 0) {
@@ -1031,16 +1035,6 @@ app.post("/create-checkout-session", async (req, res) => {
   console.log(depFlight[0].economyFlightProductId === null);
 
   // check if both flights exist by flight id if not create 3 flights products for each class
-<<<<<<< HEAD
-=======
-
-
-
-  let depFlightProduct = null
-  let arrFlightProduct = null
-  let depPrice = null
-  let arrPrice = null
->>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
 
   let depFlightProduct = null;
   let arrFlightProduct = null;
@@ -1052,7 +1046,6 @@ app.post("/create-checkout-session", async (req, res) => {
     // update in the DB the 3 ids of the 3 classes
     let depProducts = await createFlightProducts(depFlight);
     // console.log(depProducts);
-<<<<<<< HEAD
     depBusinessProductId = depProducts[1].id;
     depEconomyProductId = depProducts[0].id;
     depFirstProductId = depProducts[2].id;
@@ -1074,17 +1067,6 @@ app.post("/create-checkout-session", async (req, res) => {
         },
       }
     );
-=======
-    depBusinessProductId = depProducts[1].id
-    depEconomyProductId = depProducts[0].id
-    depFirstProductId = depProducts[2].id
-    depEconomyPriceId = depProducts[3].id
-    depBusinessPriceId = depProducts[4].id
-    depFirstPriceId = depProducts[5].id
-
-    // update flight id
-    await Flight.updateOne({ flightNumber: dep.flightNum }, { $set: { economyFlightProductId: depEconomyProductId, businessFlightProductId: depBusinessProductId, firstFlightProductId: depFirstProductId, economyFlightPriceId: depEconomyPriceId, businessFlightPriceId: depBusinessPriceId, firstFlightPriceId: depFirstPriceId } })
->>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
 
     switch (dep.class) {
       case "Economy":
@@ -1182,11 +1164,6 @@ app.post("/create-checkout-session", async (req, res) => {
   console.log(arrPrice);
   // console.log(arrFlightProduct)
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -1237,37 +1214,10 @@ app.post("/create-checkout-session", async (req, res) => {
 const createRefund = async (pid, refundAmount) => {
   const refund = await stripe.refunds.create({
     payment_intent: pid,
-<<<<<<< HEAD
     amount: refundAmount * 100,
   });
   return refund;
 };
-=======
-    amount: refundAmount * 100
-  });
-  return refund;
-}
-
-
-app.post("/refund", async (req, res) => {
-  try {
-    const refund = await createRefund(req.body.pid, req.body.amount);
-    console.log(refund)
-    res.send(refund);
-  }
-  catch (err) {
-    console.log(err)
-    res.status(400).send({})
-  }
-
-
-
-});
-
-
-
-
->>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
 
 app.post("/refund", async (req, res) => {
   try {
@@ -1280,10 +1230,7 @@ app.post("/refund", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 app.post("/change-flight-payment", async (req, res) => {
-=======
->>>>>>> bab0ef0f9470153ef647faa0168403e83ad63422
   // get old flight dep and arr
   // get new flight dep and arr
   // get old flight total price
