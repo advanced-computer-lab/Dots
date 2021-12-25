@@ -18,7 +18,10 @@ let usernameTaken = false;
 let emailTaken = false;
 function Signup() {
   const [finaljson, setFinalJson] = useState({});
-  const [buttondisabled, setButtonDisabled] = useState(false);
+  const [buttondisabled, setButtonDisabled] = useState(true);
+  const [usernamehandler, setUsernameHandler] = useState("");
+  const [passwordhandler, setpasswordHandler] = useState("");
+  const [emailhandler, setemailHandler] = useState("");
   function handlerjson() {
     console.log(finalJson);
     setFinalJson(finalJson);
@@ -27,6 +30,15 @@ function Signup() {
   function handlerbutton(input) {
     setButtonDisabled(input);
     console.log("button: " + buttondisabled);
+  }
+  function usernameHandler(input) {
+    setUsernameHandler(input);
+  }
+  function emailHandler(input) {
+    setemailHandler(input);
+  }
+  function passwordHandler(input) {
+    setpasswordHandler(input);
   }
   const [display, setDisplay] = useState(true);
   return (
@@ -74,34 +86,54 @@ function Signup() {
         >
           {display ? (
             <div>
-              <Signup1 handler={handlerjson} handlerbutton={handlerbutton} />
-              <Button
-                sx={
-                  !buttondisabled
-                    ? {
-                        backgroundColor: "green !important",
-                        height: "50px",
-                        width: "300px",
-                        left: "50px",
-                        top: "80px",
-                      }
-                    : {
-                        backgroundColor: "grey !important",
-                        height: "50px",
-                        width: "300px",
-                        left: "50px",
-                        top: "80px",
-                      }
-                }
-                disabled={buttondisabled}
-                variant="contained"
-                onClick={() => setDisplay(false)}
-              >
-                Proceed
-              </Button>
+              <Fade left>
+                <Signup1
+                  handler={handlerjson}
+                  handlerbutton={handlerbutton}
+                  usernamehandler={usernameHandler}
+                  passwordhandler={passwordHandler}
+                  emailhandler={emailHandler}
+                  username={usernamehandler}
+                  password={passwordhandler}
+                  email={emailhandler}
+                />
+                <Button
+                  type="submit"
+                  sx={
+                    !buttondisabled &
+                    (usernamehandler != "") &
+                    (passwordhandler != "") &
+                    (emailhandler != "")
+                      ? {
+                          backgroundColor: "green !important",
+                          height: "50px",
+                          width: "300px",
+                          left: "50px",
+                          top: "80px",
+                        }
+                      : {
+                          backgroundColor: "grey !important",
+                          height: "50px",
+                          width: "300px",
+                          left: "50px",
+                          top: "80px",
+                        }
+                  }
+                  disabled={
+                    buttondisabled |
+                    (usernamehandler === "") |
+                    (passwordhandler === "") |
+                    (emailhandler === "")
+                  }
+                  variant="contained"
+                  onClick={() => setDisplay(false)}
+                >
+                  Proceed
+                </Button>
+              </Fade>
             </div>
           ) : (
-            <Fade left>
+            <Fade right>
               <div>
                 <Signup2 handler={handlerjson} />
                 <Button
@@ -110,7 +142,7 @@ function Signup() {
                     height: "50px",
                     width: "300px",
                     left: "50px",
-                    top: "80px",
+                    top: "50px",
                   }}
                   variant="contained"
                   type="submit"
@@ -122,6 +154,21 @@ function Signup() {
                   }
                 >
                   Complete your registration
+                </Button>
+                <Button
+                  onClick={() => setDisplay(true)}
+                  variant="contained"
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    backgroundColor: "red !important",
+                    height: "40px",
+                    width: "300px",
+                    left: "50px",
+                    top: "80px",
+                  }}
+                >
+                  Go back
                 </Button>
               </div>
             </Fade>
@@ -155,9 +202,11 @@ function Signup1(props) {
         label="Username"
         variant="outlined"
         name="username"
+        value={props.username}
         onChange={async (e) => {
           //console.log("target" + e.target.value);
-          //console.log("data " + data);
+          //console.log("data " + data)
+          props.usernamehandler(e.target.value);
           finalJson.username = e.target.value;
           props.handler();
           usernameTaken = false;
@@ -197,8 +246,10 @@ function Signup1(props) {
         label="Password"
         type="password"
         variant="outlined"
+        value={props.password}
         name="password"
         onChange={(e) => {
+          props.passwordhandler(e.target.value);
           finalJson.password = e.target.value;
           props.handler();
           setPassword(e.target.value);
@@ -220,10 +271,11 @@ function Signup1(props) {
         type="email"
         variant="outlined"
         name="email"
+        value={props.email}
         onChange={async (e) => {
           //console.log("target" + e.target.value);
           //console.log("data " + data);
-
+          props.emailhandler(e.target.value);
           finalJson.email = e.target.value;
           props.handler();
           props.handlerbutton(false);
