@@ -29,7 +29,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import UserSearch from '../UserSearch/UserSearch';
-import UserNavBar from '../NavBars/UserNavBar';
 import Stack from '@mui/material/Stack';
 class UserFlightList extends Component {
 

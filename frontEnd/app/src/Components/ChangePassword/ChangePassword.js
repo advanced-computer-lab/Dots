@@ -63,8 +63,8 @@ class ChangePassword extends Component {
         event.preventDefault();
     };
     render() {
-        const { username, password, showPassword,error,errorMsg } = this.state
-        const { usernameError, passwordError } = this.state.errors
+        const { password, showPassword,error,errorMsg } = this.state
+        const { passwordError } = this.state.errors
         return (
             <Card sx={{ p: 4, height: 400, alignItems: "center" }}>
                 {
