@@ -449,7 +449,403 @@ response sample
 ]
 
 ```
+### GET /checkAuth
 
+checks if user is authenticated
+
+response sample:
+```
+{
+    accessToken: token,
+    role: req.verifiedUser.role,
+    name: req.verifiedUser.name,
+}
+```
+
+### GET /checkAdmin
+checks if user is an admin (authorized)
+
+response sample:
+```
+{
+    accessToken: token,
+    role: req.verifiedUser.role,
+    name: req.verifiedUser.name,
+}
+```
+
+### POST /login
+sends a request for logging in the user
+
+request sample: 
+```
+{
+    username: "johndoe",
+    password: "1234"
+}
+```
+
+response sample:
+```
+{
+    accessToken: token,
+    name: user.firstName,
+    role: "user",
+}
+```
+
+### POST /changePassword
+sends a request for changing password
+
+request sample:
+```
+{
+    newPassword: "1234",
+    currentPassword: "asdf",
+    currentPasswordConfirmation: "asdf"
+}
+```
+
+### PUT /flights/:flightId
+sends a request for editing a flight
+
+flightId is the id for the flight
+
+request sample:
+
+```
+{
+    "departureLocation": {
+        "country": "INDONESIA",
+        "city": "MEDAN",
+        "airport": "POLONIA",
+        "terminal": "3"
+    },
+    "arrivalLocation": {
+        "country": "MALTA",
+        "city": "LUQA",
+        "airport": "LUQA",
+        "terminal": "1"
+    },
+    "economySeatsAvailable": 4,
+    "businessSeatsAvailable": 4,
+    "firstSeatsAvailable": 6,
+    "totalEconomySeats": 30,
+    "totalBusinessSeats": 20,
+    "totalFirstSeats": 10,
+    "reservations": [],
+    "firstClassPrice": 1517,
+    "businessClassPrice": 1105,
+    "economyClassPrice": 60,
+    "flightNumber": "FH8DVW",
+    "departureTime": "2022-02-11T07:25:02.999Z",
+    "arrivalTime": "2022-02-11T16:25:02.999Z"
+}
+```
+response sample:
+
+```
+{
+    "departureLocation": {
+        "country": "INDONESIA",
+        "city": "MEDAN",
+        "airport": "POLONIA",
+        "terminal": "3"
+    },
+    "arrivalLocation": {
+        "country": "MALTA",
+        "city": "LUQA",
+        "airport": "LUQA",
+        "terminal": "1"
+    },
+    "economySeatsAvailable": 4,
+    "businessSeatsAvailable": 4,
+    "firstSeatsAvailable": 6,
+    "totalEconomySeats": 30,
+    "totalBusinessSeats": 20,
+    "totalFirstSeats": 10,
+    "reservations": [],
+    "firstClassPrice": 1517,
+    "businessClassPrice": 1105,
+    "economyClassPrice": 60,
+    "flightNumber": "FH8DVW",
+    "departureTime": "2022-02-11T07:25:02.999Z",
+    "arrivalTime": "2022-02-11T16:25:02.999Z"
+}
+```
+
+### GET /flights/:flightId
+sends a request for getting a flight
+
+flightId is the id for the flight
+
+response sample:
+
+```
+{
+    "departureLocation": {
+        "country": "INDONESIA",
+        "city": "MEDAN",
+        "airport": "POLONIA",
+        "terminal": "3"
+    },
+    "arrivalLocation": {
+        "country": "MALTA",
+        "city": "LUQA",
+        "airport": "LUQA",
+        "terminal": "1"
+    },
+    "economySeatsAvailable": 4,
+    "businessSeatsAvailable": 4,
+    "firstSeatsAvailable": 6,
+    "totalEconomySeats": 30,
+    "totalBusinessSeats": 20,
+    "totalFirstSeats": 10,
+    "reservations": [],
+    "firstClassPrice": 1517,
+    "businessClassPrice": 1105,
+    "economyClassPrice": 60,
+    "flightNumber": "FH8DVW",
+    "departureTime": "2022-02-11T07:25:02.999Z",
+    "arrivalTime": "2022-02-11T16:25:02.999Z"
+}
+```
+
+### DELETE /reservations/:reservationId
+sends a request for deleting a reservation
+
+reservationId is the id for the reservation
+
+response sample:
+
+```
+{
+    "_id": {
+        "$oid": "61c76e861455ace5bcadf6f4"
+    },
+    "user": {
+        "$oid": "61a762c24c337dff67c229fe"
+    },
+    "outBoundflight": {
+        "$oid": "61a5a12b30240908791077e2"
+    },
+    "inBoundflight": {
+        "$oid": "61a5a12c30240908791077f6"
+    },
+    "outBoundClass": "Economy",
+    "inBoundClass": "Economy",
+    "passengers": [{
+        "firstName": "Mohamed Amr",
+        "lastName": "Mohamed ",
+        "passportNumber": "A1133",
+        "outBoundSeat": "A32",
+        "inBoundSeat": "A32",
+        "_id": {
+            "$oid": "61c76e861455ace5bcadf6f6"
+        }
+    }],
+    "confirmationNumber": 84466866989,
+    "totalPrice": 8800,
+    "paymentNumber": "pi_3KAb80Gx4Kq2M7uI0whNvVxl",
+}
+```
+
+### GET /user
+sends a request for getting a user
+
+response sample: 
+```
+{
+    "_id": {
+        "$oid": "61a762c24c337dff67c229fe"
+    },
+    "email": "omarelsawi98@gmail.com",
+    "firstName": "omar",
+    "lastName": "sawi",
+    "phoneNumber": "11111111111",
+    "reservations": [{
+        "$oid": "61c254c9203b67f6fdffdd39"
+    }, {
+        "$oid": "61c281b2f1abec0ff3f648dc"
+    }, {
+        "$oid": "61c307413a5f81972956a613"
+    }, {
+        "$oid": "61c425c3f1abec0ff3f6494c"
+    }, {
+        "$oid": "61c71581b32f0e6b75452eaa"
+    }, {
+        "$oid": "61c71bbbb32f0e6b75452eb3"
+    }, {
+        "$oid": "61c71bbeb32f0e6b75452eba"
+    }, {
+        "$oid": "61c71bc5b32f0e6b75452ec1"
+    }, {
+        "$oid": "61c71c3db32f0e6b75452ec5"
+    }, {
+        "$oid": "61c71cf4b32f0e6b75452ecc"
+    }, {
+        "$oid": "61c71d6cb32f0e6b75452ed0"
+    }, {
+        "$oid": "61c71f2718e6ee57dcdc61d9"
+    }, {
+        "$oid": "61c71f466e2ab5df0bc0dc4a"
+    }, {
+        "$oid": "61c72d73a27a861df08ab8bb"
+    }, {
+        "$oid": "61c72f323a31c2b5275effee"
+    }, {
+        "$oid": "61c72faa3a31c2b5275efff3"
+    }, {
+        "$oid": "61c734496f154408fc28a274"
+    }, {
+        "$oid": "61c734c16f154408fc28a27a"
+    }, {
+        "$oid": "61c746786c20662872a451aa"
+    }, {
+        "$oid": "61c746f06c20662872a451b4"
+    }, {
+        "$oid": "61c7521d6c20662872a46fca"
+    }, {
+        "$oid": "61c752956c20662872a46fd0"
+    }, {
+        "$oid": "61c76c2c9dbcdd9ba23999cb"
+    }, {
+        "$oid": "61c76e861455ace5bcadf6f4"
+    }],
+    "countryCode": "test",
+    "passportNumber": "A123",
+    "homeAddress": "test"
+}
+```
+### PUT /user
+sends a request for editing a user
+
+request sample: 
+```
+{
+    "email": "omarelsawi98@gmail.com",
+    "firstName": "omar",
+    "lastName": "sawi",
+    "phoneNumber": "11111111111",
+    "reservations": [{
+        "$oid": "61c254c9203b67f6fdffdd39"
+    }, {
+        "$oid": "61c281b2f1abec0ff3f648dc"
+    }, {
+        "$oid": "61c307413a5f81972956a613"
+    }, {
+        "$oid": "61c425c3f1abec0ff3f6494c"
+    }, {
+        "$oid": "61c71581b32f0e6b75452eaa"
+    }, {
+        "$oid": "61c71bbbb32f0e6b75452eb3"
+    }, {
+        "$oid": "61c71bbeb32f0e6b75452eba"
+    }, {
+        "$oid": "61c71bc5b32f0e6b75452ec1"
+    }, {
+        "$oid": "61c71c3db32f0e6b75452ec5"
+    }, {
+        "$oid": "61c71cf4b32f0e6b75452ecc"
+    }, {
+        "$oid": "61c71d6cb32f0e6b75452ed0"
+    }, {
+        "$oid": "61c71f2718e6ee57dcdc61d9"
+    }, {
+        "$oid": "61c71f466e2ab5df0bc0dc4a"
+    }, {
+        "$oid": "61c72d73a27a861df08ab8bb"
+    }, {
+        "$oid": "61c72f323a31c2b5275effee"
+    }, {
+        "$oid": "61c72faa3a31c2b5275efff3"
+    }, {
+        "$oid": "61c734496f154408fc28a274"
+    }, {
+        "$oid": "61c734c16f154408fc28a27a"
+    }, {
+        "$oid": "61c746786c20662872a451aa"
+    }, {
+        "$oid": "61c746f06c20662872a451b4"
+    }, {
+        "$oid": "61c7521d6c20662872a46fca"
+    }, {
+        "$oid": "61c752956c20662872a46fd0"
+    }, {
+        "$oid": "61c76c2c9dbcdd9ba23999cb"
+    }, {
+        "$oid": "61c76e861455ace5bcadf6f4"
+    }],
+    "countryCode": "test",
+    "passportNumber": "A123",
+    "homeAddress": "test"
+}
+```
+
+response sample: 
+```
+{
+    "_id": {
+        "$oid": "61a762c24c337dff67c229fe"
+    },
+    "email": "omarelsawi98@gmail.com",
+    "firstName": "omar",
+    "lastName": "sawi",
+    "phoneNumber": "11111111111",
+    "reservations": [{
+        "$oid": "61c254c9203b67f6fdffdd39"
+    }, {
+        "$oid": "61c281b2f1abec0ff3f648dc"
+    }, {
+        "$oid": "61c307413a5f81972956a613"
+    }, {
+        "$oid": "61c425c3f1abec0ff3f6494c"
+    }, {
+        "$oid": "61c71581b32f0e6b75452eaa"
+    }, {
+        "$oid": "61c71bbbb32f0e6b75452eb3"
+    }, {
+        "$oid": "61c71bbeb32f0e6b75452eba"
+    }, {
+        "$oid": "61c71bc5b32f0e6b75452ec1"
+    }, {
+        "$oid": "61c71c3db32f0e6b75452ec5"
+    }, {
+        "$oid": "61c71cf4b32f0e6b75452ecc"
+    }, {
+        "$oid": "61c71d6cb32f0e6b75452ed0"
+    }, {
+        "$oid": "61c71f2718e6ee57dcdc61d9"
+    }, {
+        "$oid": "61c71f466e2ab5df0bc0dc4a"
+    }, {
+        "$oid": "61c72d73a27a861df08ab8bb"
+    }, {
+        "$oid": "61c72f323a31c2b5275effee"
+    }, {
+        "$oid": "61c72faa3a31c2b5275efff3"
+    }, {
+        "$oid": "61c734496f154408fc28a274"
+    }, {
+        "$oid": "61c734c16f154408fc28a27a"
+    }, {
+        "$oid": "61c746786c20662872a451aa"
+    }, {
+        "$oid": "61c746f06c20662872a451b4"
+    }, {
+        "$oid": "61c7521d6c20662872a46fca"
+    }, {
+        "$oid": "61c752956c20662872a46fd0"
+    }, {
+        "$oid": "61c76c2c9dbcdd9ba23999cb"
+    }, {
+        "$oid": "61c76e861455ace5bcadf6f4"
+    }],
+    "countryCode": "test",
+    "passportNumber": "A123",
+    "homeAddress": "test"
+}
+```
 
 ### How to Use?
 - Admin
