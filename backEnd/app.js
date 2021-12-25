@@ -100,6 +100,7 @@ const verifyToken = (req, res, next) => {
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if (err) return res.status(403).send();
     req.verifiedUser = user;
+    console.log(user)
     next();
   });
 };
@@ -155,7 +156,7 @@ app.post("/login", (req, res) => {
               name: user.firstName,
               role: "user",
             };
-            jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
+            jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '3h'}, (err, token) => {
               if (err)
                 return res
                   .status(400)
@@ -186,7 +187,7 @@ app.post("/login", (req, res) => {
                 };
                 jwt.sign(
                   payload,
-                  process.env.ACCESS_TOKEN_SECRET,
+                  process.env.ACCESS_TOKEN_SECRET,{expiresIn: '3h'},
                   (err, token) => {
                     if (err)
                       return res.status(400).send({
@@ -348,7 +349,7 @@ app.post("/register", async (req, res) => {
       countryCode: req.body.countrycode,
     }).then((user) => {
       const payload = { id: user._id, name: user.firstName, role: "user" };
-      jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, (err, token) => {
+      jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '3h'}, (err, token) => {
         if (err) return res.json({ msg: err });
         return res.json({
           accessToken: token,

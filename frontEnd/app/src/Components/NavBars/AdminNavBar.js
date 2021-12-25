@@ -86,23 +86,6 @@ const AdminNavBar = () => {
                 <Typography color='#076F72' variant="overline" display="block" gutterBottom>
                   Admin Panel
                 </Typography>
-              </MenuItem>
-              <MenuItem onClick={() => { handleClose(); navigate("/profile/edit-info")}}>
-                <Typography color='#076F72' variant="overline" display="block" gutterBottom>
-                  My Profile
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={() => { handleClose(); navigate("/userflights")}}>
-                <Typography color='#076F72' variant="overline" display="block" gutterBottom>
-                  My Flights
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={() => { handleClose(); navigate("/changepassword")}}>
-                <Typography color='#076F72' variant="overline" display="block" gutterBottom>
-                  Change My Password
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={() => { handleCloseLogOut(); navigate("/"); window.location.reload()}}>
                 <Typography color='#076F72' variant="overline" display="block" gutterBottom>
                   Log Out
                 </Typography>

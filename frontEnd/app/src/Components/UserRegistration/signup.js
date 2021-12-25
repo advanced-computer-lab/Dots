@@ -52,7 +52,8 @@ function Signup() {
       finaljson
     );
     if (x) {
-      authContext.setAuthState(x)
+      const authData = x && x.data
+      authContext.setAuthState(authData)
       navigate("/")
       window.location.reload()
     }
