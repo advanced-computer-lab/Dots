@@ -26,7 +26,6 @@ const UserNavBar = () => {
   // const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const authContext = React.useContext(AuthContext)
-  console.log(authContext)
   // const handleOpenNavMenu = (event) => {
   //   setAnchorElNav(event.currentTarget);
   // };
@@ -48,11 +47,11 @@ const UserNavBar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
   const handleCloseLogOut= ()=>{
     console.log("hi")
     setAnchorEl(null);
     authContext.logout()
+    window.location.reload()
   }
 
   return (

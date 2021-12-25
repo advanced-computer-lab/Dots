@@ -16,7 +16,9 @@
   background-color: rgba(255, 255, 255, 0.5);
   margin: 0 auto;
 }
-
+#divide{
+  color: white;
+}
 #list2 {
   background-color: rgba(255, 255, 255, 0.5);
   margin: 0 auto;

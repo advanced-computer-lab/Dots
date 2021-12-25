@@ -109,7 +109,9 @@ app.use((req, res, next) => {
     req.url === "/login" ||
     req.url === "/flights" ||
     req.url === "/flights/flightquery" ||
-    req.url === "/register"
+    req.url === "/register" ||
+    req.url === "/checkusername" ||
+    req.url === "/checkemail"
   )
     return next();
   else return verifyToken(req, res, next);
@@ -681,7 +683,87 @@ app.delete("/reservations/:reservationId", (req, res) => {
   }
 });
 //----------------
+app.post("/emailreservation", async (req, res) => {
+  const { reservation } = req.body;
+  const userId = req.verifiedUser.id;
+  const userFound = await User.findById(userId);
+  let outBoundPrice = 0;
+  let inBoundPrice = 0;
+  console.log(reservation);
+  switch (reservation.outBoundClass) {
+    case "First":
+      outBoundPrice = reservation.outBoundflight.firstClassPrice;
+      break;
+    case "Business":
+      outBoundPrice = reservation.outBoundflight.businessClassPrice;
+      break;
+    case "Economy":
+      outBoundPrice = reservation.outBoundflight.economyClassPrice;
+      break;
+    default:
+  }
 
+  switch (reservation.inBoundClass) {
+    case "First":
+      inBoundPrice = reservation.inBoundflight.firstClassPrice;
+      break;
+    case "Business":
+      inBoundPrice = reservation.inBoundflight.businessClassPrice;
+      break;
+    case "Economy":
+      inBoundPrice = reservation.inBoundflight.economyClassPrice;
+      break;
+    default:
+  }
+  console.log(reservation);
+  outBoundPrice *= reservation.passengers.length;
+  inBoundPrice *= reservation.passengers.length;
+  let mailOptions = {
+    from: `'Takeoff Airways' <${process.env.MAIL_USER}>`,
+    to: userFound.email,
+    subject: "Itinerary Email",
+    html: `<h2 style="color:#09827C;">Hello ${userFound.firstName}!</h2>
+          <h3>This mail is for the iteinerary you requested </h3>
+          <h4>The Departure flight details</h4>
+          <p>Flight Number: <b>${
+            reservation.outBoundflight.flightNumber
+          }</b></p>
+          <p>From: <b>${
+            reservation.outBoundflight.departureLocation.airport
+          }</b></p>
+          <p>To: <b>${
+            reservation.outBoundflight.arrivalLocation.airport
+          }</b></p>
+          <p>Departure Time: <b>${new Date(
+            reservation.outBoundflight.departureTime
+          ).toLocaleString()}</b></p>
+          <p>Arrival Time: <b>${new Date(
+            reservation.outBoundflight.arrivalTime
+          ).toLocaleString()}</b></p>
+          <p>Outbound flight total price: <b>$${outBoundPrice}</b></p>
+          <h4>The Return flight details</h4>
+          <p>Flight Number: <b>${reservation.inBoundflight.flightNumber}</b></p>
+          <p>From: <b>${
+            reservation.inBoundflight.departureLocation.airport
+          }</b></p>
+          <p>To: <b>${reservation.inBoundflight.arrivalLocation.airport}</b></p>
+          <p>Departure Time: <b>${new Date(
+            reservation.inBoundflight.departureTime
+          ).toLocaleString()}</b></p>
+          <p>Arrival Time: <b>${new Date(
+            reservation.inBoundflight.arrivalTime
+          ).toLocaleString()}</b></p>
+          <p>Inbound flight total price: <b>$${inBoundPrice}</b></p>
+          <h3>Total Price: $${outBoundPrice + inBoundPrice}</h3>
+          <p>Have a nice day!</p>`,
+  };
+
+  transporter.sendMail(mailOptions, (err, data) => {
+    if (err) {
+      res.status(400).send(err);
+    } else res.send(`Email Sent: ${data}`);
+  });
+});
 //----------------get and post user data----------------
 app.get("/user", async (req, res) => {
   const userId = mongoose.Types.ObjectId(req.verifiedUser.id);

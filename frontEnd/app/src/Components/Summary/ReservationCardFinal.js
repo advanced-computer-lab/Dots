@@ -21,7 +21,9 @@ class ReservationCardFinal extends Component {
         error: false,
         openDialog: false,
         returnSearch: false,
-        departureSearch: false
+        departureSearch: false,
+        emailDialog: false,
+        errorEmailDialog:false
     }
     editReturnSearch = (e) => {
         this.setState({ returnSearch: true, departureSearch: false, openDialog: true })
@@ -47,11 +49,26 @@ class ReservationCardFinal extends Component {
                 this.setState({ isLoading: false, error: true })
             })
     }
+    sendEmail = () => {
+        axios.post(`http://localhost:8000/emailreservation`, { reservation: this.props.reservation })
+            .then(() => {
+                this.setState({ emailDialog: true })
+
+            }).catch(() => {
+                this.setState({ errorEmailDialog:true })
+            })
+    }
     openDialog = () => {
         this.setState({ openCancelDialog: true })
     }
     closeDialog = () => {
         this.setState({ openCancelDialog: false, error: false })
+    }
+    closeEmailDialog = () => {
+        this.setState({ emailDialog: false })
+    }
+    closeErrorEmailDialog=()=>{
+        this.setState({ errorEmailDialog: false })
     }
 
     render() {
@@ -237,8 +254,9 @@ class ReservationCardFinal extends Component {
                                         </Typography>
 
                                         <Grid item xs={12}>
-                                            <Grid container justifyContent="space-around">
-                                                <Link to="/singleseatselector" type="submit" state={{ result: this.props,flag:"outbound" }} style={{textDecoration: "none"}} >
+                                            <Grid container justifyContent="space-around" sx={{  display:'flex', justifyContent:'space-between' }}>
+                                            
+                                                <Link to="/singleseatselector" type="submit" state={{ result: this.props, flag: "outbound" }} style={{ textDecoration: "none" }} >
                                                     <Button
                                                         variant="contained"
                                                         color="success"
@@ -248,8 +266,10 @@ class ReservationCardFinal extends Component {
                                                         Change Departure Flight Seats
                                                     </Button>
                                                 </Link>
+                                                <Button onClick={this.editSearch}
+                                                    variant="contained" size="large" color="info">Edit My Departure Flight</Button>
 
-                                                <Link to="/singleseatselector" type="submit" state={{ result: this.props, flag:"inbound" }} style={{textDecoration: "none"}} >
+                                                <Link to="/singleseatselector"   type="submit" state={{ result: this.props, flag: "inbound" }} style={{ textDecoration: "none" }} >
                                                     <Button
                                                         variant="contained"
                                                         color="success"
@@ -259,12 +279,14 @@ class ReservationCardFinal extends Component {
                                                         Change return Flight Seats
                                                     </Button>
                                                 </Link>
+                                                <Button onClick={this.editReturnSearch}
+                                                    variant="contained" sx={{ display:'flex', justifyContent:'space-between' }} size="large" color="info">Edit My Return Flight</Button>
                                             </Grid>
                                         </Grid>
-                                        
+
 
                                         <Grid item xs={12}>
-                                            <Divider sx={{ width: '60%' }} />
+                                            <Divider id="divide" sx={{ width: '60%' }} />
                                         </Grid>
                                         <Grid item>
                                             <Typography className="summary" variant="h4">
@@ -274,10 +296,8 @@ class ReservationCardFinal extends Component {
                                         <Grid item xs={12}>
                                             <Grid container justifyContent="center">
                                                 <CardActions>
-                                                    <Button onClick={this.editSearch}
-                                                        variant="contained" size="large" color="info">Edit My Departure Flight</Button>
-                                                    <Button onClick={this.editReturnSearch}
-                                                        variant="contained" size="large" color="info">Edit My Return Flight</Button>
+                                                    <Button onClick={this.sendEmail}
+                                                        variant="contained" size="large" color="error">Email the Itinerary </Button>
                                                     <Button onClick={this.openDialog}
                                                         variant="contained" size="large" color="error">Cancel My Reservation</Button>
                                                 </CardActions>
@@ -306,6 +326,16 @@ class ReservationCardFinal extends Component {
                                                 variant="contained" size="large" color="error" loading={this.state.isLoading}>Confirm Cancellation</LoadingButton>
                                         </ListItem>
                                     </List>
+                                </Dialog>
+                                <Dialog onClose={this.closeEmailDialog} open={this.state.emailDialog}>
+                                    <DialogTitle>
+                                        Email has been sent succesfully.
+                                    </DialogTitle>
+                                </Dialog>
+                                <Dialog onClose={this.closeErrorEmailDialog} open={this.state.errorEmailDialog}>
+                                    <DialogTitle>
+                                        An error has occured while sending the email. Please try again later.
+                                    </DialogTitle>
                                 </Dialog>
                                 <Dialog
                                     fullWidth={true}

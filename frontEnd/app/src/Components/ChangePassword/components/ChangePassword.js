@@ -12,8 +12,7 @@ class ChangePassword extends Component {
 
         errors: {
             newPasswordError: '',
-            currentPasswordError: '',
-            currentPasswordConfirmationError: '',
+            currentPasswordsError: '',
         },
 
         showPassword: false,
@@ -23,32 +22,23 @@ class ChangePassword extends Component {
 
     handleChange = (e) => {
         let errorMsg = ''
-        let targetError = e.target.name + 'Error'
+        let targetError = e.target.name==='currentPasswordConfirmation' || e.target.name === 'currentPassword'
+        ? 'currentPasswordsError' : e.target.name + 'Error'
 
         this.setState({ [e.target.name]: e.target.value });
 
         if (e.target.value === '')
             errorMsg = 'This field is required'
 
-        else if (e.target.name === 'currentPasswordConfirmation'
-            && e.target.value !== '' && e.target.value !== this.state.currentPassword)
+        if (e.target.name === 'currentPasswordConfirmation'
+            && e.target.value !== '' && this.state.currentPassword !== '' && e.target.value !== this.state.currentPassword)
             errorMsg = `Passwords don't match`
 
-        else if (e.target.name === 'currentPassword'
-            && e.target.value !== '' && e.target.value !== this.state.currentPasswordConfirmation){
-                errorMsg = `Passwords don't match`
-                targetError = "currentPasswordConfirmationError"
-            }
+        if (e.target.name === 'currentPassword'
+            && e.target.value !== '' && this.state.currentPasswordConfirmation !== '' && e.target.value !== this.state.currentPasswordConfirmation)
+            errorMsg = `Passwords don't match`
 
-        else if (e.target.name === 'currentPassword'
-            && e.target.value !== '' && e.target.value === this.state.newPassword)
-            errorMsg = `New and current passwords are the same`
-
-        else if (e.target.name === 'newPassword'
-            && e.target.value !== '' && e.target.value === this.state.currentPassword)
-            errorMsg = `New and current passwords are the same`
-
-            this.setState({ errors: { ...this.state.errors, [targetError]: errorMsg } })
+        this.setState({ errors: { ...this.state.errors, [targetError]: errorMsg } })
     }
 
     onSubmit = (e) => {
@@ -56,10 +46,10 @@ class ChangePassword extends Component {
         const { newPassword, currentPassword, currentPasswordConfirmation } = this.state
         const dataSent = { newPassword, currentPassword, currentPasswordConfirmation }
         axios.post(`http://localhost:8000/changePassword`, dataSent)
-            .then(({ data }) => {
+            .then(() => {
                 this.setState({ newPassword: '', currentPasswordConfirmation: '', currentPassword: '' })
             }).catch((err) => {
-                const errorMsg = err.response.data.msg
+                const errorMsg = err.response ? err.response.data.msg : ''
                 this.setState({ errorMsg, error: true })
             })
     }
@@ -87,9 +77,9 @@ class ChangePassword extends Component {
     };
     render() {
         const { newPassword, currentPassword, currentPasswordConfirmation, showPassword, error, errorMsg } = this.state
-        const { newPasswordError, currentPasswordError, currentPasswordConfirmationError } = this.state.errors
+        const { newPasswordError, currentPasswordsError} = this.state.errors
         return (
-            <Card sx={{ p: 4, height: 400, alignItems: "center" }}>
+            <Card sx={{ p: 4, height: 'auto', alignItems: "center" }}>
                 {
                     error &&
                     <Alert variant="filled" severity="error" sx={{ borderRadius: 0 }}>
@@ -123,7 +113,7 @@ class ChangePassword extends Component {
                         }} />
 
                     <TextField onBlur={this.handleChange}
-                        error={currentPasswordError !== ''} helperText={currentPasswordError}
+                        error={currentPasswordsError !== ''} helperText={currentPasswordsError}
                         fullWidth sx={{ mb: 2 }} value={currentPassword} onChange={this.handleChange}
                         label="Current Password" required id="currentPassword"
                         placeholder="Ex: password123" name="currentPassword"
@@ -144,7 +134,7 @@ class ChangePassword extends Component {
                         }} />
 
                     <TextField onBlur={this.handleChange}
-                        error={currentPasswordConfirmationError !== ''} helperText={currentPasswordConfirmationError}
+                        error={currentPasswordsError !== ''} helperText={currentPasswordsError}
                         fullWidth sx={{ mb: 2 }} value={currentPasswordConfirmation} onChange={this.handleChange}
                         label="Confirm your current password" required id="currentPasswordConfirmation"
                         placeholder="Ex: password123" name="currentPasswordConfirmation"
