@@ -362,6 +362,16 @@ class SingleSeatSelector extends Component {
                 console.log(paramaters)
                 const s=await axios.post('http://localhost:8000/change-flight-payment', paramaters)
                 console.log(s);
+                let  r = {
+                    outBoundflight: this.props.details.direction==="outbound"?this.props.details.chosenFlight:this.props.details.reservation.outBoundflight,
+                    inBoundflight: this.props.details.direction==="inbound"?this.props.details.chosenFlight:this.props.details.reservation.inBoundflight,
+                    outBoundClass: this.props.details.direction==="outbound"?this.props.details.flightClass:this.props.details.reservation.outBoundClass,
+                    inBoundClass: this.props.details.direction==="inbound"?this.props.details.flightClass:this.props.details.reservation.inBoundClass,
+                    passengers: this.props.details.passengers,
+                  }
+                await axios.post(`http://localhost:8000/emailreservation`, {
+                reservation:r ,
+              })
                 window.location.href=s.data.url;
               }}
             >

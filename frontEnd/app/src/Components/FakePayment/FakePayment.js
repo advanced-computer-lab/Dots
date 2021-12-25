@@ -47,6 +47,7 @@ function FakePayment() {
           console.log(result);
           await axios.post('http://localhost:8000/reservationinsertion', result);
           
+          
          }
 
          
