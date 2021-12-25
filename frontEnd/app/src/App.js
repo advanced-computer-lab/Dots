@@ -18,6 +18,7 @@ import { AuthProvider, AuthContext } from './context/authContext';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom'
 import Signup from './Components/UserRegistration/signup';
+import ChangePasswordPage from './Components/ChangePassword/ChangePasswordPage';
 
 const theme = createTheme({
   palette: {
@@ -108,6 +109,7 @@ const AppRoutes = () => {
         <Route path="/payment" element={<AuthenticatedRoute><FakePayment /></AuthenticatedRoute>} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Signup />} />
+        <Route path="/changepassword" element={<AuthenticatedRoute><ChangePasswordPage/></AuthenticatedRoute>} />
       </Routes>
     </Fragment>
   );

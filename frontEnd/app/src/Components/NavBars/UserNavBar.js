@@ -105,6 +105,13 @@ const UserNavBar = () => {
                   </Typography>
                 </a>
               </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <a className = "menuItem"  href="/changepassword">
+                  <Typography variant="overline" display="block" gutterBottom>
+                    My Flights
+                  </Typography>
+                </a>
+              </MenuItem>
               <MenuItem onClick={handleCloseLogOut}>
                 <a className = "menuItem"  href="/">
                   <Typography variant="overline" display="block" gutterBottom>
