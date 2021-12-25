@@ -586,11 +586,15 @@ app.put("/changeseats", async (req, res) => {
 });
 
 //------------------reservations delete--------
-app.delete("/reservations/:reservationId", (req, res) => {
+app.delete("/reservations/:reservationId", async (req, res) => {
+
   try {
     if (!req.params.reservationId)
       res.status(400).send({ message: "Reservation Id invalid" });
     const reservationId = mongoose.Types.ObjectId(req.params.reservationId);
+    let initialRes = await Reservation.findById(reservationId)
+    let refund = await createRefund(initialRes.paymentNumber, initialRes.totalPrice)
+
     Reservation.findByIdAndDelete(reservationId).then((reservationDeleted) => {
       if (!reservationDeleted)
         res.status(404).send({ message: "Couldn't find reservation" });
@@ -1099,7 +1103,7 @@ app.post("/session", async (req, res) => {
 
 });
 
-  
+
 
 app.post("/create-checkout-session", async (req, res) => {
   const state = req.body.state;
@@ -1171,7 +1175,7 @@ app.post("/create-checkout-session", async (req, res) => {
     depBusinessPriceId = depProducts[4].id
     depFirstPriceId = depProducts[5].id
 
-    // update flight id 
+    // update flight id
     await Flight.updateOne({ flightNumber: dep.flightNum }, { $set: { economyFlightProductId: depEconomyProductId, businessFlightProductId: depBusinessProductId, firstFlightProductId: depFirstProductId, economyFlightPriceId: depEconomyPriceId, businessFlightPriceId: depBusinessPriceId, firstFlightPriceId: depFirstPriceId } })
 
     switch (dep.class) {
@@ -1393,7 +1397,7 @@ app.post("/change-flight-payment", async (req, res) => {
   //     totalPrice: this.props.details.newPrice
   //   }
 
-   
+
   const reservation = await Reservation.find({ confirmationNumber: req.body.newReservation.confirmationNumber });
   var id = mongoose.Types.ObjectId(req.body.newReservation._id);
 
@@ -1428,11 +1432,11 @@ app.post("/change-flight-payment", async (req, res) => {
       success_url: "http://localhost:3000/payment?session_id={CHECKOUT_SESSION_ID}",
       cancel_url: "https://localhost:3000/userflights",
     });
-  
+
     res.redirect(303, session.url);
   }
 
- 
+
 });
 
 // stripe.prices.retrieve(
