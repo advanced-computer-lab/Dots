@@ -229,7 +229,7 @@ app.post("/changePassword", (req, res) => {
     });
   User.findById(userId).then((user) => {
     bcrypt
-      .compare(oldPassword, user.password)
+      .compare(currentPassword, user.password)
       .then((isPasswordCorrect) => {
         if (isPasswordCorrect) {
           const newEncryptedPassword = bcrypt.hashSync(newPassword, saltRounds);

@@ -5,11 +5,13 @@ import { Grid } from '@mui/material'
 class loginPage extends Component {
     render() {
         return (
-            <Grid container justifyContent="center" sx={{ mt: 4 }} alignItems="center" height={750}>
+            <div style={{ backgroundImage: `url(${'/download.jpg'})` ,minHeight: 900 }}>
+                <Grid container justifyContent="center" alignItems="center" height={750}>
                     <Grid item>
                         <LoginComponent />
                     </Grid>
-            </Grid>
+                </Grid>
+            </div>
         );
     }
 }
