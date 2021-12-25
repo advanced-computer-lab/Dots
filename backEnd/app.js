@@ -388,7 +388,7 @@ flightIn.save((err) => {
 app.get("/userflights", async (req, res) => {
   console.log(req.verifiedUser);
   var user = await User.find({});
-  console.log(req.verifiedUser._id);
+  console.log(req.verifiedUser.id);
   user = await user[0].populate("reservations");
   var reservations = user.reservations;
   for (let i = 0; i < reservations.length; i++) {
