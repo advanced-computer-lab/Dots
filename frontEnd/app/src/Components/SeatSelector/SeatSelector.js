@@ -671,18 +671,16 @@ class SeatSelector extends Component {
                   flexDirection: 'row',
                   justifyContent: "flex-end",
                 }}>
-                  <Link to="/payment" type="submit" state={{ result: this.state }} style={{textDecoration: "none"}}>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      sx={{ mt: "30px" }}
-                      onClick={() => {
-                        axios.post('http://localhost:8000/reservationinsertion', this.state);
-                      }}
-                    >
-                      Checkout
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    sx={{ mt: "30px" }}
+                    onClick={() => {
+                      axios.post('http://localhost:8000/create-checkout-session', this.state);
+                    }}
+                  >
+                    Checkout
+                  </Button>
                 </Box>
               </Box>
             </Slide>

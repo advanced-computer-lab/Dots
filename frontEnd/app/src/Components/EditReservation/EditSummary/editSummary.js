@@ -102,7 +102,7 @@ function Content(props) {
                     </div>
                 </CardContent>
             </Card>
-            <Link to="/singleseatselector" type="submit" className="btn btn-primary" id="toSeats" elevation={7} state={{ result: props.result }}>Continue to Seat Reservation</Link>
+            <Link to="/singleseatselector" type="submit" className="btn btn-primary" id="toSeats" elevation={7} state={{ result: props.result,priceDifference:((departureflightprice+arrivalflightprice)-(oldDepPrice+oldReturnPrice)),newPrice:(departureflightprice+arrivalflightprice) }}>Continue to Seat Reservation</Link>
         </div>
     );
 }

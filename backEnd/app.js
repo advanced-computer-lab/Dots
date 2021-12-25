@@ -173,8 +173,8 @@ app.post("/checkusername", async (req, res) => {
 });
 app.post("/register", async (req, res) => {
   try {
-    const hash = bcrypt.hashSync(req.body.password, saltRounds);
     console.log(req.body);
+    const hash = bcrypt.hashSync(req.body.password, saltRounds);
     console.log(hash);
     User.create({
       username: req.body.username,
@@ -187,7 +187,7 @@ app.post("/register", async (req, res) => {
       homeAddress: req.body.address,
       countryCode: req.body.countrycode,
     });
-    res.redirect("http://localhost:3000/");
+    //res.redirect("http://localhost:3000/");
   } catch (error) {
     console.log(error);
   }
@@ -371,6 +371,12 @@ app.get("/flights/:flightId", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+});
+
+//edit reservation
+
+app.patch("/changeseats", async (req, res) => {
+  console.log(req.params);
 });
 
 //------------------reservations delete--------
