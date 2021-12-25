@@ -99,6 +99,7 @@ const AdminNavBar = () => {
                 <MenuItem onClick={() => {
                   handleCloseLogOut();
                   navigate("/");
+                  window.location.reload();
                 }}
 >
                 <Typography color='#076F72' variant="overline" display="block" gutterBottom>
