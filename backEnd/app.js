@@ -579,10 +579,9 @@ app.put("/changeseats", async (req, res) => {
   var id = mongoose.Types.ObjectId(req.body.newReservation._id);
   newReservation = req.body.newReservation;
 
-  (newReservation.user = "61a762c24c337dff67c229fe"),
-    await Reservation.findByIdAndUpdate(id, {
-      passengers: newReservation.passengers,
-    });
+  await Reservation.findByIdAndUpdate(id, {
+    passengers: newReservation.passengers,
+  });
 });
 
 //------------------reservations delete--------
