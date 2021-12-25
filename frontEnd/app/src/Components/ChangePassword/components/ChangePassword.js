@@ -20,6 +20,7 @@ class ChangePassword extends Component {
         error: false,
         errorMsg: ''
     }
+
     handleChange = (e) => {
         let errorMsg = ''
         const targetError = e.target.name + 'Error'
@@ -31,6 +32,7 @@ class ChangePassword extends Component {
 
         this.setState({ errors: { ...this.state.errors, [targetError]: errorMsg } })
     }
+
     onSubmit = (e) => {
         e.preventDefault()
         const { newPassword, currentPassword, currentPasswordConfirmation } = this.state
@@ -44,6 +46,7 @@ class ChangePassword extends Component {
                 this.setState({ errorMsg, error: true })
             })
     }
+
     areFieldsValid = () => {
         const { errors, newPassword, currentPassword, currentPasswordConfirmation } = this.state
         const errorsArr = Object.keys(errors)
@@ -55,6 +58,7 @@ class ChangePassword extends Component {
         });
         return valid && newPassword !== '' && currentPassword !== '' && currentPasswordConfirmation !== ''
     }
+
     handleClickShowPassword = () => {
         this.setState({
             showPassword: !this.state.showPassword,
