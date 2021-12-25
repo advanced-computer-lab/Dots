@@ -420,7 +420,7 @@ app.post("/reservationinsertion", async (req, res) => {
   var mongooseID = new mongoose.Types.ObjectId();
   Reservation.create({
     _id: mongooseID,
-    user: "61a762c24c337dff67c229fe",
+    user: req.verifiedUser.id,
     outBoundflight: req.body.previousStage.depchosenflight._id,
     inBoundflight: req.body.previousStage.returnchosenflight._id,
     outBoundClass: req.body.outBoundClass,
@@ -430,7 +430,7 @@ app.post("/reservationinsertion", async (req, res) => {
     totalPrice: req.body.totalPrice,
   });
   await User.findByIdAndUpdate(
-    new mongoose.Types.ObjectId("61a762c24c337dff67c229fe"),
+    new mongoose.Types.ObjectId(req.verifiedUser.id),
     { $push: { reservations: mongooseID } },
     { new: true }
   );
