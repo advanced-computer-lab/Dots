@@ -18,8 +18,7 @@ function UserFlights (props) {
       console.log(data);
       },[]);
     return(
-        <div>
-        <img id ="background2" src='/download.jpg'/>
+        <div style={{minHeight:750}}>
         <div id= "animTitle"><LightSpeed left>Your Reserved Flights</LightSpeed></div>
         {
             data.map(item => (<div key= {item}><ReservationCardFinal

@@ -23,6 +23,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import axios from "axios";
 
 class SearchModule extends Component {
 
@@ -45,10 +46,9 @@ class SearchModule extends Component {
 
   componentDidMount() {
     //const {flights} = await axios.get('http://localhost:8000/flights');
-    fetch('http://localhost:8000/flights')
-      .then(response => response.json())
-      .then(flights => {
-
+    axios.get('http://localhost:8000/flights')
+      .then(({data}) => {
+        const flights = data
         let airportSet = new Set();
         flights.map((flight) => {
           airportSet.add(flight.departureLocation.airport)
@@ -210,7 +210,7 @@ class SearchModule extends Component {
               </LocalizationProvider>
 
 
-        
+
 
                <TextField id="outlined-basic"
                 label="Departure Terminal"
@@ -218,7 +218,7 @@ class SearchModule extends Component {
                 onChange={onDepTerminalChange}
               />
 
-           
+
 
 
                <TextField id="outlined-basic"
@@ -244,7 +244,7 @@ class SearchModule extends Component {
                 onChange={onSeatsChange}
                 id="seats"
               />
-              
+
 
 
               <Stack
