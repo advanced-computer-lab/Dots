@@ -387,9 +387,9 @@ flightIn.save((err) => {
 
 app.get("/userflights", async (req, res) => {
   console.log(req.verifiedUser);
-  var user = await User.find({});
-  console.log(req.verifiedUser._id);
-  user = await user[0].populate("reservations");
+  console.log("userid " + req.verifiedUser.id);
+  var user = await User.findById(req.verifiedUser.id);
+  user = await user.populate("reservations");
   var reservations = user.reservations;
   for (let i = 0; i < reservations.length; i++) {
     await reservations[i].populate("inBoundflight");
