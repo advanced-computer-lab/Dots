@@ -798,6 +798,26 @@ const createFlightProducts = async (flight) => {
 }
 
 
+app.post("/session", async (req, res) => {
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(
+      req.body.session_id
+    );
+    const state = session.metadata;
+    res.status(200).send(session);
+
+  }
+  catch (err) {
+    console.log(err)
+    res.status(400).send(null);
+  }
+
+
+});
+
+
+
 
 
 app.post("/create-checkout-session", async (req, res) => {
@@ -809,13 +829,15 @@ app.post("/create-checkout-session", async (req, res) => {
     "flightNum": state.previousStage.depchosenflight.flightNumber, "class": state.previousStage.depflightClass
   }
 
-  const arr = {   "depDate": state.previousStage.returnchosenflight.departureTime, "arrDate" : state.previousStage.returnchosenflight.arrivalTime ,
-   "flightNum" : state.previousStage.returnchosenflight.flightNumber , "class" : state.previousStage.returnflightClass  }
+  const arr = {
+    "depDate": state.previousStage.returnchosenflight.departureTime, "arrDate": state.previousStage.returnchosenflight.arrivalTime,
+    "flightNum": state.previousStage.returnchosenflight.flightNumber, "class": state.previousStage.returnflightClass
+  }
 
-   const numPass = state.previousStage.numberOfpassengers;
+  const numPass = state.previousStage.numberOfpassengers;
 
   // const email = req.body.email;
- 
+
   let depDate1 = dep.depDate;
   let arrDate1 = dep.arrDate;
   let depDate2 = arr.depDate;
@@ -826,10 +848,10 @@ app.post("/create-checkout-session", async (req, res) => {
   arrDate1 = new Date(arrDate1);
   depDate2 = new Date(depDate2);
   arrDate2 = new Date(arrDate2);
-  depDate1 = depDate1.toISOString().substring(0,10);
-  arrDate1 = arrDate1.toISOString().substring(0,10);
-  depDate2 = depDate2.toISOString().substring(0,10);
-  arrDate2 = arrDate2.toISOString().substring(0,10);
+  depDate1 = depDate1.toISOString().substring(0, 10);
+  arrDate1 = arrDate1.toISOString().substring(0, 10);
+  depDate2 = depDate2.toISOString().substring(0, 10);
+  arrDate2 = arrDate2.toISOString().substring(0, 10);
 
   // dep = { flightNum , cls , numPass , depDate , arrDate }
 
@@ -874,7 +896,7 @@ app.post("/create-checkout-session", async (req, res) => {
 
     // update flight id 
     await Flight.updateOne({ flightNumber: dep.flightNum }, { $set: { economyFlightProductId: depEconomyProductId, businessFlightProductId: depBusinessProductId, firstFlightProductId: depFirstProductId, economyFlightPriceId: depEconomyPriceId, businessFlightPriceId: depBusinessPriceId, firstFlightPriceId: depFirstPriceId } })
-    
+
     switch (dep.class) {
       case 'Economy': depFlightProduct = depEconomyProductId; depPrice = depEconomyPriceId; break;
       case 'Business': depFlightProduct = depBusinessProductId; depPrice = depBusinessPriceId; break;
@@ -929,7 +951,9 @@ app.post("/create-checkout-session", async (req, res) => {
   console.log(arrPrice)
   // console.log(arrFlightProduct)
 
-  
+  const outboundClass = dep.class;
+  const inboundClass = arr.class;
+  const confirmationNumber = Math.floor(Math.random() * 100000000000 + 1);
 
   const session = await stripe.checkout.sessions.create({
     line_items: [
@@ -947,13 +971,15 @@ app.post("/create-checkout-session", async (req, res) => {
 
       },
     ],
+    metadata: { "outboundClass" :outboundClass , "inboundClass" :inboundClass , "passengers" : JSON.stringify(state.previousStage.passengers) , "depFlightNumber" : dep.flightNum , "arrFlightNumber" : arr.flightNum  , "confirmationNumber" : confirmationNumber },
     mode: 'payment',
     success_url: 'http://localhost:3000/payment?session_id={CHECKOUT_SESSION_ID}',
     cancel_url: 'http://localhost:3000/seatselector',
   });
 
-  console.log(session);
-  res.send(session);
+  // console.log(session.metadata.passengers.);
+  res.send( session );
+  // res.redirect(303, session.url);
 
 });
 
@@ -961,31 +987,50 @@ app.post("/create-checkout-session", async (req, res) => {
 const createRefund = async (pid, refundAmount) => {
   const refund = await stripe.refunds.create({
     payment_intent: pid,
-    amount: refundAmount*100
+    amount: refundAmount * 100
   });
-   return refund;
+  return refund;
 }
 
 
-app.post("/refund" ,  async (req , res ) =>{
-      try{
-       const refund  = await createRefund(req.body.pid , req.body.amount);
-       console.log(refund)
-       res.send(refund);
-      }
-      catch(err)
-      {
-        console.log(err)
-        res.status(400).send({})
-      }
-
-       
-
-} );
+app.post("/refund", async (req, res) => {
+  try {
+    const refund = await createRefund(req.body.pid, req.body.amount);
+    console.log(refund)
+    res.send(refund);
+  }
+  catch (err) {
+    console.log(err)
+    res.status(400).send({})
+  }
 
 
 
+});
 
+ 
+app.post( '/flight' , async (req,res) => {
+        
+  const flight = await Flight.find({ flightNumber: req.body.flightNum })
+    res.send(flight);
+   }
+)
+
+
+app.post( '/reservation' , async (req,res) => {
+        
+  const reservation = await Reservation.find({ confirmationNumber: req.body.confirmNum });
+  res.send(reservation);
+   }
+)
+
+
+app.post( '/flight' , async (req,res) => {
+        
+  const flight = await Flight.find({ flightNumber: req.body.flightNum })
+    res.send(flight);
+   }
+)
 
 app.post('/change-flight-payment', async (req, res) => {
 
