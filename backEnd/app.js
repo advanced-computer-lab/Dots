@@ -444,10 +444,10 @@ const mail = async (req, res) => {
   let outBoundPrice = 0;
   let inBoundPrice = 0;
   console.log(reservation);
-  if (!reservation){
-    reservation={
+  if (!reservation) {
+    reservation = {
       outBoundflight: req.body.previousStage.depchosenflight,
-      inBoundflight:req.body.previousStage.returnchosenflight,
+      inBoundflight: req.body.previousStage.returnchosenflight,
       outBoundClass: req.body.outBoundClass,
       inBoundClass: req.body.inBoundClass,
       passengers: req.body.passengers,
@@ -549,8 +549,8 @@ app.post("/reservationinsertion", async (req, res) => {
     { $push: { reservations: mongooseID } },
     { new: true }
   );
-  
-  await mail(req,res);
+
+  await mail(req, res);
   if (req.body.outBoundClass === "Economy")
     var y = await Flight.findByIdAndUpdate(
       new mongoose.Types.ObjectId(req.body.previousStage.depchosenflight._id),
@@ -805,7 +805,30 @@ app.delete("/reservations/:reservationId", async (req, res) => {
 
 //----------------
 app.post("/emailreservation", mail);
+
 //--------------------------------------------------------------
+app.get("/user", async (req, res) => {
+  const userId = mongoose.Types.ObjectId(req.verifiedUser.id);
+
+  User.findById(userId).then((data) => {
+    res.send(data);
+  });
+});
+
+app.put("/user", async (req, res) => {
+  const userId = mongoose.Types.ObjectId(req.verifiedUser.id);
+  const userData = req.body;
+  delete userData._id;
+
+  User.findByIdAndUpdate(userId, userData, { new: true })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+//-----------------------------------------------------
 
 app.post("/flights/flightquery", async (req, res) => {
   try {
