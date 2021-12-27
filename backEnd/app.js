@@ -679,7 +679,10 @@ app.delete("/reservations/:reservationId", async (req, res) => {
       res.status(400).send({ message: "Reservation Id invalid" });
     const reservationId = mongoose.Types.ObjectId(req.params.reservationId);
     let initialRes = await Reservation.findById(reservationId)
-    let refund = await createRefund(initialRes.paymentNumber, initialRes.totalPrice)
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      initialRes.paymentNumber
+    );
+    let refund = await createRefund(initialRes.paymentNumber, paymentIntent.amount/100);
 
     Reservation.findByIdAndDelete(reservationId).then((reservationDeleted) => {
       if (!reservationDeleted)
@@ -799,7 +802,8 @@ app.delete("/reservations/:reservationId", async (req, res) => {
       });
     });
   } catch (error) {
-    res.send(error);
+    console.log(error);
+    res.status(400).send(error);
   }
 });
 
