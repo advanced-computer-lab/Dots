@@ -21,18 +21,19 @@ const short = require("short-uuid");
 const translator = short();
 const saltRounds = 10;
 
-const stripeSK =
-  "sk_test_51K7gFNGx4Kq2M7uIDuWdTvjJmDVKIfKn9ilUGxGN9E29HfUGuFkp1lWRUaq9TojVSQoqxspIiuzl7tAxNdWcA1cW008U6almTb";
+const stripeSK = process.env.STRIPE_SK;
 const stripe = require("stripe")(stripeSK);
 
 //App variables
 const app = express();
 var cors = require("cors");
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: "*", credentials:true  } ) );
 const port = process.env.PORT || "8000";
 let repeated = false;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+const axios = require("axios");
+
 // Mongo DB
 mongoose
   .connect(MongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -87,6 +88,9 @@ app.use(session(sessionConfig));
 //   })(req, res, next);
 // });
 
+
+
+
 //------------------------------------------authentication & authorization-----------------------------------------
 const verifyAdmin = (req, res, next) => {
   if (req.verifiedUser.role !== "admin") return res.sendStatus(403);
@@ -112,11 +116,14 @@ app.use((req, res, next) => {
     req.url === "/flights/flightquery" ||
     req.url === "/register" ||
     req.url === "/checkusername" ||
-    req.url === "/checkemail"
+    req.url === "/checkemail" ||
+    req.url === "/location"
   )
     return next();
   else return verifyToken(req, res, next);
 });
+
+
 
 app.get("/checkAuth", (req, res) => {
   const authHeader = req.headers.authorization;
@@ -141,6 +148,21 @@ app.get("/checkAdmin", (req, res) => {
       name: req.verifiedUser.name,
     });
   return res.sendStatus(403);
+});
+
+
+app.get("/location", async (req, res) => {
+  try{
+  const ip = await axios.get('http://geolocation-db.com/json/');
+  const location = await axios.get(" http://ip-api.com/json/" + ip.data.IPv4);
+  res.json(location.data);
+  }
+  catch(err){
+    console.log(err)
+    res.status(400).json(null)
+
+  }
+
 });
 
 app.post("/login", (req, res) => {
@@ -651,6 +673,8 @@ app.get("/flights", async (req, res) => {
   }
 });
 
+
+
 app.get("/flights/:flightId", verifyAdmin, async (req, res) => {
   try {
     let flight = await Flight.findById(req.params.flightId).exec();
@@ -682,7 +706,7 @@ app.delete("/reservations/:reservationId", async (req, res) => {
     const paymentIntent = await stripe.paymentIntents.retrieve(
       initialRes.paymentNumber
     );
-    let refund = await createRefund(initialRes.paymentNumber, paymentIntent.amount/100);
+    let refund = await createRefund(initialRes.paymentNumber, paymentIntent.amount / 100);
 
     Reservation.findByIdAndDelete(reservationId).then((reservationDeleted) => {
       if (!reservationDeleted)
@@ -1483,28 +1507,54 @@ app.post("/change-flight-payment", async (req, res) => {
 
 });
 
-// stripe.prices.retrieve(
-//   'price_1K9egRGx4Kq2M7uIIBfNHlJ6'
-// ).then( price => { console.log(price) } )
+// const xlsx = require("xlsx");
+// var wb = xlsx.readFile("special_flights1.xlsx", { cellDates: true });
+// var ws = wb.Sheets['special_flights1'];
 
-// Flight.find({ flightNumber: 'AMORY' }).then(flight => {console.log(flight)})
+// //Flight Number,departureLocation.country,departureLocation.city,departureLocation.airport,departureLocation.terminal,arrivalLocation.country,arrivalLocation.city,arrivalLocation.airport,arrivalLocation.terminal,totalEconomySeats,totalBusinessSeats,totalFirstSeats,economySeatsAvailable,businessSeatsAvailable,firstSeatsAvailable,firstClassPrice,businessClassPrice,economyClassPrice,departureTime,arrivalTime
 
-// app.post('/flights/create-checkout-session', async (req, res) => {
-// const session = await stripe.checkout.sessions.create({
-//   line_items: [
-//     {
-//       // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-//       price: 'price_1K9egRGx4Kq2M7uIIBfNHlJ6',
-//       quantity: 1,
-//     },
-//   ],
-//   mode: 'payment',
-//   success_url: 'http://localhost:3000/payment',
-//     cancel_url: 'http://localhost:3000/seatselector',
-// });
 
-//   res.send(session);
-// });
+// var data = xlsx.utils.sheet_to_json(ws);
+// const x = async function (data) {
+//   for (let d of data) {
+//     var f = new Flight();
+//     f.flightNumber=d['Flight Number'];
+
+//     f.departureLocation.country=d['departureLocation.country'];
+//     f.departureLocation.city=d['departureLocation.city'];
+//     f.departureLocation.airport=d['departureLocation.airport'];
+//     f.departureLocation.terminal=d['departureLocation.terminal'];
+
+//     f.arrivalLocation.country=d['arrivalLocation.country'];
+//     f.arrivalLocation.city=d['arrivalLocation.city'];
+//     f.arrivalLocation.airport=d['arrivalLocation.airport'];
+//     f.arrivalLocation.terminal=d['arrivalLocation.terminal'];
+
+//     f.departureTime=d['departureTime'];
+//     f.arrivalTime=d['arrivalTime'];
+
+//     f.economySeatsAvailable=d['totalEconomySeats'];
+//     f.businessSeatsAvailable=d['totalBusinessSeats'];
+//     f.firstSeatsAvailable=d['totalFirstSeats'];
+
+//     f.totalEconomySeats=d['totalEconomySeats'];
+//     f.totalBusinessSeats=d['totalBusinessSeats'];
+//     f.totalFirstSeats=d['totalFirstSeats'];
+
+//     f.economyClassPrice=d['economyClassPrice'];
+//     f.businessClassPrice=d['businessClassPrice'];
+//     f.firstClassPrice=d['firstClassPrice'];
+
+  
+//     await f.save();
+//   }
+// };
+
+// x(data);
+
+
+
+
 
 // Starting server
 app.listen(port, () => {

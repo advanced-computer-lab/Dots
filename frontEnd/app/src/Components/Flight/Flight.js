@@ -25,8 +25,15 @@ class Flight extends Component {
         super(props);
         this.state = {
             class: 'Economy',
+            desktop: window.matchMedia("(min-width: 900px)").matches
+
         }
 
+    }
+
+    componentDidMount() {
+        const handler = e => this.setState({ desktop: e.matches });
+        window.matchMedia("(min-width: 900px)").addEventListener('change', handler);
     }
 
 
@@ -95,107 +102,211 @@ class Flight extends Component {
         const isRtl = true;
         return (
 
-            <Card sx={{ maxWidth: 1200 }} id='flightCard' elevation = {8}>
-                <CardActionArea
-                    onClick={this.click}
-                >
-                    <CardContent>
-                        <Stack direction="row" spacing={1} alignItems="center">
-                            <div className={` ${!(faded) ? 'hide' : ''}`}>
-                                <CheckCircleOutlineIcon fontSize='large' />
-                            </div>
+            <div>
+                {this.state.desktop ?
+                    <Card sx={{ maxWidth: 1200 }} id='flightCard' elevation={8}>
+                        <CardActionArea
+                            onClick={this.click}
+                        >
                             <CardContent>
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                    <div className={` ${!(faded) ? 'hide' : ''}`}>
+                                        <CheckCircleOutlineIcon fontSize='large' />
+                                    </div>
+                                    <CardContent>
 
-                                <Stack direction="row" spacing={2} alignItems="center">
+                                        <Stack direction="row" spacing={2} alignItems="center">
 
-                                    <Stack>
-                                        <Typography variant="h6" gutterBottom component="div">
-                                            {formatDate(flight.departureTime)}
-                                        </Typography>
-                                        <Typography variant="overline" gutterBottom component="div">
-                                            {flight.departureLocation.country}
-                                        </Typography>
+                                            <Stack>
+                                                <Typography variant="h6" gutterBottom component="div">
+                                                    {formatDate(flight.departureTime)}
+                                                </Typography>
+                                                <Typography variant="overline" gutterBottom component="div">
+                                                    {flight.departureLocation.country}
+                                                </Typography>
 
-                                    </Stack>
+                                            </Stack>
 
-                                    <Stack direction="row" alignItems="center" spacing={3}>
+                                            <Stack direction="row" alignItems="center" spacing={3}>
 
-                                        <hr
-                                            style={{
-                                                color: "black",
-                                                backgroundColor: "black",
-                                                height: 1
-                                            }}
-                                        />
-                                        <Stack alignItems="center" spacing={0.5}>
-                                            {!this.props.return ? <FlightTakeoffIcon /> : <ThemeProvider theme={isRtl ? rtlTheme : ltrTheme}>
-                                                <DirectionAwareFlightTakeoffIcon />
-                                            </ThemeProvider>}
-                                            <Typography variant="overline" gutterBottom component="div" >
-                                                Duration {timediff(new Date(flight.arrivalTime), new Date(flight.departureTime))}
-                                            </Typography>
+                                                <hr
+                                                    style={{
+                                                        color: "black",
+                                                        backgroundColor: "black",
+                                                        height: 1
+                                                    }}
+                                                />
+                                                <Stack alignItems="center" spacing={0.5}>
+                                                    {!this.props.return ? <FlightTakeoffIcon /> : <ThemeProvider theme={isRtl ? rtlTheme : ltrTheme}>
+                                                        <DirectionAwareFlightTakeoffIcon />
+                                                    </ThemeProvider>}
+                                                    <Typography variant="overline" gutterBottom component="div" >
+                                                        Duration {timediff(new Date(flight.arrivalTime), new Date(flight.departureTime))}
+                                                    </Typography>
+                                                </Stack>
+                                                <hr
+                                                    style={{
+                                                        color: "black",
+                                                        backgroundColor: "black",
+                                                        height: 1
+                                                    }}
+                                                />
+                                            </Stack>
+
+                                            <Stack>
+                                                <Typography variant="h6" gutterBottom component="div">
+                                                    {formatDate(flight.arrivalTime)}
+                                                </Typography>
+                                                <Typography variant="overline" gutterBottom component="div">
+                                                    {flight.arrivalLocation.country}
+                                                </Typography>
+
+                                            </Stack>
+                                            <Stack id='flightno'>
+                                                <Typography variant="h6" gutterBottom component="div">
+                                                    Flight No.
+                                                </Typography>
+                                                <Typography variant="overline" gutterBottom component="div" id='fno'>
+                                                    {flight.flightNumber}
+                                                </Typography>
+
+                                            </Stack>
                                         </Stack>
-                                        <hr
-                                            style={{
-                                                color: "black",
-                                                backgroundColor: "black",
-                                                height: 1
-                                            }}
-                                        />
-                                    </Stack>
+                                    </CardContent>
 
+
+                                    <hr
+                                        style={{
+                                            color: "black",
+                                            backgroundColor: "black",
+                                            transform: "rotate(90deg)",
+                                            width: 100,
+                                            height: 1.5
+                                        }}
+                                    />
                                     <Stack>
-                                        <Typography variant="h6" gutterBottom component="div">
-                                            {formatDate(flight.arrivalTime)}
-                                        </Typography>
-                                        <Typography variant="overline" gutterBottom component="div">
-                                            {flight.arrivalLocation.country}
-                                        </Typography>
+
+                                        <Stack direction="row" sx={{ minWidth: 100 }} spacing={14} alignItems="center" justifyContent="space-between" id='pricetext'>
+
+                                            <Stack >
+                                                <Typography variant="overline" gutterBottom component="div">
+                                                    PRICES START FROM
+                                                </Typography>
+                                                <Typography variant="h5" color="#09827C" id='priceValue'>
+                                                    ${this.props.flight.economyClassPrice}
+                                                </Typography>
+                                            </Stack>
+
+                                        </Stack>
 
                                     </Stack>
-                                    <Stack id='flightno'>
-                                        <Typography variant="h6" gutterBottom component="div">
-                                            Flight No.
-                                        </Typography>
-                                        <Typography variant="overline" gutterBottom component="div" id='fno'>
-                                            {flight.flightNumber}
-                                        </Typography>
 
-                                    </Stack>
                                 </Stack>
                             </CardContent>
+                        </CardActionArea>
+                    </Card>
+                    : <Card sx={{ maxWidth: 400 }} id='flightCard' elevation={8}>
+                        <CardActionArea
+                            onClick={this.click}
+                        >
+                            <CardContent>
+                                <Stack  spacing={1} alignItems="center">
+                                    <div className={` ${!(faded) ? 'hide' : ''}`}>
+                                        <CheckCircleOutlineIcon fontSize='large' />
+                                    </div>
+                                    <CardContent>
+
+                                        <Stack direction="row" spacing={1} alignItems="center">
+
+                                            <Stack>
+                                                <Typography variant="h8" gutterBottom component="div">
+                                                    {formatDate(flight.departureTime)}
+                                                </Typography>
+                                                <Typography variant="overline" gutterBottom component="div">
+                                                    {flight.departureLocation.country}
+                                                </Typography>
+
+                                            </Stack>
+
+                                            <Stack direction="row" alignItems="center" spacing={4}>
+
+                                                {/* <hr
+                                                    style={{
+                                                        color: "black",
+                                                        backgroundColor: "black",
+                                                        height: 1
+                                                    }}
+                                                /> */}
+                                                <Stack id = "duration" alignItems="center" spacing={0.5} justifyContent = "center" >
+                                                    {!this.props.return ? <FlightTakeoffIcon /> : <ThemeProvider theme={isRtl ? rtlTheme : ltrTheme}>
+                                                        <DirectionAwareFlightTakeoffIcon />
+                                                    </ThemeProvider>}
+                                                    <Typography variant="overline" gutterBottom component="div" >
+                                                        Duration 
+                                                    </Typography>
+                                                    <Typography variant="overline" gutterBottom component="div" >
+                                                         {timediff(new Date(flight.arrivalTime), new Date(flight.departureTime))}
+                                                    </Typography>
+                                                </Stack>
+                                                {/* <hr
+                                                    style={{
+                                                        color: "black",
+                                                        backgroundColor: "black",
+                                                        height: 1
+                                                    }}
+                                                /> */}
+                                            </Stack>
+
+                                            <Stack>
+                                                <Typography variant="h8" gutterBottom component="div">
+                                                    {formatDate(flight.arrivalTime)}
+                                                </Typography>
+                                                <Typography variant="overline" gutterBottom component="div">
+                                                    {flight.arrivalLocation.country}
+                                                </Typography>
+
+                                            </Stack>
+                                            <Stack id='flightno'>
+                                                <Typography variant="h8" gutterBottom component="div">
+                                                    Flight No.
+                                                </Typography>
+                                                <Typography variant="overline" gutterBottom component="div" id='fno'>
+                                                    {flight.flightNumber}
+                                                </Typography>
+
+                                            </Stack>
+                                        </Stack>
+                                    </CardContent>
 
 
-                            <hr
-                                style={{
-                                    color: "black",
-                                    backgroundColor: "black",
-                                    transform: "rotate(90deg)",
-                                    width: 100,
-                                    height: 1.5
-                                }}
-                            />
-                            <Stack>
+                                  
+                                    <Stack>
 
-                                <Stack direction="row" sx={{ minWidth: 100 }} spacing={14} alignItems="center" justifyContent="space-between" id='pricetext'>
+                                        <Stack  sx={{ minWidth: 100 }}
+                                          style = {{ marginTop: -20 }}
+                                        spacing={5} alignItems="center" justifyContent="space-between" id='pricetext'>
 
-                                    <Stack >
-                                        <Typography variant="overline" gutterBottom component="div">
-                                            PRICES START FROM
-                                        </Typography>
-                                        <Typography variant="h5" color="#09827C" id='priceValue'>
-                                            ${this.props.flight.economyClassPrice}
-                                        </Typography>
+                                            <Stack direction = "row">
+                                                <Typography variant="overline" gutterBottom component="div">
+                                                    PRICES START FROM
+                                                </Typography>
+                                                <Typography variant="h8" color="#09827C" id='priceValue'>
+                                                    ${this.props.flight.economyClassPrice}
+                                                </Typography>
+                                            </Stack>
+
+                                        </Stack>
+
                                     </Stack>
 
                                 </Stack>
+                            </CardContent>
+                        </CardActionArea>
+                    </Card>
 
-                            </Stack>
+                }
 
-                        </Stack>
-                    </CardContent>
-                </CardActionArea>
-            </Card>
+            </div>
 
 
         );

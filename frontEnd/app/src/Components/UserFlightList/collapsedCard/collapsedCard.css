@@ -14,6 +14,7 @@
     border-radius: 12px;
     box-shadow: 0 8px 32px 0 rgb(31 38 135 / 80%);
 }
+
 #economytext{
     color: black;
     margin: 1em;
@@ -26,6 +27,8 @@
     height: 45vh;
     padding-top: 0 ;
 }
+
+
 
 #economy{
     color: white !important;
@@ -95,4 +98,68 @@ background: linear-gradient(180deg, rgba(243,211,11,0.65507699661896) 17%, rgba(
  
 #bclass{
     padding-bottom: 0;
+}
+
+
+
+
+@media only screen and (max-width: 600px) {
+    .classCard{
+        margin-top: auto;
+        margin-bottom: auto;
+        height: 40vh;
+        width: 15rem;
+        padding-top: 0 ;
+        position:relative;
+        left:1.3rem;
+    }
+    .busClassCard{
+        margin-top: auto;
+        margin-bottom: auto;
+        height: 35vh;
+        width: 15rem;
+        padding-top: 0 ;
+    }
+    .firstClassCard{
+        margin-top: auto;
+        margin-bottom: auto;
+        height: 38vh;
+        width: 15rem;
+        padding-top: 0 ;
+    }
+
+    #collapseContainer{
+        margin-top: 2em;
+        margin-bottom: 2em;
+        height: 128vh ;
+        width: 80vw;
+        background-color: white;
+        padding:1em;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px 0 rgb(31 38 135 / 80%);
+    }
+    #perPassengerEconomy{
+        padding:0;
+        color: #000;
+        background-color: lavenderblush;
+        margin-top: 1em;
+    
+    }
+    #perPassengerFirst{
+        padding:0;
+        color: #000;
+        background-color: lavenderblush;
+        margin-top: 1em;
+    
+    }
+    #perPassengerBusiness{
+        padding:0;
+        color: #000;
+        background-color: lavenderblush;
+        margin-top: 0em;
+    
+    }
+
 }

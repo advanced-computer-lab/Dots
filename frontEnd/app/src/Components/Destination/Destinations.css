@@ -1,0 +1,15 @@
+.destinationTitle , .destinationSubTitle {
+    color:white;
+}
+
+.destinationSubTitle{
+    margin-bottom: 1.1rem;
+    margin-top: -0.5rem;
+}
+
+destinationCard:hover .ball{
+    cursor: pointer;
+    z-index: 1.4;
+    transform: translateZ('30%');
+
+}

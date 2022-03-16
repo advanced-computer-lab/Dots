@@ -1,3 +1,17 @@
 #class fieldset {
     height: 100%;
 }
+
+
+@media only screen and (max-width: 600px) {
+    .MuiOutlinedInput-root.MuiInputBase-root.MuiInputBase-colorPrimary.MuiInputBase-formControl.css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root, .MuiFormControl-root.MuiTextField-root.css-1u3bzj6-MuiFormControl-root-MuiTextField-root{
+        width:16rem;
+    }
+
+    .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation24.MuiDialog-paper.MuiDialog-paperScrollPaper.MuiDialog-paperWidthLg.css-1fu2e3p-MuiPaper-root-MuiDialog-paper{
+        position:relative;
+        right:1rem;
+    }
+
+
+}

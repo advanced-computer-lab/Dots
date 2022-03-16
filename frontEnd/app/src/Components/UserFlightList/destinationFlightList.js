@@ -6,8 +6,8 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Grid from '@mui/material/Grid';
-import './userFlightList.css'
-import './passengerForm/passengerForm'
+import './userFlightList.css';
+import './passengerForm/passengerForm';
 import Button from '@mui/material/Button';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import { FormControl } from '@mui/material';
@@ -30,7 +30,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import UserSearch from '../UserSearch/UserSearch';
 import Stack from '@mui/material/Stack';
-class UserFlightList extends Component {
+class DestinationFlightList extends Component {
 
 
     componentDidMount() {
@@ -196,8 +196,7 @@ class UserFlightList extends Component {
 
 
             <div>
-                {/* <GuestNavBar /> */}
-                <Card>
+                {/* <Card>
                     <CardContent>
                         <Stack direction="row" spacing={10} alignContent="center" alignItems = "center">
                             <Typography id = "flightText" variant="h6" gutterBottom component="div">
@@ -206,9 +205,9 @@ class UserFlightList extends Component {
                             <Button variant="contained" onClick={this.editSearch}>Edit Search</Button>
                         </Stack>
                     </CardContent>
-                </Card>
+                </Card> */}
 
-                <Dialog
+                {/* <Dialog
                     fullWidth={true}
                     maxWidth={false}
                     open={this.state.openDialog}
@@ -218,7 +217,7 @@ class UserFlightList extends Component {
                     <DialogContent>
                         <UserSearch isChangeSearch={false} />
                     </DialogContent>
-                </Dialog>
+                </Dialog> */}
 
                 <Snackbar open={this.state.openAlert} autoHideDuration={10000} onClose={this.handleCloseAlert}>
                     <Alert onClose={this.handleCloseAlert} severity="error" sx={{ width: '100%' }}>
@@ -280,48 +279,5 @@ class UserFlightList extends Component {
 }
 
 
-function UserFlightListFunction(props) {
-    let location = useLocation();
-    const { result } = location.state
 
-    const depfaded = result.depfaded
-    const depvalue = result.depsearchdate
-    const depOriginalFlights = result.depOriginalFlights
-    const depAllflights = result.depAllFlights
-    const depchosenflight = result.depchosenflight
-    const depflightClass = result.depflightClass
-    const returnfaded = result.returnfaded
-    const returnvalue = result.returnsearchdate
-    const returnOriginalFlights = result.returnOriginalFlights
-    const returnAllflights = result.returnAllflights
-    const returnchosenflight = result.returnchosenflight
-    const returnflightClass = result.returnflightClass
-    const numberOfpassengers = result.numberOfpassengers
-    const from = result.from
-    const to = result.to
-    const passengers = result.passengers ? result.passengers : '';
-    const noOutFlights = result.noOutFlights;
-    const noInFlights = result.noInFlights;
-
-    return <UserFlightList depfaded={depfaded}
-        depvalue={depvalue}
-        from={from}
-        to={to}
-        depOriginalFlights={depOriginalFlights}
-        depAllflights={depAllflights}
-        depchosenflight={depchosenflight}
-        depflightClass={depflightClass}
-        returnfaded={returnfaded}
-        returnvalue={returnvalue}
-        returnAllflights={returnAllflights}
-        returnOriginalFlights={returnOriginalFlights}
-        returnchosenflight={returnchosenflight}
-        returnflightClass={returnflightClass}
-        numberOfpassengers={numberOfpassengers}
-        passengers={passengers}
-        noOutFlights={noOutFlights}
-        noInFlights={noInFlights}
-    />
-}
-
-export default UserFlightListFunction;
+export default DestinationFlightList;

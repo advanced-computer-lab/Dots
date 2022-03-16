@@ -13,7 +13,13 @@ import LuggageIcon from '@mui/icons-material/Luggage';
 
 class FlightClassCard extends Component {
     state = {
+        desktop: window.matchMedia("(min-width: 900px)").matches,
     };
+    componentDidMount() {
+        const handler = e => this.setState({ desktop: e.matches });
+        window.matchMedia("(min-width: 900px)").addEventListener('change', handler);
+    }
+
     changeEconomy = () => {
         //console.log(this.props.faded);
         //this.props.update(!(this.props.faded));
@@ -37,7 +43,7 @@ class FlightClassCard extends Component {
 
         return (
             <Paper elevation={3} square id='collapseContainer'>
-                <Grid container spacing={2}>
+                <Grid container spacing={2} direction = {this.state.desktop?"row":"column"} >
 
                     <Grid item xs={4}>
                         <Card elevation={2} className='classCard'>
@@ -111,7 +117,7 @@ class FlightClassCard extends Component {
                                 </Typography>
                             </CardContent>
                             <CardActions className='zeropaddingMargin' >
-                                <Button variant="outlined" id="classButton"  onClick={this.changeBusiness} >${this.props.flight.businessClassPrice}</Button>
+                                <Button variant="outlined" id="classButton" onClick={this.changeBusiness} >${this.props.flight.businessClassPrice}</Button>
                             </CardActions>
                         </Card>
                     </Grid>

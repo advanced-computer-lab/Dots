@@ -32,6 +32,9 @@ import { Navigate } from "react-router-dom";
 import Signup from "./Components/UserRegistration/signup";
 import ChangePasswordPage from "./Components/ChangePassword/ChangePasswordPage";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Destinations from "./Components/Destination/Destinations";
+import DestinationList from "./Components/DestinationList/DestinationList";
+import DestinationPage from "./Components/DestinationPage/DestinationPage"
 
 const theme = createTheme({
   palette: {
@@ -164,6 +167,13 @@ const AppRoutes = () => {
         <Route path="/singleseatselector" element={<SingleSeatSelector />} />
         <Route path="/editsummary" element={<EditSummary />} />
         <Route path="/editReservation" element={<EditReservation />} />
+        <Route path = "/testDest" element = {<DestinationPage city = "Portofino" country = "Italy"/>} />
+        <Route path="/italy/rome" element={<DestinationPage city = "Rome" country = "Italy"/>} />
+        <Route path="/italy/portofino" element={<DestinationPage city = "Portofino" country = "Italy"/>} />
+        <Route path="/greece/athens" element={<DestinationPage city = "Athens" country = "Greece"/>} />
+        <Route path = "/croatia/split" element = {<DestinationPage city = "Split" country = "Croatia"/>} />
+        <Route path = "/montonegro/kotor" element = {<DestinationPage city = "Kotor" country = "Montenegro"/>} />
+        <Route path = "/spain/seville" element = {<DestinationPage city = "Seville" country = "Spain"/>} />
       </Routes>
     </Fragment>
   );

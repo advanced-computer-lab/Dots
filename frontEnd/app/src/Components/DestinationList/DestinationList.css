@@ -1,0 +1,9 @@
+
+@media only screen and (max-width: 600px) {
+
+#destinationList{
+    display: flex;
+    overflow-x: scroll;
+}
+
+}

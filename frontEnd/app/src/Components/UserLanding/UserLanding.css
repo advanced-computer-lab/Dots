@@ -19,7 +19,17 @@ body {
 #search {
   background: rgb(255 255 255 / 60%);
   box-shadow: 0 8px 32px 0 rgb(31 38 135 / 80%);
-  backdrop-filter: blur(30px);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(0px);
+  border-radius: 15px;
+  border: 1px rgba(255, 255, 255, 0.18);
+  padding: 24px 20px;
+}
+
+#searchMobile{
+  background: rgb(255 255 255 / 60%);
+  box-shadow: 0 8px 32px 0 rgb(31 38 135 / 80%);
+  backdrop-filter: blur(5px) !important;
   -webkit-backdrop-filter: blur(0px);
   border-radius: 15px;
   border: 1px rgba(255, 255, 255, 0.18);
@@ -34,10 +44,23 @@ body {
   font-weight: 400 !important;
 }
 
+#destinationStackHeading{
+    color: #076f72;
+    font-family: "Raleway", sans-serif !important;
+  font-weight: 400 !important;
+}
+
 #alignTitle {
   position: relative;
   right: 250px;
   top: 80px;
+}
+
+
+#alignMobile {
+  position: relative;
+  top: 50px;
+  left: 20px;
 }
 
 .center {
@@ -49,4 +72,17 @@ body {
 
 #back {
   height: 100vh;
+}
+
+#destinationsStack{
+  padding: 2rem;
+  margin-bottom: 1rem;
+}
+
+@media only screen and (min-width: 600px) {
+
+#destinationList{
+    margin-left: 5rem;
+}
+
 }
