@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import "./NavBar.css";
-import logo from "./logo2.jpeg";
+import logo from "./logo2.jpg";
 import { Link } from "react-router-dom";
 
 const GuestNavBar = () => {

@@ -115,14 +115,14 @@ class UserSearch extends Component {
 
     onFromChange = (event) => {
         let input = event.target.innerHTML
-        if (input.length > 15) input = ""
+        if (input.length > 39) input = ""
         this.setState({ from: input })
 
     }
 
     onToChange = (event) => {
         let input = event.target.innerHTML
-        if (input.length > 15) input = ""
+        if (input.length > 39) input = ""
         this.setState({ to: input })
 
     }
@@ -189,6 +189,7 @@ class UserSearch extends Component {
 
     onSearch = () => {
 
+        console.log(this.state);
         if (this.areFieldsValid()) {
             if (this.isDateValid()) {
                 if (this.arePassengersValid()) {
@@ -198,12 +199,6 @@ class UserSearch extends Component {
                     const { from, to, depDate, arrDate, depClass, arrClass, adults, kids } = this.state
 
                     let query = { "out": { "dep": depDate, "class": classes[depClass].toLowerCase() }, "in": { "dep": arrDate, "class": classes[arrClass].toLowerCase() }, "from": from, "to": to, "adults": adults, "kids": kids }
-
-                    // const requestOptions = {
-                    //     method: 'POST',
-                    //     headers: { 'Content-Type': 'application/json' },
-                    //     body: JSON.stringify(query)
-                    // };
 
 
                     axios.post('http://localhost:8000/flights/flightquery', query)

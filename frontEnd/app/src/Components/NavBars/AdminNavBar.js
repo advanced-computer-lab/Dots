@@ -9,7 +9,7 @@ import MenuItem from "@mui/material/MenuItem";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Stack from "@mui/material/Stack";
 import "./NavBar.css";
-import logo from "./logo2.jpeg";
+import logo from "./logo2.jpg";
 import { AuthContext } from "../../context/authContext.js";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router";

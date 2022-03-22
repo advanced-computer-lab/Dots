@@ -14,7 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Stack from "@mui/material/Stack";
 import "./NavBar.css";
-import logo from "./logo2.jpeg";
+import logo from "./logo2.jpg";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/authContext.js";
 import { useNavigate } from "react-router";
@@ -58,7 +58,7 @@ const UserNavBar = () => {
     <AppBar position="static" sx={{ backgroundColor: "#076F72" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Stack direction="row" spacing={155} alignItems="center">
+          <Stack direction="row"  spacing={{ xs: 13  , sm: 55, md: 150 }} alignItems="center">
             <a href="/">
               <img src={logo} alt="Logo" width="120" />
             </a>
@@ -71,7 +71,7 @@ const UserNavBar = () => {
               onClick={handleMenu}
               color="inherit"
             >
-              <AccountCircle fontSize="medium" color="white" />
+              <AccountCircle fontSize="medium" style = {{color:"white" }} />
             </IconButton>
             {authContext && authContext.authState.name}
             <Menu
