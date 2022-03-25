@@ -41,6 +41,12 @@ The React part of the code (front end) uses class components most of the time. F
 
 As the saying goes, a picture is equal to a thousand words. Most people will be interested if there is a visual representation of what the project is about. It helps them understand better. A visual representation can be snapshots of the project or a video of the functioning of the project.
 
+![This is an image](https://img1.wsimg.com/isteam/ip/6a667436-808e-49ad-94f3-a350d6117ad4/landingPageDesktop.png/:/rs=w:1280)
+![This is an image](https://img1.wsimg.com/isteam/ip/6a667436-808e-49ad-94f3-a350d6117ad4/landingPageMobile2.png/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:1280)
+
+
+
+
 ### Tech/Framework used
 
 **BackEnd:**
