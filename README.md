@@ -43,8 +43,10 @@ As the saying goes, a picture is equal to a thousand words. Most people will be 
 
 ![This is an image](https://img1.wsimg.com/isteam/ip/6a667436-808e-49ad-94f3-a350d6117ad4/landingPageDesktop.png/:/rs=w:1280)
 ![This is an image](https://img1.wsimg.com/isteam/ip/6a667436-808e-49ad-94f3-a350d6117ad4/landingPageMobile2.png/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:1280)
+
 ![This is an image](https://img1.wsimg.com/isteam/ip/6a667436-808e-49ad-94f3-a350d6117ad4/RomeMobile1.png/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:1280)
 ![This is an image](https://img1.wsimg.com/isteam/ip/6a667436-808e-49ad-94f3-a350d6117ad4/flightSearchDesktop.png/:/rs=w:1280)
+
 ![This is an image](https://img1.wsimg.com/isteam/ip/6a667436-808e-49ad-94f3-a350d6117ad4/stripe.png/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:1280)
 
 
