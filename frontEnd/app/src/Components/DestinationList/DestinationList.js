@@ -26,7 +26,7 @@ class DestinationList extends Component{
     render()
     {
         return(
-          <Stack id = "destinationList" direction = "row" spacing = {{"xs": 3 , "lg":10}} alignContent = "center">
+          <Stack id = "destinationList" direction = "row" spacing = {{"xs": 3 , "lg":12.5}} alignContent = "center">
             <Destination city = "Rome" country = "Italy" width = {134} height = {128} picWidth = {'134px'} picHeight = {'230px'} />
             <Destination city = "Athens" country = "Greece"  width = {134} height = {128} picWidth = {'134px'} picHeight = {'230px'}/>
             <Destination city = "Kotor" country = "Montonegro" width = {134} height = {128} picWidth = {'134px'} picHeight = {'230px'} />

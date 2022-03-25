@@ -115,14 +115,14 @@ class UserSearch extends Component {
 
     onFromChange = (event) => {
         let input = event.target.innerHTML
-        if (input.length > 39) input = ""
+        if (input.length > 15) input = ""
         this.setState({ from: input })
 
     }
 
     onToChange = (event) => {
         let input = event.target.innerHTML
-        if (input.length > 39) input = ""
+        if (input.length > 15) input = ""
         this.setState({ to: input })
 
     }
